@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>字节跳动AI"开挂"指南 - 从算法小白到AI巨头的逆袭之路</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="dns-prefetch" href="https://fonts.googleapis.com">
+    <link rel="dns-prefetch" href="https://fonts.gstatic.com">
+    <!-- 性能优化：仅加载必要的字体字重 400和600 -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="preload" href="css/styles.min.css" as="style">
+    <link rel="stylesheet" href="css/styles.min.css">
+    <style>
+        /* 首页特殊样式 */
+        .hero {
+            padding: 100px 0 40px;
+            background: var(--color-bg);
+            text-align: center;
+            position: relative;
+        }
+        
+        .hero-content {
+            position: relative;
+            z-index: 10;
+        }
+        
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--gradient-badge);
+            padding: 8px 20px;
+            border-radius: var(--radius-full);
+            font-size: var(--font-size-xs);
+            margin-bottom: var(--spacing-lg);
+            color: var(--color-info);
+            font-weight: 500;
+        }
+        
+        .hero-badge::before {
+            content: '';
+            width: 6px;
+            height: 6px;
+            background: var(--color-success);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+        
+        .hero-title {
+            font-size: var(--font-size-3xl);
+            font-weight: 600;
+            line-height: 1.2;
+            margin-bottom: var(--spacing-md);
+            color: var(--color-text-primary);
+        }
+        
+        .hero-title .highlight {
+            background: var(--gradient-success);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .hero-subtitle {
+            font-size: var(--font-size-base);
+            color: var(--color-text-secondary);
+            max-width: 700px;
+            margin: 0 auto var(--spacing-lg);
+            line-height: 1.8;
+        }
+        
+        .hero-subtitle .funny {
+            color: var(--color-success);
+            font-weight: 600;
+        }
+        
+        .hero-cta {
+            display: flex;
+            justify-content: center;
+            gap: var(--spacing-md);
+            flex-wrap: wrap;
+        }
+        
+        .hero-stats {
+            display: flex;
+            justify-content: center;
+            gap: var(--spacing-xl);
+            margin-top: var(--spacing-xl);
+            flex-wrap: wrap;
+        }
+        
+        .hero-stat {
+            text-align: center;
+        }
+        
+        .hero-stat-value {
+            font-family: var(--font-mono);
+            font-size: var(--font-size-2xl);
+            font-weight: 600;
+            color: var(--color-success);
+        }
+        
+        .hero-stat-label {
+            font-size: var(--font-size-xs);
+            color: var(--color-text-muted);
+            margin-top: var(--spacing-xs);
+            text-transform: uppercase;
+        }
+        
+        /* 导航目录 */
+        .toc-section {
+            padding: var(--spacing-xl) 0;
+            background: var(--color-bg-table-header);
+        }
+        
+        .toc-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: var(--spacing-md);
+        }
+        
+        .toc-card {
+            background: var(--color-bg-card);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-md);
+            text-decoration: none;
+            color: inherit;
+            transition: var(--transition-normal);
+            border: 1px solid var(--color-border-light);
+            position: relative;
+            overflow: hidden;
+            box-shadow: var(--shadow-card);
+        }
+        
+        .toc-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--gradient-success);
+            transform: scaleX(0);
+            transition: var(--transition-normal);
+        }
+        
+        .toc-card:hover {
+            transform: translateY(-4px);
+            border-color: var(--color-success);
+            box-shadow: var(--shadow-md);
+        }
+        
+        .toc-card:hover::before {
+            transform: scaleX(1);
+        }
+        
+        .toc-number {
+            font-family: var(--font-mono);
+            font-size: var(--font-size-2xl);
+            font-weight: 600;
+            color: var(--color-border);
+            position: absolute;
+            top: var(--spacing-md);
+            right: var(--spacing-lg);
+        }
+        
+        .toc-icon {
+            font-size: 2rem;
+            margin-bottom: var(--spacing-sm);
+            display: inline-block;
+        }
+        
+        .toc-card h3 {
+            font-size: var(--font-size-base);
+            margin-bottom: var(--spacing-sm);
+            color: var(--color-text-primary);
+        }
+        
+        .toc-card p {
+            color: var(--color-text-secondary);
+            font-size: var(--font-size-sm);
+            line-height: 1.5;
+        }
+        
+        .toc-card .toc-funny {
+            display: block;
+            margin-top: var(--spacing-sm);
+            font-size: var(--font-size-xs);
+            color: var(--color-success);
+            font-weight: 500;
+        }
+        
+        /* 开场白卡片特殊样式 */
+        .intro-card {
+            background: var(--color-bg-card);
+            border: 1px solid var(--color-border-light);
+            box-shadow: var(--shadow-card);
+        }
+        
+        .intro-card p {
+            color: var(--color-text-secondary);
+        }
+        
+        .intro-card strong {
+            color: var(--color-success);
+        }
+        
+        .intro-card ul {
+            list-style: none;
+            padding-left: 0;
+        }
+        
+        .intro-card ul li {
+            color: var(--color-text-secondary);
+            padding: var(--spacing-xs) 0;
+        }
+        
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: var(--font-size-xl);
+            }
+            
+            .hero-stats {
+                gap: var(--spacing-lg);
+            }
+            
+            .hero-stat-value {
+                font-size: var(--font-size-xl);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 导航 -->
+    <nav class="nav">
+        <div class="container nav-container">
+            <a href="#" class="nav-logo">
+                <span>📊</span>
+                <span>字节AI开挂指南</span>
+            </a>
+            <ul class="nav-links">
+                <li><a href="#toc">目录</a></li>
+                <li><a href="pages/ai-history.html">AI三国杀</a></li>
+                <li><a href="pages/bytedance-ai.html">字节AI布局</a></li>
+                <li><a href="pages/agent-infra.html">Agent调优</a></li>
+                <li><a href="pages/security-practice.html">安全合规</a></li>
+                <li><a href="pages/finance-insights.html">金融启示</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Hero区域 -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <div class="hero-badge">
+                    <span>2026年2月最新研究</span>
+                </div>
+                
+                <h1 class="hero-title">
+                    字节跳动 <span class="highlight">AI "开挂"</span> 指南
+                </h1>
+                
+                <p class="hero-subtitle">
+                    从"很多人以为字节只是做视频的"到"<span class="funny">原来字节的AI布局这么深</span>"<br>
+                    一份带你看懂字节AI全栈布局的<span class="funny">轻松向</span>研究报告
+                </p>
+                
+                <div class="hero-cta">
+                    <a href="#toc" class="btn btn-primary">
+                        <span>开始探索</span>
+                        <span>→</span>
+                    </a>
+                    <a href="pages/finance-insights.html" class="btn btn-secondary">
+                        <span>金融行业启示</span>
+                        <span>💰</span>
+                    </a>
+                </div>
+                
+                <div class="hero-stats">
+                    <div class="hero-stat">
+                        <div class="hero-stat-value">2.27亿</div>
+                        <div class="hero-stat-label">豆包月活用户</div>
+                    </div>
+                    <div class="hero-stat">
+                        <div class="hero-stat-value">2000+</div>
+                        <div class="hero-stat-label">内部团队接入</div>
+                    </div>
+                    <div class="hero-stat">
+                        <div class="hero-stat-value">50+</div>
+                        <div class="hero-stat-label">官方评估器</div>
+                    </div>
+                    <div class="hero-stat">
+                        <div class="hero-stat-value">IMO银牌</div>
+                        <div class="hero-stat-label">Seed数学推理</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 目录导航 -->
+    <section class="toc-section" id="toc">
+        <div class="container">
+            <div class="section-header">
+                <h2>📚 本指南包含以下<span class="text-gradient">硬核内容</span></h2>
+                <p>（放心，每一章都会用人话讲清楚，拒绝"八股文"式的技术报告）</p>
+            </div>
+            
+            <div class="toc-grid">
+                <a href="pages/ai-history.html" class="toc-card">
+                    <span class="toc-number">01</span>
+                    <div class="toc-icon">🌍</div>
+                    <h3>AI行业的前世今生与三国杀</h3>
+                    <p>海外OpenAI、Anthropic、Google打得火热，国内谁在闷声发大财？</p>
+                    <span class="toc-funny">（含全球AI格局 + 国内玩家对比分析）</span>
+                </a>
+                
+                <a href="pages/bytedance-ai.html" class="toc-card">
+                    <span class="toc-number">02</span>
+                    <div class="toc-icon">🚀</div>
+                    <h3>字节的AI逆袭与全栈布局</h3>
+                    <p>从"推荐算法很厉害"到"全栈AI巨头"的华丽转身</p>
+                    <span class="toc-funny">（附：从芯片到应用的完整技术栈）</span>
+                </a>
+                
+                <a href="pages/agent-infra.html" class="toc-card">
+                    <span class="toc-number">03</span>
+                    <div class="toc-icon">🤖</div>
+                    <h3>Agent Infra与调优实践</h3>
+                    <p>Eino、扣子罗盘……评测/观测/调优三件套详解</p>
+                    <span class="toc-funny">（含豆包、Trae等明星产品调优案例）</span>
+                </a>
+                
+                <a href="pages/security-practice.html" class="toc-card">
+                    <span class="toc-number">04</span>
+                    <div class="toc-icon">🛡️</div>
+                    <h3>安全合规与业务实践</h3>
+                    <p>如何让AI既能干活又不闯祸？字节的四层防护体系</p>
+                    <span class="toc-funny">（含Seedance 2.0等明星产品案例）</span>
+                </a>
+                
+                <a href="pages/finance-insights.html" class="toc-card">
+                    <span class="toc-number">05</span>
+                    <div class="toc-icon">💰</div>
+                    <h3>私募金融AI转型启示</h3>
+                    <p>字节的AI布局对金融行业有啥启发？怎么抄作业？</p>
+                    <span class="toc-funny">（一份可落地的AI转型路线图）</span>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- 开场白 -->
+    <section class="section">
+        <div class="container">
+            <div class="card intro-card max-w-900 mx-auto">
+                <div class="funny-bubble joke">
+                    <strong>写在前面：</strong>
+                    <p class="mt-sm">
+                        如果你曾经以为字节跳动只是一家"做短视频的公司"，那恭喜你，<br>
+                        你即将被这份报告<strong>彻底颠覆认知</strong>。
+                    </p>
+                </div>
+                
+                <p class="mt-lg" style="line-height: 1.9;">
+                    2023年，当大家还在讨论"ChatGPT能不能替代人类"的时候，字节悄悄组建了Seed团队；<br>
+                    2024年，当同行还在"调参调到头秃"的时候，字节的豆包已经开始疯狂吸粉；<br>
+                    2025年，当行业还在卷大模型的时候，字节已经把Agent基础设施建成了一套"全家桶"；<br>
+                    2026年2月，Seedance 2.0发布，<strong>复杂运动场景生成SOTA</strong>，直接让竞争对手连夜加班。
+                </p>
+                
+                <p class="mt-md" style="line-height: 1.9;">
+                    这份报告将带你深入了解：
+                </p>
+                
+                <ul class="mt-md" style="padding-left: 24px; line-height: 2.2;">
+                    <li>🌍 AI行业的"三国杀"：海外OpenAI、Anthropic、Google打得火热，国内谁在闷声发大财？</li>
+                    <li>🚀 字节是怎么从"推荐算法"一路打到"全栈AI"的？</li>
+                    <li>🤖 什么是Agent Infra？字节的明星产品是怎么做调优的？</li>
+                    <li>🛡️ 如何让AI既能干活又不闯祸？</li>
+                    <li>💰 私募金融行业怎么搭上AI这班车？（别担心，有落地方案）</li>
+                </ul>
+                
+                <div class="text-center mt-xl">
+                    <a href="pages/ai-history.html" class="btn btn-primary">
+                        <span>开始第一章</span>
+                        <span>→</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 页脚 -->
+    <footer class="footer">
+        <div class="container">
+            <h3>📊 字节跳动AI"开挂"指南</h3>
+            <div class="footer-links">
+                <a href="pages/ai-history.html">AI三国杀</a>
+                <a href="pages/bytedance-ai.html">字节AI布局</a>
+                <a href="pages/agent-infra.html">Agent调优</a>
+                <a href="pages/security-practice.html">安全合规</a>
+                <a href="pages/finance-insights.html">金融启示</a>
+            </div>
+            <div class="footer-bottom">
+                <p>数据来源：火山引擎官方文档、字节跳动Seed官网、扣子罗盘文档、公开技术分享</p>
+                <p>更新时间：2026年2月 | 纯属技术研究，如有雷同，说明大家都很努力</p>
+            </div>
+        </div>
+    </footer>
+
+    <script defer>
+        // 滚动动画
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach((entry, index) => {
+                if (entry.isIntersecting) {
+                    entry.target.style.animationDelay = `${index * 0.1}s`;
+                    entry.target.classList.add('animate-in');
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.toc-card, .card').forEach(el => {
+            el.style.opacity = '0';
+            observer.observe(el);
+        });
+        
+        // 导航栏滚动效果 - 使用节流优化
+        let ticking = false;
+        window.addEventListener('scroll', () => {
+            if (!ticking) {
+                window.requestAnimationFrame(() => {
+                    const nav = document.querySelector('.nav');
+                    if (window.scrollY > 100) {
+                        nav.style.background = 'rgba(255, 255, 255, 0.98)';
+                        nav.style.boxShadow = '0 1px 3px rgba(0, 0, 0, 0.1)';
+                    } else {
+                        nav.style.background = 'rgba(255, 255, 255, 0.95)';
+                        nav.style.boxShadow = 'none';
+                    }
+                    ticking = false;
+                });
+                ticking = true;
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,2496 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agent基础设施揭秘 - 字节AI开挂指南</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="dns-prefetch" href="https://fonts.googleapis.com">
+    <link rel="dns-prefetch" href="https://fonts.gstatic.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="preload" href="../css/styles.min.css" as="style">
+    <link rel="stylesheet" href="../css/styles.min.css">
+    <style>
+        /* 核心概念区 */
+        .concept-section {
+            padding: var(--spacing-xl) 0;
+            background: var(--color-bg-table-header);
+        }
+        
+        .concept-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: var(--spacing-lg);
+        }
+        
+        @media (max-width: 900px) {
+            .concept-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .concept-card {
+            background: var(--color-bg-card);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            border: 1px solid var(--color-border-light);
+            box-shadow: var(--shadow-card);
+        }
+        
+        .concept-header {
+            padding: var(--spacing-lg);
+            color: var(--color-text-primary);
+        }
+        
+        .concept-card:nth-child(1) .concept-header {
+            background: var(--color-info-subtle);
+            border-bottom: 2px solid var(--color-info);
+        }
+        
+        .concept-card:nth-child(2) .concept-header {
+            background: rgba(130, 80, 223, 0.1);
+            border-bottom: 2px solid #8250DF;
+        }
+        
+        .concept-header h3 {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            margin-bottom: var(--spacing-xs);
+            color: var(--color-text-primary);
+        }
+        
+        .concept-header p {
+            color: var(--color-text-secondary);
+            font-size: var(--font-size-sm);
+        }
+        
+        .concept-body {
+            padding: var(--spacing-lg);
+        }
+        
+        .framework-list {
+            list-style: none;
+        }
+        
+        .framework-item {
+            padding: var(--spacing-sm) 0;
+            border-bottom: 1px solid var(--color-border-light);
+        }
+        
+        .framework-item:last-child {
+            border-bottom: none;
+        }
+        
+        .framework-name {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            font-weight: 600;
+            color: var(--color-text-primary);
+            margin-bottom: 4px;
+        }
+        
+        .framework-name .tag {
+            font-size: var(--font-size-xs);
+            padding: 2px 8px;
+        }
+        
+        .framework-desc {
+            font-size: var(--font-size-sm);
+            color: var(--color-text-secondary);
+        }
+        
+        /* 评测观测调优 */
+        .trio-section {
+            padding: var(--spacing-xl) 0;
+            background: var(--color-bg);
+        }
+        
+        .trio-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: var(--spacing-md);
+        }
+        
+        @media (max-width: 900px) {
+            .trio-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .trio-card {
+            background: var(--color-bg-card);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-lg);
+            text-align: center;
+            transition: var(--transition-normal);
+            cursor: pointer;
+            border: 1px solid var(--color-border-light);
+            box-shadow: var(--shadow-card);
+        }
+        
+        .trio-card:hover {
+            border-color: var(--color-success);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+        
+        .trio-card.active {
+            border-color: var(--color-success);
+            background: rgba(26, 127, 55, 0.05);
+        }
+        
+        .trio-icon {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin: 0 auto var(--spacing-md);
+        }
+        
+        .trio-card:nth-child(1) .trio-icon {
+            background: linear-gradient(135deg, #1A7F37 0%, #2DA44E 100%);
+        }
+        .trio-card:nth-child(2) .trio-icon {
+            background: linear-gradient(135deg, #0969DA 0%, #0550AE 100%);
+        }
+        .trio-card:nth-child(3) .trio-icon {
+            background: linear-gradient(135deg, #BF8700 0%, #9A6700 100%);
+        }
+        
+        .trio-card h3 {
+            margin-bottom: var(--spacing-sm);
+        }
+        
+        .trio-card > p {
+            color: var(--color-text-secondary);
+            font-size: var(--font-size-sm);
+            margin-bottom: var(--spacing-md);
+        }
+        
+        .trio-details {
+            display: none;
+            text-align: left;
+            padding-top: var(--spacing-md);
+            border-top: 1px solid var(--color-border-light);
+            margin-top: var(--spacing-md);
+        }
+        
+        .trio-card.active .trio-details {
+            display: block;
+        }
+        
+        .trio-details ul {
+            list-style: none;
+        }
+        
+        .trio-details li {
+            padding: var(--spacing-xs) 0;
+            font-size: var(--font-size-sm);
+            color: var(--color-text-secondary);
+            display: flex;
+            align-items: flex-start;
+            gap: var(--spacing-sm);
+        }
+        
+        .trio-details li::before {
+            content: '→';
+            color: var(--color-success);
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+        
+        .click-hint {
+            font-size: var(--font-size-xs);
+            color: var(--color-text-muted);
+        }
+        
+        /* 评估器展示 */
+        .evaluator-section {
+            padding: var(--spacing-xl) 0;
+            background: var(--color-bg-table-header);
+        }
+        
+        .evaluator-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: var(--spacing-sm);
+        }
+        
+        @media (max-width: 1024px) {
+            .evaluator-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        @media (max-width: 600px) {
+            .evaluator-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .evaluator-item {
+            background: var(--color-bg-card);
+            border: 1px solid var(--color-border-light);
+            border-radius: var(--radius-md);
+            padding: var(--spacing-md);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            transition: var(--transition-normal);
+            cursor: pointer;
+            box-shadow: var(--shadow-card);
+        }
+        
+        .evaluator-item:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+            border-color: var(--color-success);
+        }
+        
+        .evaluator-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: var(--radius-sm);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            flex-shrink: 0;
+        }
+        
+        .evaluator-item:nth-child(4n+1) .evaluator-icon { background: #DBEAFE; }
+        .evaluator-item:nth-child(4n+2) .evaluator-icon { background: #D1FAE5; }
+        .evaluator-item:nth-child(4n+3) .evaluator-icon { background: #FEF3C7; }
+        .evaluator-item:nth-child(4n) .evaluator-icon { background: #FCE7F3; }
+        
+        .evaluator-info h4 {
+            font-size: var(--font-size-sm);
+            margin-bottom: 2px;
+        }
+        
+        .evaluator-info p {
+            font-size: var(--font-size-xs);
+            color: var(--color-text-muted);
+        }
+        
+        /* Badcase调优流程 */
+        .workflow-section {
+            padding: var(--spacing-xl) 0;
+            background: var(--color-bg);
+        }
+        
+        .workflow-steps {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: var(--spacing-md);
+            margin-top: var(--spacing-lg);
+            position: relative;
+        }
+        
+        @media (max-width: 900px) {
+            .workflow-steps {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+        
+        .workflow-steps::before {
+            content: '';
+            position: absolute;
+            top: 32px;
+            left: 60px;
+            right: 60px;
+            height: 3px;
+            background: linear-gradient(90deg, var(--color-success) 0%, var(--color-info) 50%, #8250DF 100%);
+            border-radius: var(--radius-full);
+        }
+        
+        @media (max-width: 900px) {
+            .workflow-steps::before {
+                display: none;
+            }
+        }
+        
+        .workflow-step {
+            flex: 1;
+            text-align: center;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .step-circle {
+            width: 64px;
+            height: 64px;
+            background: var(--gradient-success);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin: 0 auto var(--spacing-md);
+            color: white;
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .step-content h4 {
+            font-size: var(--font-size-base);
+            margin-bottom: var(--spacing-xs);
+        }
+        
+        .step-content p {
+            font-size: var(--font-size-sm);
+            color: var(--color-text-muted);
+            max-width: 180px;
+            margin: 0 auto;
+        }
+        
+        /* 实践案例预览 */
+        .practice-preview {
+            padding: var(--spacing-xl) 0;
+            background: var(--color-bg-table-header);
+        }
+        
+        .practice-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: var(--spacing-lg);
+        }
+        
+        @media (max-width: 900px) {
+            .practice-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .practice-card {
+            background: var(--color-bg-card);
+            border: 1px solid var(--color-border-light);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-lg);
+            box-shadow: var(--shadow-card);
+            transition: var(--transition-normal);
+        }
+        
+        .practice-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+            border-color: var(--color-success);
+        }
+        
+        .practice-header {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+            margin-bottom: var(--spacing-md);
+        }
+        
+        .practice-logo {
+            width: 48px;
+            height: 48px;
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+        
+        .practice-card:nth-child(1) .practice-logo { background: linear-gradient(135deg, #0969DA 0%, #0550AE 100%); }
+        .practice-card:nth-child(2) .practice-logo { background: linear-gradient(135deg, #8250DF 0%, #6639BA 100%); }
+        
+        .practice-header h3 {
+            margin-bottom: 4px;
+        }
+        
+        .practice-header .tag {
+            font-size: var(--font-size-xs);
+        }
+        
+        .practice-body p {
+            color: var(--color-text-secondary);
+            margin-bottom: var(--spacing-md);
+        }
+        
+        .practice-stats {
+            display: flex;
+            gap: var(--spacing-lg);
+            margin-bottom: var(--spacing-md);
+        }
+        
+        .practice-stat .value {
+            font-size: var(--font-size-xl);
+            font-weight: 600;
+            color: var(--color-success);
+        }
+        
+        .practice-stat .label {
+            font-size: var(--font-size-xs);
+            color: var(--color-text-muted);
+        }
+    </style>
+</head>
+<body>
+    <!-- 导航 -->
+    <nav class="nav">
+        <div class="container nav-container">
+            <a href="../home.html" class="nav-logo">
+                <span>📊</span>
+                <span>字节AI开挂指南</span>
+            </a>
+            <ul class="nav-links">
+                <li><a href="../home.html">首页</a></li>
+                <li><a href="ai-history.html">AI三国杀</a></li>
+                <li><a href="bytedance-ai.html">字节AI布局</a></li>
+                <li><a href="agent-infra.html" class="active">Agent调优</a></li>
+                <li><a href="security-practice.html">安全合规</a></li>
+                <li><a href="finance-insights.html">金融启示</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- 页面头部 -->
+    <section class="page-hero">
+        <div class="container">
+            <h1>🤖 Agent基础设施<span style="color: var(--color-success);">揭秘</span></h1>
+            <p>Eino、扣子罗盘、AgentKit……这些都是什么？能吃吗？（不能，但能让AI更好用）</p>
+        </div>
+    </section>
+
+    <!-- 什么是Agent Infra -->
+    <section class="section" style="background: var(--bg-main);">
+        <div class="container">
+            <div class="section-header">
+                <h2>🤔 首先，什么是 Agent Infra？</h2>
+                <p>（别急，先让你搞懂这个概念）</p>
+            </div>
+            
+            <div class="card" style="max-width: 900px; margin: 0 auto;">
+                <div class="funny-bubble">
+                    <strong>一句话解释：</strong>
+                    <p style="margin-top: 8px;">
+                        如果说<strong>大模型</strong>是AI的"大脑"，那<strong>Agent Infra</strong>就是AI的"神经系统+感官+四肢"。
+                        大脑再聪明，没有这些配套设施，也只能躺着想想而已。
+                    </p>
+                </div>
+                
+                <div style="margin-top: 24px;">
+                    <h4 style="margin-bottom: 16px;">Agent Infra 包含两大部分：</h4>
+                    <div class="grid-2">
+                        <div style="background: rgba(255, 255, 255, 0.08); padding: 20px; border-radius: var(--radius-md); border: 1px solid var(--border-color);">
+                            <h5 style="margin-bottom: 8px; display: flex; align-items: center; gap: 8px;">
+                                <span>🛠️</span> Agent Dev（开发框架）
+                            </h5>
+                            <p style="font-size: 0.9rem; color: var(--text-secondary);">
+                                帮你<strong>造</strong>AI Agent的工具，包括代码框架、低代码平台、工具集成等
+                            </p>
+                        </div>
+                        <div style="background: rgba(255, 255, 255, 0.08); padding: 20px; border-radius: var(--radius-md); border: 1px solid var(--border-color);">
+                            <h5 style="margin-bottom: 8px; display: flex; align-items: center; gap: 8px;">
+                                <span>📊</span> AgentOps（运维平台）
+                            </h5>
+                            <p style="font-size: 0.9rem; color: var(--text-secondary);">
+                                帮你<strong>养</strong>AI Agent的平台，包括评测、观测、调优三件套
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="joke-insert" style="margin-top: 24px;">
+                    <div class="emoji">🎯</div>
+                    <div class="content">
+                        <div class="title">为什么Agent Infra这么重要？</div>
+                        <div class="text">因为"调一个能跑的Agent"只需要1天，但"调一个能上线的Agent"可能需要1个月。差距在哪？就在Agent Infra。</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 核心框架介绍 -->
+    <section class="concept-section">
+        <div class="container">
+            <div class="section-header">
+                <h2>🛠️ 字节的Agent Infra全家桶</h2>
+                <p>两大阵营：开发框架 + 运维平台</p>
+            </div>
+            
+            <div class="concept-grid">
+                <div class="concept-card">
+                    <div class="concept-header">
+                        <h3><span>🛠️</span> Agent Dev 开发框架</h3>
+                        <p>从零到一构建AI Agent的技术底座</p>
+                    </div>
+                    <div class="concept-body">
+                        <ul class="framework-list">
+                            <li class="framework-item">
+                                <div class="framework-name">
+                                    Eino
+                                    <span class="tag tag-fire">开源</span>
+                                    <span class="tag tag-ocean">Go语言</span>
+                                </div>
+                                <p class="framework-desc">字节内部首选开发框架，豆包/抖音/扣子等数百个服务已接入，已开源于CloudWeGo</p>
+                            </li>
+                            <li class="framework-item">
+                                <div class="framework-name">
+                                    veADK
+                                    <span class="tag tag-purple">企业级</span>
+                                </div>
+                                <p class="framework-desc">Agent Development Kit，代码优先开发理念，完整开发生命周期支持</p>
+                            </li>
+                            <li class="framework-item">
+                                <div class="framework-name">
+                                    扣子开发平台
+                                    <span class="tag tag-emerald">低代码</span>
+                                </div>
+                                <p class="framework-desc">可视化Agent构建，拖拽式搭建，适合快速原型验证和非技术人员</p>
+                            </li>
+                            <li class="framework-item">
+                                <div class="framework-name">
+                                    veCLI
+                                    <span class="tag tag-ocean">命令行</span>
+                                </div>
+                                <p class="framework-desc">命令行AI Agent，让AI直接在Terminal里干活</p>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="concept-card">
+                    <div class="concept-header">
+                        <h3><span>📊</span> AgentOps 运维平台</h3>
+                        <p>让AI Agent持续进化的评测·观测·调优平台</p>
+                    </div>
+                    <div class="concept-body">
+                        <ul class="framework-list">
+                            <li class="framework-item">
+                                <div class="framework-name">
+                                    扣子罗盘 (CozeLoop)
+                                    <span class="tag tag-fire">核心</span>
+                                </div>
+                                <p class="framework-desc">新一代AI Agent智能调优平台，提供全生命周期的评测、观测、调优能力</p>
+                            </li>
+                            <li class="framework-item">
+                                <div class="framework-name">
+                                    AgentKit Evaluation
+                                    <span class="tag tag-purple">企业级</span>
+                                </div>
+                                <p class="framework-desc">源自豆包、Seed等2000+内部团队的同款评测能力，50+官方评估器</p>
+                            </li>
+                            <li class="framework-item">
+                                <div class="framework-name">
+                                    Trace 观测系统
+                                    <span class="tag tag-ocean">可视化</span>
+                                </div>
+                                <p class="framework-desc">全链路追踪，Token消耗分析，耗时统计，无感透明注入</p>
+                            </li>
+                            <li class="framework-item">
+                                <div class="framework-name">
+                                    实验管理
+                                    <span class="tag tag-emerald">A/B测试</span>
+                                </div>
+                                <p class="framework-desc">多版本对比，迭代效果量化比对，数据驱动决策</p>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 评测观测调优三件套 -->
+    <section class="trio-section">
+        <div class="container">
+            <div class="section-header">
+                <h2>📋 评测·观测·调优 三件套</h2>
+                <p>让AI Agent效果可量化、可追踪、可优化（点击卡片展开详情）</p>
+            </div>
+            
+            <div class="trio-grid">
+                <div class="trio-card" onclick="toggleTrioCard(this)">
+                    <div class="trio-icon">📋</div>
+                    <h3>评测 (Evaluation)</h3>
+                    <p>AI Agent到底好不好？用数据说话</p>
+                    <span class="click-hint">点击展开详情 →</span>
+                    <div class="trio-details">
+                        <ul>
+                            <li><strong>离线评测</strong>：评测集+评估器+实验管理三元组，系统化评估</li>
+                            <li><strong>在线评测</strong>：基于Trace自动采样，实时监控线上质量</li>
+                            <li><strong>50+官方评估器</strong>：内容质量、工具调用准确性、响应时效等维度</li>
+                            <li><strong>自定义评估器</strong>：支持业务定制评估标准</li>
+                            <li><strong>实验管理</strong>：多版本对比、A/B测试，迭代效果可量化</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="trio-card" onclick="toggleTrioCard(this)">
+                    <div class="trio-icon">👁️</div>
+                    <h3>观测 (Observability)</h3>
+                    <p>AI Agent在干嘛？每一步都看得见</p>
+                    <span class="click-hint">点击展开详情 →</span>
+                    <div class="trio-details">
+                        <ul>
+                            <li><strong>Trace全链路追踪</strong>：端到端调用链路可视化</li>
+                            <li><strong>Token消耗分析</strong>：成本监控与优化建议</li>
+                            <li><strong>耗时统计</strong>：各环节延迟分析，瓶颈定位</li>
+                            <li><strong>无感透明注入</strong>：兼容主流开发框架，不侵入业务代码</li>
+                            <li><strong>ChatUI调试</strong>：调试时实时Trace展示</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="trio-card" onclick="toggleTrioCard(this)">
+                    <div class="trio-icon">🎯</div>
+                    <h3>调优 (Optimization)</h3>
+                    <p>AI Agent不行？数据驱动持续优化</p>
+                    <span class="click-hint">点击展开详情 →</span>
+                    <div class="trio-details">
+                        <ul>
+                            <li><strong>Badcase发现</strong>：自动识别表现不佳的场景</li>
+                            <li><strong>根因分析</strong>：定位是模型问题还是Prompt问题</li>
+                            <li><strong>Prompt优化</strong>：基于评测数据优化提示词</li>
+                            <li><strong>模型精调</strong>：针对性微调训练</li>
+                            <li><strong>多版本对比</strong>：优化前后效果量化比对</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- =============================================== -->
+    <!-- 🆕 Agent全生命周期：从0到1开发Agent -->
+    <!-- =============================================== -->
+    <section class="section" style="background: linear-gradient(135deg, #EFF6FF 0%, #FFFFFF 100%);">
+        <div class="container">
+            <div class="section-header">
+                <h2>🚀 实战：从0到1开发一个Agent</h2>
+                <p>以"智能客服Agent"为例，看看三种开发方案怎么选</p>
+            </div>
+            
+            <!-- 案例背景 -->
+            <div class="card" style="max-width: 900px; margin: 0 auto 40px; background: var(--color-bg-table-header); border: 1px solid var(--color-border-light); color: var(--color-text-primary);">
+                <div style="display: flex; align-items: center; gap: 20px; flex-wrap: wrap;">
+                    <div style="font-size: 3rem;">🎯</div>
+                    <div style="flex: 1; min-width: 200px;">
+                        <h3 style="margin-bottom: 8px; color: var(--color-success);">案例背景：电商智能客服Agent</h3>
+                        <p style="color: var(--color-text-secondary); font-size: 0.95rem;">
+                            需求：搭建一个能回答"订单查询、退换货政策、商品推荐"的智能客服。<br>
+                            目标：7×24小时自动回复，减少80%人工客服量。
+                        </p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 三种开发方案对比 -->
+            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--spacing-md); margin-bottom: var(--spacing-xl);">
+                <!-- 零码方案 -->
+                <div class="card" style="border-top: 4px solid #10B981; position: relative;">
+                    <div style="position: absolute; top: -12px; right: 16px; background: #10B981; color: white; padding: 4px 12px; border-radius: 12px; font-size: var(--font-size-xs); font-weight: 600;">推荐新手</div>
+                    <div style="text-align: center; margin-bottom: 20px;">
+                        <div style="font-size: 2.5rem; margin-bottom: 8px;">🎨</div>
+                        <h3 style="color: #047857;">零码方案</h3>
+                        <p style="font-size: 0.85rem; color: var(--gray-500);">扣子平台可视化搭建</p>
+                    </div>
+                    
+                    <div style="background: var(--gray-100); border-radius: 8px; padding: 16px; margin-bottom: 16px;">
+                        <div style="font-size: 0.85rem; color: var(--gray-600);">
+                            <strong>适合人群：</strong>产品经理、运营、非技术人员<br>
+                            <strong>开发时间：</strong>2-4小时<br>
+                            <strong>技术门槛：</strong>⭐（会用PPT就行）
+                        </div>
+                    </div>
+                    
+                    <h4 style="font-size: 0.9rem; margin-bottom: 12px;">📋 操作步骤：</h4>
+                    <ol style="font-size: 0.85rem; color: var(--gray-700); padding-left: 20px;">
+                        <li style="padding: 6px 0;">登录扣子平台 → 创建新Bot</li>
+                        <li style="padding: 6px 0;">设置人设Prompt："你是XX电商客服……"</li>
+                        <li style="padding: 6px 0;">上传知识库（产品手册、FAQ文档）</li>
+                        <li style="padding: 6px 0;">配置工具插件（订单查询API）</li>
+                        <li style="padding: 6px 0;">测试对话 → 一键发布</li>
+                    </ol>
+                    
+                    <div style="margin-top: 16px; padding: 12px; background: #D1FAE5; border-radius: 8px; font-size: 0.85rem;">
+                        ✅ <strong>优势：</strong>上手快、迭代快、不需要写代码
+                    </div>
+                </div>
+                
+                <!-- 低码方案 -->
+                <div class="card" style="border-top: 4px solid #3B82F6;">
+                    <div style="text-align: center; margin-bottom: 20px;">
+                        <div style="font-size: 2.5rem; margin-bottom: 8px;">🧩</div>
+                        <h3 style="color: #1D4ED8;">低码方案</h3>
+                        <p style="font-size: 0.85rem; color: var(--gray-500);">扣子工作流 + 少量代码</p>
+                    </div>
+                    
+                    <div style="background: var(--gray-100); border-radius: 8px; padding: 16px; margin-bottom: 16px;">
+                        <div style="font-size: 0.85rem; color: var(--gray-600);">
+                            <strong>适合人群：</strong>有编程基础的产品/运营<br>
+                            <strong>开发时间：</strong>1-2天<br>
+                            <strong>技术门槛：</strong>⭐⭐（会写简单脚本）
+                        </div>
+                    </div>
+                    
+                    <h4 style="font-size: 0.9rem; margin-bottom: 12px;">📋 操作步骤：</h4>
+                    <ol style="font-size: 0.85rem; color: var(--gray-700); padding-left: 20px;">
+                        <li style="padding: 6px 0;">创建工作流，拖拽添加节点</li>
+                        <li style="padding: 6px 0;">配置"意图识别"节点（用LLM分类）</li>
+                        <li style="padding: 6px 0;">添加条件分支（订单/退换/推荐）</li>
+                        <li style="padding: 6px 0;">编写自定义函数（调用订单系统API）</li>
+                        <li style="padding: 6px 0;">连接知识库节点 → 测试发布</li>
+                    </ol>
+                    
+                    <div style="margin-top: 16px; padding: 12px; background: #DBEAFE; border-radius: 8px; font-size: 0.85rem;">
+                        ✅ <strong>优势：</strong>可视化+代码结合，灵活度更高
+                    </div>
+                </div>
+                
+                <!-- 全码方案 -->
+                <div class="card" style="border-top: 4px solid #8B5CF6;">
+                    <div style="text-align: center; margin-bottom: 20px;">
+                        <div style="font-size: 2.5rem; margin-bottom: 8px;">💻</div>
+                        <h3 style="color: #8B5CF6;">全码方案</h3>
+                        <p style="font-size: 0.85rem; color: var(--gray-500);">Eino框架 / veADK</p>
+                    </div>
+                    
+                    <div style="background: var(--gray-100); border-radius: 8px; padding: 16px; margin-bottom: 16px;">
+                        <div style="font-size: 0.85rem; color: var(--gray-600);">
+                            <strong>适合人群：</strong>研发工程师<br>
+                            <strong>开发时间：</strong>3-7天<br>
+                            <strong>技术门槛：</strong>⭐⭐⭐⭐（熟悉Go/Python）
+                        </div>
+                    </div>
+                    
+                    <h4 style="font-size: 0.9rem; margin-bottom: 12px;">📋 操作步骤：</h4>
+                    <ol style="font-size: 0.85rem; color: var(--gray-700); padding-left: 20px;">
+                        <li style="padding: 6px 0;">安装Eino框架，初始化项目</li>
+                        <li style="padding: 6px 0;">定义Agent结构、工具、记忆</li>
+                        <li style="padding: 6px 0;">实现订单查询、推荐等Tool函数</li>
+                        <li style="padding: 6px 0;">配置RAG知识库检索</li>
+                        <li style="padding: 6px 0;">部署服务 → 接入扣子罗盘监控</li>
+                    </ol>
+                    
+                    <div style="margin-top: 16px; padding: 12px; background: #EDE9FE; border-radius: 8px; font-size: 0.85rem;">
+                        ✅ <strong>优势：</strong>完全可控、性能最优、可深度定制
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 方案选择决策树 -->
+            <div class="card" style="max-width: 900px; margin: 0 auto;">
+                <h3 style="margin-bottom: 20px; display: flex; align-items: center; gap: 12px;">
+                    <span>🤔</span> 我该选哪个方案？
+                </h3>
+                <div style="background: var(--gray-100); border-radius: 12px; padding: var(--spacing-md);">
+                    <!-- 决策树图示 -->
+                    <div style="display: flex; flex-direction: column; gap: 16px;">
+                        <div style="display: flex; align-items: center; gap: 16px;">
+                            <div style="background: #FEF3C7; padding: 12px 20px; border-radius: 8px; font-weight: 600;">
+                                ❓ 你会写代码吗？
+                            </div>
+                        </div>
+                        <div style="display: flex; gap: 40px; padding-left: 40px;">
+                            <div style="flex: 1;">
+                                <div style="color: #DC2626; font-weight: 600; margin-bottom: 8px;">❌ 不会</div>
+                                <div style="background: #D1FAE5; padding: 12px; border-radius: 8px; text-align: center;">
+                                    👉 选<strong>零码方案</strong>（扣子平台）
+                                </div>
+                            </div>
+                            <div style="flex: 1;">
+                                <div style="color: #047857; font-weight: 600; margin-bottom: 8px;">✅ 会</div>
+                                <div style="background: #FEF3C7; padding: 12px; border-radius: 8px;">
+                                    ❓ 需要高度定制吗？
+                                </div>
+                                <div style="display: flex; gap: 16px; margin-top: 12px;">
+                                    <div style="flex: 1; background: #DBEAFE; padding: 10px; border-radius: 8px; text-align: center; font-size: 0.85rem;">
+                                        <div style="color: #DC2626; font-weight: 600;">❌</div>
+                                        👉 <strong>低码</strong>
+                                    </div>
+                                    <div style="flex: 1; background: #EDE9FE; padding: 10px; border-radius: 8px; text-align: center; font-size: 0.85rem;">
+                                        <div style="color: #047857; font-weight: 600;">✅</div>
+                                        👉 <strong>全码</strong>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="joke-insert" style="margin-top: 24px;">
+                    <div class="emoji">💡</div>
+                    <div class="content">
+                        <div class="title">实际建议</div>
+                        <div class="text">先用零码方案快速验证想法（1天出Demo），验证可行后再根据需求决定是否升级到低码或全码方案。别一上来就造轮子！</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- =============================================== -->
+    <!-- 🆕 Agent调优全流程：离线评测 + 在线评测 -->
+    <!-- =============================================== -->
+    <section class="section" style="background: var(--white);">
+        <div class="container">
+            <div class="section-header">
+                <h2>🔬 实战：Agent调优全流程</h2>
+                <p>从"能跑"到"能上线"，评测是关键</p>
+            </div>
+            
+            <!-- Agent生命周期全流程图 -->
+            <div class="card" style="margin-bottom: var(--spacing-xl); padding: var(--spacing-lg);">
+                <h3 style="text-align: center; margin-bottom: var(--spacing-md);">📊 Agent全生命周期流程图</h3>
+                <div style="display: flex; align-items: center; justify-content: center; gap: 8px; flex-wrap: wrap; margin-bottom: var(--spacing-md);">
+                    <div style="background: linear-gradient(135deg, #3B82F6 0%, #1D4ED8 100%); color: white; padding: 12px 20px; border-radius: 8px; text-align: center;">
+                        <div style="font-size: 1.25rem;">🛠️</div>
+                        <div style="font-size: 0.85rem; font-weight: 600;">开发</div>
+                    </div>
+                    <div style="font-size: 1.5rem; color: var(--color-text-tertiary);">→</div>
+                    <div style="background: linear-gradient(135deg, #10B981 0%, #059669 100%); color: white; padding: 12px 20px; border-radius: 8px; text-align: center;">
+                        <div style="font-size: 1.25rem;">📋</div>
+                        <div style="font-size: 0.85rem; font-weight: 600;">离线评测</div>
+                    </div>
+                    <div style="font-size: 1.5rem; color: var(--color-text-tertiary);">→</div>
+                    <div style="background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%); color: white; padding: 12px 20px; border-radius: 8px; text-align: center;">
+                        <div style="font-size: 1.25rem;">🎯</div>
+                        <div style="font-size: 0.85rem; font-weight: 600;">调优</div>
+                    </div>
+                    <div style="font-size: 1.5rem; color: var(--color-text-tertiary);">→</div>
+                    <div style="background: linear-gradient(135deg, #8B5CF6 0%, #6D28D9 100%); color: white; padding: 12px 20px; border-radius: 8px; text-align: center;">
+                        <div style="font-size: 1.25rem;">🚀</div>
+                        <div style="font-size: 0.85rem; font-weight: 600;">上线</div>
+                    </div>
+                    <div style="font-size: 1.5rem; color: var(--color-text-tertiary);">→</div>
+                    <div style="background: linear-gradient(135deg, #EC4899 0%, #BE185D 100%); color: white; padding: 12px 20px; border-radius: 8px; text-align: center;">
+                        <div style="font-size: 1.25rem;">👁️</div>
+                        <div style="font-size: 0.85rem; font-weight: 600;">在线评测</div>
+                    </div>
+                    <div style="font-size: 1.5rem; color: var(--color-text-tertiary);">→</div>
+                    <div style="background: var(--gray-200); padding: 12px 20px; border-radius: 8px; text-align: center;">
+                        <div style="font-size: 1.25rem;">🔄</div>
+                        <div style="font-size: 0.85rem; font-weight: 600;">持续迭代</div>
+                    </div>
+                </div>
+                <div style="text-align: center; font-size: 0.9rem; color: var(--gray-500);">
+                    评测贯穿Agent的整个生命周期，不是一次性的动作
+                </div>
+            </div>
+            
+            <!-- 离线评测详解 -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 32px; margin-bottom: var(--spacing-xl);">
+                <div class="card" style="border-left: 4px solid #10B981;">
+                    <h3 style="display: flex; align-items: center; gap: 12px; margin-bottom: 20px;">
+                        <span style="background: #D1FAE5; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">📋</span>
+                        离线评测
+                    </h3>
+                    <p style="color: var(--gray-600); margin-bottom: 20px; font-size: 0.95rem;">
+                        <strong>什么时候用：</strong>上线前、大版本迭代时<br>
+                        <strong>核心目的：</strong>系统化验证Agent能力
+                    </p>
+                    
+                    <h4 style="font-size: 0.95rem; margin-bottom: 12px; color: #047857;">📦 离线评测三要素</h4>
+                    <div style="display: flex; flex-direction: column; gap: 12px;">
+                        <div style="background: var(--gray-100); padding: 16px; border-radius: 8px;">
+                            <div style="font-weight: 600; margin-bottom: 4px;">1️⃣ 评测集（Dataset）</div>
+                            <div style="font-size: 0.85rem; color: var(--gray-600);">准备100-1000条测试用例，覆盖各种场景</div>
+                        </div>
+                        <div style="background: var(--gray-100); padding: 16px; border-radius: 8px;">
+                            <div style="font-weight: 600; margin-bottom: 4px;">2️⃣ 评估器（Evaluator）</div>
+                            <div style="font-size: 0.85rem; color: var(--gray-600);">选择合适的评估维度：准确率、响应速度、安全性</div>
+                        </div>
+                        <div style="background: var(--gray-100); padding: 16px; border-radius: 8px;">
+                            <div style="font-weight: 600; margin-bottom: 4px;">3️⃣ 实验管理（Experiment）</div>
+                            <div style="font-size: 0.85rem; color: var(--gray-600);">多版本对比，追踪每次迭代的效果变化</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card" style="border-left: 4px solid #EC4899;">
+                    <h3 style="display: flex; align-items: center; gap: 12px; margin-bottom: 20px;">
+                        <span style="background: #FCE7F3; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">👁️</span>
+                        在线评测
+                    </h3>
+                    <p style="color: var(--gray-600); margin-bottom: 20px; font-size: 0.95rem;">
+                        <strong>什么时候用：</strong>上线后持续监控<br>
+                        <strong>核心目的：</strong>发现真实场景中的问题
+                    </p>
+                    
+                    <h4 style="font-size: 0.95rem; margin-bottom: 12px; color: #EC4899;">📦 在线评测三要素</h4>
+                    <div style="display: flex; flex-direction: column; gap: 12px;">
+                        <div style="background: var(--gray-100); padding: 16px; border-radius: 8px;">
+                            <div style="font-weight: 600; margin-bottom: 4px;">1️⃣ Trace采样（Sampling）</div>
+                            <div style="font-size: 0.85rem; color: var(--gray-600);">自动采集线上真实对话，1%~10%采样率</div>
+                        </div>
+                        <div style="background: var(--gray-100); padding: 16px; border-radius: 8px;">
+                            <div style="font-weight: 600; margin-bottom: 4px;">2️⃣ 实时评估（Real-time Eval）</div>
+                            <div style="font-size: 0.85rem; color: var(--gray-600);">对采样数据自动跑评估器，生成质量报告</div>
+                        </div>
+                        <div style="background: var(--gray-100); padding: 16px; border-radius: 8px;">
+                            <div style="font-weight: 600; margin-bottom: 4px;">3️⃣ 告警机制（Alert）</div>
+                            <div style="font-size: 0.85rem; color: var(--gray-600);">质量下降时自动告警，快速响应</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 🆕 评估体系设计原则与前提 -->
+            <div class="card" style="margin-bottom: var(--spacing-xl); background: var(--color-bg-table-header); border: 1px solid var(--color-border-light); color: var(--color-text-primary);">
+                <h3 style="margin-bottom: var(--spacing-md); display: flex; align-items: center; gap: 12px; color: var(--color-success);">
+                    <span>🎯</span> 评估体系设计原则
+                </h3>
+                
+                <!-- 前提：了解Agent架构 -->
+                <div style="background: rgba(251, 191, 36, 0.15); border: 2px solid #F59E0B; border-radius: 16px; padding: var(--spacing-md); margin-bottom: var(--spacing-md);">
+                    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
+                        <span style="background: #F59E0B; color: white; width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.25rem; font-weight: 700;">0</span>
+                        <h4 style="color: var(--color-success); margin: 0;">前提：了解Agent的架构</h4>
+                    </div>
+                    
+                    <p style="font-size: 0.85rem; color: var(--color-text-secondary); margin-bottom: 16px;">
+                        <strong>设计评测集和评估器之前，必须先了解Agent的架构</strong>。只有清楚Agent由哪些组件构成、数据如何流转，才能知道：
+                    </p>
+                    
+                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 16px;">
+                        <div style="background: rgba(255,255,255,0.1); padding: 12px; border-radius: 8px; text-align: center;">
+                            <div style="font-size: 1.2rem; margin-bottom: 4px;">📊</div>
+                            <div style="font-size: var(--font-size-sm); color: var(--color-text-secondary);">评测哪些环节</div>
+                            <div style="font-size: var(--font-size-xs); color: var(--color-text-tertiary);">端到端 vs 组件级</div>
+                        </div>
+                        <div style="background: rgba(255,255,255,0.1); padding: 12px; border-radius: 8px; text-align: center;">
+                            <div style="font-size: 1.2rem; margin-bottom: 4px;">🔍</div>
+                            <div style="font-size: var(--font-size-sm); color: var(--color-text-secondary);">问题归因到哪里</div>
+                            <div style="font-size: var(--font-size-xs); color: var(--color-text-tertiary);">Prompt/Tool/RAG……</div>
+                        </div>
+                        <div style="background: rgba(255,255,255,0.1); padding: 12px; border-radius: 8px; text-align: center;">
+                            <div style="font-size: 1.2rem; margin-bottom: 4px;">🛠️</div>
+                            <div style="font-size: var(--font-size-sm); color: var(--color-text-secondary);">优化哪个模块</div>
+                            <div style="font-size: var(--font-size-xs); color: var(--color-text-tertiary);">精准定位改进点</div>
+                        </div>
+                    </div>
+                    
+                    <!-- 电商客服Agent架构示例 -->
+                    <div style="background: rgba(255,255,255,0.05); border-radius: 12px; padding: 16px;">
+                        <h5 style="color: var(--color-success); margin-bottom: 12px; font-size: 0.9rem;">📦 案例：电商智能客服Agent架构</h5>
+                        <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; font-size: var(--font-size-sm); flex-wrap: wrap;">
+                            <div style="text-align: center; flex: 1; min-width: 80px;">
+                                <div style="background: #3B82F6; padding: 10px 8px; border-radius: 8px; margin-bottom: 6px;">👤 用户输入</div>
+                                <div style="font-size: var(--font-size-xs); color: var(--color-text-tertiary);">"我要退货"</div>
+                            </div>
+                            <div style="color: var(--gray-500);">→</div>
+                            <div style="text-align: center; flex: 1; min-width: 80px;">
+                                <div style="background: #8B5CF6; padding: 10px 8px; border-radius: 8px; margin-bottom: 6px;">🧠 意图识别</div>
+                                <div style="font-size: var(--font-size-xs); color: var(--color-text-tertiary);">退货咨询</div>
+                            </div>
+                            <div style="color: var(--gray-500);">→</div>
+                            <div style="text-align: center; flex: 1; min-width: 80px;">
+                                <div style="background: #10B981; padding: 10px 8px; border-radius: 8px; margin-bottom: 6px;">📚 知识检索</div>
+                                <div style="font-size: var(--font-size-xs); color: var(--color-text-tertiary);">退货政策RAG</div>
+                            </div>
+                            <div style="color: var(--gray-500);">→</div>
+                            <div style="text-align: center; flex: 1; min-width: 80px;">
+                                <div style="background: #F59E0B; padding: 10px 8px; border-radius: 8px; margin-bottom: 6px;">🔧 工具调用</div>
+                                <div style="font-size: var(--font-size-xs); color: var(--color-text-tertiary);">订单API查询</div>
+                            </div>
+                            <div style="color: var(--gray-500);">→</div>
+                            <div style="text-align: center; flex: 1; min-width: 80px;">
+                                <div style="background: #EC4899; padding: 10px 8px; border-radius: 8px; margin-bottom: 6px;">💬 回复生成</div>
+                                <div style="font-size: var(--font-size-xs); color: var(--color-text-tertiary);">LLM组织答案</div>
+                            </div>
+                        </div>
+                        
+                        <div style="margin-top: 16px; background: rgba(255,255,255,0.1); padding: 12px; border-radius: 8px;">
+                            <div style="font-size: var(--font-size-sm); color: var(--color-text-secondary); margin-bottom: 8px;"><strong>🔍 各组件需要评测的维度：</strong></div>
+                            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; font-size: var(--font-size-xs);">
+                                <div style="color: var(--color-text-tertiary);">• <strong>意图识别</strong>：分类准确率、召回率</div>
+                                <div style="color: var(--color-text-tertiary);">• <strong>知识检索</strong>：召回率、相关性</div>
+                                <div style="color: var(--color-text-tertiary);">• <strong>工具调用</strong>：调用正确率、参数准确性</div>
+                                <div style="color: var(--color-text-tertiary);">• <strong>回复生成</strong>：信息完整性、语言质量</div>
+                                <div style="color: var(--color-text-tertiary);">• <strong>端到端</strong>：用户满意度、问题解决率</div>
+                                <div style="color: var(--color-text-tertiary);">• <strong>多轮对话</strong>：上下文连贯性、意图追踪</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-top: 16px; padding: 12px; background: rgba(251, 191, 36, 0.2); border-radius: 8px; font-size: var(--font-size-sm); color: var(--color-success);">
+                        💡 <strong>关键洞察</strong>：评测设计 = 架构拆解 + 逐组件设计指标 + 端到端验证
+                    </div>
+                </div>
+                
+                <p style="color: var(--color-text-secondary); margin-bottom: var(--spacing-md); font-size: 0.95rem;">
+                    在了解架构的基础上，评测还需要遵守两个核心原则，否则评测就是"自嗨"：
+                </p>
+                
+                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--spacing-md);">
+                    <!-- 原则1：符合用户真实体感 -->
+                    <div style="background: rgba(16, 185, 129, 0.15); border: 2px solid #10B981; border-radius: 16px; padding: var(--spacing-md);">
+                        <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
+                            <span style="background: #10B981; color: white; width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.25rem; font-weight: 700;">1</span>
+                            <h4 style="color: #047857; margin: 0;">符合用户真实体感</h4>
+                        </div>
+                        
+                        <div style="margin-bottom: 16px;">
+                            <div style="background: rgba(239, 68, 68, 0.2); padding: 12px; border-radius: 8px; margin-bottom: 12px;">
+                                <div style="font-size: 0.85rem; color: #B91C1C;">
+                                    <strong>❌ 常见问题：</strong>评测指标很高，但用户说"不好用"
+                                </div>
+                            </div>
+                            <div style="font-size: 0.85rem; color: var(--color-text-secondary);">
+                                <strong>为什么会这样？</strong>
+                                <ul style="margin: 8px 0 0 16px; padding: 0;">
+                                    <li style="padding: 4px 0;">评测维度不全面（只测准确率，没测响应速度）</li>
+                                    <li style="padding: 4px 0;">评测集分布与线上不符（测试的场景用户很少遇到）</li>
+                                    <li style="padding: 4px 0;">评估器标准与用户预期不一致</li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <div style="background: rgba(255,255,255,0.1); padding: 16px; border-radius: 8px;">
+                            <div style="font-size: 0.85rem; color: #065F46;">
+                                <strong>✅ 正确做法：</strong>
+                            </div>
+                            <ul style="font-size: 0.85rem; color: var(--color-text-secondary); margin: 8px 0 0 16px; padding: 0;">
+                                <li style="padding: 4px 0;"><strong>用户满意度校准</strong>：定期用真实用户评分校准评估器</li>
+                                <li style="padding: 4px 0;"><strong>线上指标对齐</strong>：评测指标变化要与线上留存/转化相关</li>
+                                <li style="padding: 4px 0;"><strong>A/B测试验证</strong>：评测提升的版本上线后用户体验确实提升</li>
+                                <li style="padding: 4px 0;"><strong>评测集分布贴近线上</strong>：高频场景占比高，边界场景按比例</li>
+                            </ul>
+                        </div>
+                        
+                        <div style="margin-top: 16px; padding: 12px; background: rgba(16, 185, 129, 0.2); border-radius: 8px; font-size: var(--font-size-sm); color: #065F46;">
+                            💡 <strong>检验标准</strong>：评测分数提升 → 线上用户满意度/留存提升
+                        </div>
+                    </div>
+                    
+                    <!-- 原则2：挖掘深刻问题，指引优化方向 -->
+                    <div style="background: rgba(59, 130, 246, 0.15); border: 2px solid #3B82F6; border-radius: 16px; padding: var(--spacing-md);">
+                        <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
+                            <span style="background: #3B82F6; color: white; width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.25rem; font-weight: 700;">2</span>
+                            <h4 style="color: #1D4ED8; margin: 0;">挖掘深刻问题，指引优化方向</h4>
+                        </div>
+                        
+                        <div style="margin-bottom: 16px;">
+                            <div style="background: rgba(239, 68, 68, 0.2); padding: 12px; border-radius: 8px; margin-bottom: 12px;">
+                                <div style="font-size: 0.85rem; color: #B91C1C;">
+                                    <strong>❌ 常见问题：</strong>评测报告只说"准确率72%"，然后呢？
+                                </div>
+                            </div>
+                            <div style="font-size: 0.85rem; color: var(--color-text-secondary);">
+                                <strong>评测的价值不是"评完就完"，而是：</strong>
+                                <ul style="margin: 8px 0 0 16px; padding: 0;">
+                                    <li style="padding: 4px 0;">告诉你<strong>哪些场景</strong>有问题</li>
+                                    <li style="padding: 4px 0;">告诉你<strong>什么类型</strong>的问题</li>
+                                    <li style="padding: 4px 0;">指引你<strong>下一步</strong>该优化什么</li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <div style="background: rgba(255,255,255,0.1); padding: 16px; border-radius: 8px;">
+                            <div style="font-size: 0.85rem; color: #1D4ED8;">
+                                <strong>✅ 正确做法：</strong>
+                            </div>
+                            <ul style="font-size: 0.85rem; color: var(--color-text-secondary); margin: 8px 0 0 16px; padding: 0;">
+                                <li style="padding: 4px 0;"><strong>多维度归因</strong>：按场景/错误类型/组件维度拆解</li>
+                                <li style="padding: 4px 0;"><strong>Badcase聚类</strong>：相似问题归类，发现共性根因</li>
+                                <li style="padding: 4px 0;"><strong>可追溯Trace</strong>：每个Badcase可回溯到具体执行过程</li>
+                                <li style="padding: 4px 0;"><strong>优化建议生成</strong>：评测报告直接给出优化方向</li>
+                            </ul>
+                        </div>
+                        
+                        <div style="margin-top: 16px; padding: 12px; background: rgba(59, 130, 246, 0.2); border-radius: 8px; font-size: var(--font-size-sm); color: #1D4ED8;">
+                            💡 <strong>检验标准</strong>：看完评测报告后，立刻知道下一步该做什么
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 评测闭环示意 -->
+                <div style="margin-top: 24px; padding: 20px; background: rgba(255,255,255,0.05); border-radius: 12px;">
+                    <h5 style="margin-bottom: 16px; color: var(--color-success);">🔄 评测驱动优化的完整闭环</h5>
+                    <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; font-size: 0.85rem;">
+                        <div style="text-align: center; flex: 1; min-width: 100px;">
+                            <div style="background: #3B82F6; padding: 10px; border-radius: 8px; margin-bottom: 8px;">📊 评测</div>
+                            <div style="color: var(--color-text-tertiary);">发现问题</div>
+                        </div>
+                        <div style="color: var(--gray-500);">→</div>
+                        <div style="text-align: center; flex: 1; min-width: 100px;">
+                            <div style="background: #8B5CF6; padding: 10px; border-radius: 8px; margin-bottom: 8px;">🔍 归因</div>
+                            <div style="color: var(--color-text-tertiary);">定位根因</div>
+                        </div>
+                        <div style="color: var(--gray-500);">→</div>
+                        <div style="text-align: center; flex: 1; min-width: 100px;">
+                            <div style="background: #F59E0B; padding: 10px; border-radius: 8px; margin-bottom: 8px;">💡 建议</div>
+                            <div style="color: var(--color-text-tertiary);">优化方向</div>
+                        </div>
+                        <div style="color: var(--gray-500);">→</div>
+                        <div style="text-align: center; flex: 1; min-width: 100px;">
+                            <div style="background: #10B981; padding: 10px; border-radius: 8px; margin-bottom: 8px;">🔧 优化</div>
+                            <div style="color: var(--color-text-tertiary);">实施改进</div>
+                        </div>
+                        <div style="color: var(--gray-500);">→</div>
+                        <div style="text-align: center; flex: 1; min-width: 100px;">
+                            <div style="background: #EC4899; padding: 10px; border-radius: 8px; margin-bottom: 8px;">✅ 验证</div>
+                            <div style="color: var(--color-text-tertiary);">用户体感</div>
+                        </div>
+                    </div>
+                    <div style="margin-top: 16px; text-align: center; font-size: 0.85rem; color: var(--color-text-tertiary);">
+                        ⚠️ 如果最后一步"用户体感"没提升，说明前面某个环节有问题，需要回溯检查
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 评测集准备详解 -->
+            <div class="card" style="margin-bottom: var(--spacing-xl);">
+                <h3 style="margin-bottom: var(--spacing-md); display: flex; align-items: center; gap: 12px;">
+                    <span>📝</span> 如何准备评测集？（以电商智能客服Agent为例）
+                </h3>
+                
+                <!-- 案例引入 -->
+                <div style="background: linear-gradient(135deg, #EFF6FF 0%, #DBEAFE 100%); border-radius: 12px; padding: 20px; margin-bottom: var(--spacing-md); border-left: 4px solid #3B82F6;">
+                    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
+                        <span style="font-size: 1.5rem;">🛒</span>
+                        <div>
+                            <h4 style="margin: 0; color: #1D4ED8;">案例背景：电商智能客服Agent</h4>
+                            <p style="margin: 4px 0 0; font-size: 0.85rem; color: var(--gray-600);">以下内容将以电商客服Agent为例，贯穿整个评测流程</p>
+                        </div>
+                    </div>
+                    <div style="display: flex; gap: 16px; flex-wrap: wrap; font-size: var(--font-size-sm);">
+                        <div style="background: white; padding: 8px 12px; border-radius: 6px;">
+                            <strong>业务场景：</strong>订单查询、退换货、商品推荐、投诉处理
+                        </div>
+                        <div style="background: white; padding: 8px 12px; border-radius: 6px;">
+                            <strong>技术架构：</strong>意图识别 → 知识检索(RAG) → 工具调用 → 回复生成
+                        </div>
+                        <div style="background: white; padding: 8px 12px; border-radius: 6px;">
+                            <strong>核心指标：</strong>问题解决率、用户满意度、响应时长
+                        </div>
+                    </div>
+                </div>
+                
+                <h4 style="font-size: 0.95rem; margin-bottom: 16px; display: flex; align-items: center; gap: 8px;">
+                    <span>📊</span> Step 1：按业务场景划分评测用例
+                </h4>
+                
+                <div style="overflow-x: auto; margin-bottom: var(--spacing-md);">
+                    <table style="width: 100%; border-collapse: collapse; font-size: 0.9rem;">
+                        <thead>
+                            <tr style="background: var(--gray-100);">
+                                <th style="padding: 12px; text-align: left; border-bottom: 2px solid var(--gray-200);">场景分类</th>
+                                <th style="padding: 12px; text-align: left; border-bottom: 2px solid var(--gray-200);">示例问题</th>
+                                <th style="padding: 12px; text-align: left; border-bottom: 2px solid var(--gray-200);">涉及组件</th>
+                                <th style="padding: 12px; text-align: left; border-bottom: 2px solid var(--gray-200);">期望回答要点</th>
+                                <th style="padding: 12px; text-align: center; border-bottom: 2px solid var(--gray-200);">用例数量</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td style="padding: 12px; border-bottom: 1px solid var(--gray-100);"><span style="background: #DBEAFE; padding: 2px 8px; border-radius: 4px;">订单查询</span></td>
+                                <td style="padding: 12px; border-bottom: 1px solid var(--gray-100);">"我的订单12345发货了吗？"</td>
+                                <td style="padding: 12px; border-bottom: 1px solid var(--gray-100); font-size: var(--font-size-sm);">意图识别 + <strong>工具调用</strong></td>
+                                <td style="padding: 12px; border-bottom: 1px solid var(--gray-100);">调用订单API，返回物流状态</td>
+                                <td style="padding: 12px; text-align: center; border-bottom: 1px solid var(--gray-100);">200条</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 12px; border-bottom: 1px solid var(--gray-100);"><span style="background: #D1FAE5; padding: 2px 8px; border-radius: 4px;">退换货咨询</span></td>
+                                <td style="padding: 12px; border-bottom: 1px solid var(--gray-100);">"买了7天可以退吗？"</td>
+                                <td style="padding: 12px; border-bottom: 1px solid var(--gray-100); font-size: var(--font-size-sm);">意图识别 + <strong>知识检索</strong></td>
+                                <td style="padding: 12px; border-bottom: 1px solid var(--gray-100);">检索退换货政策，准确回答</td>
+                                <td style="padding: 12px; text-align: center; border-bottom: 1px solid var(--gray-100);">150条</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 12px; border-bottom: 1px solid var(--gray-100);"><span style="background: #FEF3C7; padding: 2px 8px; border-radius: 4px;">商品推荐</span></td>
+                                <td style="padding: 12px; border-bottom: 1px solid var(--gray-100);">"有什么适合送女朋友的礼物？"</td>
+                                <td style="padding: 12px; border-bottom: 1px solid var(--gray-100); font-size: var(--font-size-sm);">意图识别 + <strong>推荐引擎</strong></td>
+                                <td style="padding: 12px; border-bottom: 1px solid var(--gray-100);">理解意图，推荐合适商品</td>
+                                <td style="padding: 12px; text-align: center; border-bottom: 1px solid var(--gray-100);">100条</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 12px; border-bottom: 1px solid var(--gray-100);"><span style="background: #FCE7F3; padding: 2px 8px; border-radius: 4px;">投诉处理</span></td>
+                                <td style="padding: 12px; border-bottom: 1px solid var(--gray-100);">"你们客服态度太差了！"</td>
+                                <td style="padding: 12px; border-bottom: 1px solid var(--gray-100); font-size: var(--font-size-sm);">情绪识别 + <strong>转人工</strong></td>
+                                <td style="padding: 12px; border-bottom: 1px solid var(--gray-100);">安抚情绪，转人工处理</td>
+                                <td style="padding: 12px; text-align: center; border-bottom: 1px solid var(--gray-100);">50条</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 12px;"><span style="background: #EDE9FE; padding: 2px 8px; border-radius: 4px;">边界测试</span></td>
+                                <td style="padding: 12px;">"帮我写一首诗""今天天气怎样"</td>
+                                <td style="padding: 12px; font-size: var(--font-size-sm);">意图识别 + <strong>拒绝逻辑</strong></td>
+                                <td style="padding: 12px;">礼貌拒绝，引导回业务场景</td>
+                                <td style="padding: 12px; text-align: center;">50条</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <h4 style="font-size: 0.95rem; margin-bottom: 16px; display: flex; align-items: center; gap: 8px;">
+                    <span>🎯</span> Step 2：按评测类型设计不同格式的评测集
+                </h4>
+                
+                <p style="color: var(--gray-600); margin-bottom: 16px; font-size: 0.9rem;">
+                    根据架构中的不同组件和场景，需要准备不同类型的评测集：
+                </p>
+                
+                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin-bottom: var(--spacing-lg);">
+                    <!-- 端到端评测 -->
+                    <div style="background: var(--gray-100); border-radius: 12px; padding: 20px; border-left: 4px solid #6B7280;">
+                        <h5 style="margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
+                            <span>📝</span> 端到端评测（基础）
+                        </h5>
+                        <p style="font-size: 0.85rem; color: var(--gray-600); margin-bottom: 12px;">
+                            单轮问答，输入Query输出Response
+                        </p>
+                        <div style="background: white; padding: 10px; border-radius: 6px; font-size: var(--font-size-sm);">
+                            <strong>评测集格式：</strong><br>
+                            <code style="background: var(--gray-100); padding: 2px 6px; border-radius: 4px;">{query, expected_response, metadata}</code>
+                        </div>
+                    </div>
+                    
+                    <!-- 多轮对话评测 -->
+                    <div style="background: linear-gradient(135deg, #DBEAFE 0%, #EFF6FF 100%); border-radius: 12px; padding: 20px; border-left: 4px solid #3B82F6;">
+                        <h5 style="margin-bottom: 12px; display: flex; align-items: center; gap: 8px; color: #1D4ED8;">
+                            <span>💬</span> 多轮对话评测
+                        </h5>
+                        <p style="font-size: 0.85rem; color: var(--gray-600); margin-bottom: 12px;">
+                            测试Agent的上下文记忆和多轮连贯性
+                        </p>
+                        <div style="background: white; padding: 10px; border-radius: 6px; font-size: var(--font-size-sm); margin-bottom: 8px;">
+                            <strong>评测集格式：</strong><br>
+                            <code style="background: var(--gray-100); padding: 2px 6px; border-radius: 4px; display: block; margin-top: 4px;">
+                            {conversation: [{role, content}, ……],<br>
+                            &nbsp;checkpoints: [{turn_id, expected}]}</code>
+                        </div>
+                        <div style="font-size: var(--font-size-xs); color: var(--gray-600);">
+                            <strong>准备要点：</strong>
+                            <ul style="margin: 4px 0 0 12px; padding: 0;">
+                                <li>设置多个检查点（如第3轮、第5轮）</li>
+                                <li>测试指代消解（"它"指什么）</li>
+                                <li>测试上下文遗忘（长对话后期）</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <!-- Agent轨迹评测 -->
+                    <div style="background: linear-gradient(135deg, #D1FAE5 0%, #ECFDF5 100%); border-radius: 12px; padding: 20px; border-left: 4px solid #10B981;">
+                        <h5 style="margin-bottom: 12px; display: flex; align-items: center; gap: 8px; color: #059669;">
+                            <span>🛤️</span> Agent执行轨迹评测
+                        </h5>
+                        <p style="font-size: 0.85rem; color: var(--gray-600); margin-bottom: 12px;">
+                            评估Agent的决策路径和工具调用序列
+                        </p>
+                        <div style="background: white; padding: 10px; border-radius: 6px; font-size: var(--font-size-sm); margin-bottom: 8px;">
+                            <strong>评测集格式：</strong><br>
+                            <code style="background: var(--gray-100); padding: 2px 6px; border-radius: 4px; display: block; margin-top: 4px;">
+                            {query,<br>
+                            &nbsp;expected_trajectory: [<br>
+                            &nbsp;&nbsp;{action: "call_tool", tool: "search"},<br>
+                            &nbsp;&nbsp;{action: "call_tool", tool: "calculate"}<br>
+                            &nbsp;]}</code>
+                        </div>
+                        <div style="font-size: var(--font-size-xs); color: var(--gray-600);">
+                            <strong>准备要点：</strong>
+                            <ul style="margin: 4px 0 0 12px; padding: 0;">
+                                <li>定义期望的工具调用顺序</li>
+                                <li>校验中间步骤的推理正确性</li>
+                                <li>支持轨迹相似度评估（非精确匹配）</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <!-- 多模态评测 -->
+                    <div style="background: linear-gradient(135deg, #FCE7F3 0%, #FDF2F8 100%); border-radius: 12px; padding: 20px; border-left: 4px solid #EC4899;">
+                        <h5 style="margin-bottom: 12px; display: flex; align-items: center; gap: 8px; color: #BE185D;">
+                            <span>🖼️</span> 多模态评测
+                        </h5>
+                        <p style="font-size: 0.85rem; color: var(--gray-600); margin-bottom: 12px;">
+                            图片/音频/视频 + 文本的混合输入评测
+                        </p>
+                        <div style="background: white; padding: 10px; border-radius: 6px; font-size: var(--font-size-sm); margin-bottom: 8px;">
+                            <strong>评测集格式：</strong><br>
+                            <code style="background: var(--gray-100); padding: 2px 6px; border-radius: 4px; display: block; margin-top: 4px;">
+                            {inputs: [{type: "image", url: "……"},<br>
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{type: "text", content: "……"}],<br>
+                            &nbsp;expected_response, modality_checks}</code>
+                        </div>
+                        <div style="font-size: var(--font-size-xs); color: var(--gray-600);">
+                            <strong>准备要点：</strong>
+                            <ul style="margin: 4px 0 0 12px; padding: 0;">
+                                <li>存储多模态资源文件（图/音/视频）</li>
+                                <li>设计跨模态理解测试（看图说话）</li>
+                                <li>评估输出模态正确性</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 评测集构建三阶段 -->
+                <h4 style="font-size: 0.95rem; margin: 32px 0 16px; display: flex; align-items: center; gap: 8px;">
+                    <span>📦</span> 评测集构建三阶段
+                </h4>
+                
+                <p style="color: var(--gray-600); margin-bottom: 20px; font-size: 0.9rem;">
+                    根据Agent项目的成熟度，选择合适的评测集构建方式：
+                </p>
+                
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: var(--spacing-lg);">
+                    <!-- 阶段1：新手村 -->
+                    <div style="background: linear-gradient(135deg, #FEF3C7 0%, #FFFBEB 100%); border-radius: 16px; padding: var(--spacing-md); border: 2px solid #FCD34D; position: relative;">
+                        <div style="position: absolute; top: -12px; left: 20px; background: #F59E0B; color: white; padding: 4px 16px; border-radius: 20px; font-size: var(--font-size-sm); font-weight: 600;">
+                            阶段 1
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 16px; margin-top: 8px;">
+                            <span style="font-size: 1.8rem;">🏠</span>
+                            <div>
+                                <h5 style="color: #B45309; margin: 0; font-size: 1.1rem;">新手村</h5>
+                                <div style="font-size: var(--font-size-xs); color: var(--gray-500);">冷启动 / 快速验证</div>
+                            </div>
+                        </div>
+                        
+                        <div style="font-size: 0.9rem; color: var(--gray-700); font-weight: 600; margin-bottom: 12px;">
+                            人工构造
+                        </div>
+                        
+                        <div style="background: white; padding: 14px; border-radius: 10px; margin-bottom: 12px;">
+                            <div style="font-size: 0.85rem; color: var(--gray-600);">
+                                <strong>数据来源：</strong>
+                                <ul style="margin: 8px 0 0 16px; padding: 0;">
+                                    <li style="padding: 3px 0;">🌐 爬虫采集（竞品/公开数据）</li>
+                                    <li style="padding: 3px 0;">📂 开源评测集（如GSM8K、HumanEval）</li>
+                                    <li style="padding: 3px 0;">✍️ 专家手工编写</li>
+                                    <li style="padding: 3px 0;">📋 历史业务积累</li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <div style="display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px;">
+                            <span style="background: #FEF3C7; color: #B45309; padding: 3px 10px; border-radius: 12px; font-size: var(--font-size-xs);">快速起步</span>
+                            <span style="background: #FEF3C7; color: #B45309; padding: 3px 10px; border-radius: 12px; font-size: var(--font-size-xs);">成本可控</span>
+                        </div>
+                        
+                        <div style="font-size: var(--font-size-sm); color: var(--gray-500); border-top: 1px solid rgba(0,0,0,0.1); padding-top: 10px;">
+                            ✅ 适合：项目启动期、PoC验证<br>
+                            ⚠️ 局限：覆盖度有限、不够真实
+                        </div>
+                    </div>
+                    
+                    <!-- 阶段2：成熟化 -->
+                    <div style="background: linear-gradient(135deg, #DBEAFE 0%, #EFF6FF 100%); border-radius: 16px; padding: var(--spacing-md); border: 2px solid #3B82F6; position: relative;">
+                        <div style="position: absolute; top: -12px; left: 20px; background: #3B82F6; color: white; padding: 4px 16px; border-radius: 20px; font-size: var(--font-size-sm); font-weight: 600;">
+                            阶段 2
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 16px; margin-top: 8px;">
+                            <span style="font-size: 1.8rem;">🚀</span>
+                            <div>
+                                <h5 style="color: #1D4ED8; margin: 0; font-size: 1.1rem;">成熟化</h5>
+                                <div style="font-size: var(--font-size-xs); color: var(--gray-500);">线上运营 / 持续迭代</div>
+                            </div>
+                        </div>
+                        
+                        <div style="font-size: 0.9rem; color: var(--gray-700); font-weight: 600; margin-bottom: 12px;">
+                            线上回流
+                        </div>
+                        
+                        <div style="background: white; padding: 14px; border-radius: 10px; margin-bottom: 12px;">
+                            <div style="font-size: 0.85rem; color: var(--gray-600);">
+                                <strong>数据来源：</strong>
+                                <ul style="margin: 8px 0 0 16px; padding: 0;">
+                                    <li style="padding: 3px 0;">🔄 线上Trace采样（用户真实Query）</li>
+                                    <li style="padding: 3px 0;">👎 用户反馈的Badcase</li>
+                                    <li style="padding: 3px 0;">📊 异常检测命中的Case</li>
+                                    <li style="padding: 3px 0;">🏷️ 人工标注Ground Truth</li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <div style="display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px;">
+                            <span style="background: #DBEAFE; color: #1D4ED8; padding: 3px 10px; border-radius: 12px; font-size: var(--font-size-xs);">最真实</span>
+                            <span style="background: #DBEAFE; color: #1D4ED8; padding: 3px 10px; border-radius: 12px; font-size: var(--font-size-xs);">贴近用户</span>
+                        </div>
+                        
+                        <div style="font-size: var(--font-size-sm); color: var(--gray-500); border-top: 1px solid rgba(0,0,0,0.1); padding-top: 10px;">
+                            ✅ 适合：已上线、有真实流量<br>
+                            ⚠️ 注意：需脱敏处理、标注成本
+                        </div>
+                    </div>
+                    
+                    <!-- 阶段3：深水区 -->
+                    <div style="background: linear-gradient(135deg, #D1FAE5 0%, #ECFDF5 100%); border-radius: 16px; padding: var(--spacing-md); border: 2px solid #10B981; position: relative;">
+                        <div style="position: absolute; top: -12px; left: 20px; background: #10B981; color: white; padding: 4px 16px; border-radius: 20px; font-size: var(--font-size-sm); font-weight: 600;">
+                            阶段 3
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 16px; margin-top: 8px;">
+                            <span style="font-size: 1.8rem;">🤖</span>
+                            <div>
+                                <h5 style="color: #059669; margin: 0; font-size: 1.1rem;">深水区</h5>
+                                <div style="font-size: var(--font-size-xs); color: var(--gray-500);">规模化 / 全面覆盖</div>
+                            </div>
+                        </div>
+                        
+                        <div style="font-size: 0.9rem; color: var(--gray-700); font-weight: 600; margin-bottom: 12px;">
+                            智能合成
+                        </div>
+                        
+                        <div style="background: white; padding: 14px; border-radius: 10px; margin-bottom: 12px;">
+                            <div style="font-size: 0.85rem; color: var(--gray-600);">
+                                <strong>两种合成方式：</strong>
+                                <ul style="margin: 8px 0 0 16px; padding: 0;">
+                                    <li style="padding: 3px 0;">📚 <strong>基于知识库</strong>：从文档/FAQ生成QA对</li>
+                                    <li style="padding: 3px 0;">🌱 <strong>基于种子数据</strong>：从少量示例扩展大量变体</li>
+                                </ul>
+                                <div style="margin-top: 8px; padding-top: 8px; border-top: 1px dashed var(--gray-200);">
+                                    <strong>扩展手段：</strong>LLM生成、泛化改写、规则模板
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div style="display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px;">
+                            <span style="background: #D1FAE5; color: #059669; padding: 3px 10px; border-radius: 12px; font-size: var(--font-size-xs);">规模化</span>
+                            <span style="background: #D1FAE5; color: #059669; padding: 3px 10px; border-radius: 12px; font-size: var(--font-size-xs);">覆盖边界</span>
+                        </div>
+                        
+                        <div style="font-size: var(--font-size-sm); color: var(--gray-500); border-top: 1px solid rgba(0,0,0,0.1); padding-top: 10px;">
+                            ✅ 适合：追求全面覆盖、边界测试<br>
+                            ⚠️ 注意：控制生成质量、人工抽检
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 阶段演进路径 -->
+                <div style="background: var(--gray-100); border-radius: 12px; padding: 20px; margin-bottom: var(--spacing-md);">
+                    <h5 style="margin-bottom: 16px;">📈 评测集构建演进路径</h5>
+                    <div style="display: flex; align-items: center; justify-content: space-between; background: white; padding: 16px; border-radius: 8px;">
+                        <div style="text-align: center; flex: 1;">
+                            <div style="font-size: 2rem; margin-bottom: 8px;">🏠</div>
+                            <div style="font-weight: 600; font-size: 0.9rem;">新手村</div>
+                            <div style="font-size: var(--font-size-xs); color: var(--gray-500);">~100条</div>
+                            <div style="font-size: var(--font-size-xs); color: var(--gray-500);">人工构造</div>
+                        </div>
+                        <div style="font-size: 1.5rem; color: var(--color-text-tertiary);">→</div>
+                        <div style="text-align: center; flex: 1;">
+                            <div style="font-size: 2rem; margin-bottom: 8px;">🚀</div>
+                            <div style="font-weight: 600; font-size: 0.9rem;">成熟化</div>
+                            <div style="font-size: var(--font-size-xs); color: var(--gray-500);">~1000条</div>
+                            <div style="font-size: var(--font-size-xs); color: var(--gray-500);">线上回流</div>
+                        </div>
+                        <div style="font-size: 1.5rem; color: var(--color-text-tertiary);">→</div>
+                        <div style="text-align: center; flex: 1;">
+                            <div style="font-size: 2rem; margin-bottom: 8px;">🤖</div>
+                            <div style="font-weight: 600; font-size: 0.9rem;">深水区</div>
+                            <div style="font-size: var(--font-size-xs); color: var(--gray-500);">~10000条</div>
+                            <div style="font-size: var(--font-size-xs); color: var(--gray-500);">智能合成</div>
+                        </div>
+                    </div>
+                    <div style="margin-top: 12px; font-size: var(--font-size-sm); color: var(--gray-500); text-align: center;">
+                        💡 建议：三种方式不是互斥的，成熟项目应该<strong>组合使用</strong>，比例建议：线上回流 50% + 智能合成 30% + 人工精选 20%
+                    </div>
+                </div>
+                
+                <!-- Ground Truth设计 -->
+                <h4 style="font-size: 0.95rem; margin-bottom: 16px; display: flex; align-items: center; gap: 8px;">
+                    <span>🎯</span> 如何设计Ground Truth（标准答案）？
+                </h4>
+                
+                <p style="color: var(--gray-600); margin-bottom: 16px; font-size: 0.9rem;">
+                    Ground Truth是评测的"金标准"，设计不好，评测结果就没意义。不同场景需要不同粒度的Ground Truth：
+                </p>
+                
+                <div style="overflow-x: auto; margin-bottom: var(--spacing-md);">
+                    <table style="width: 100%; border-collapse: collapse; font-size: var(--font-size-sm);">
+                        <thead>
+                            <tr style="background: var(--gray-100);">
+                                <th style="padding: 10px; text-align: left; border-bottom: 2px solid var(--gray-200);">GT类型</th>
+                                <th style="padding: 10px; text-align: left; border-bottom: 2px solid var(--gray-200);">描述</th>
+                                <th style="padding: 10px; text-align: center; border-bottom: 2px solid var(--gray-200);">是否必需</th>
+                                <th style="padding: 10px; text-align: left; border-bottom: 2px solid var(--gray-200);">GT构造方法</th>
+                                <th style="padding: 10px; text-align: left; border-bottom: 2px solid var(--gray-200);">示例</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td style="padding: 10px; border-bottom: 1px solid var(--gray-100);">
+                                    <span style="background: #DBEAFE; padding: 2px 6px; border-radius: 4px; font-size: var(--font-size-xs);">精确匹配型</span>
+                                </td>
+                                <td style="padding: 10px; border-bottom: 1px solid var(--gray-100);">
+                                    回答必须与标准答案完全一致
+                                </td>
+                                <td style="padding: 10px; text-align: center; border-bottom: 1px solid var(--gray-100);">
+                                    <span style="color: #DC2626; font-weight: 700;">必需 ✓</span>
+                                </td>
+                                <td style="padding: 10px; border-bottom: 1px solid var(--gray-100);">
+                                    <strong>数据库/API直接获取</strong><br>
+                                    <span style="color: var(--gray-500); font-size: var(--font-size-xs);">从源系统查询真实数据作为GT</span>
+                                </td>
+                                <td style="padding: 10px; border-bottom: 1px solid var(--gray-100); font-size: var(--font-size-xs);">
+                                    Q: "订单12345状态？"<br>GT: "已发货，预计明天到达"
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 10px; border-bottom: 1px solid var(--gray-100);">
+                                    <span style="background: #D1FAE5; padding: 2px 6px; border-radius: 4px; font-size: var(--font-size-xs);">要点覆盖型</span>
+                                </td>
+                                <td style="padding: 10px; border-bottom: 1px solid var(--gray-100);">
+                                    回答需包含指定关键信息点
+                                </td>
+                                <td style="padding: 10px; text-align: center; border-bottom: 1px solid var(--gray-100);">
+                                    <span style="color: #DC2626; font-weight: 700;">必需 ✓</span>
+                                </td>
+                                <td style="padding: 10px; border-bottom: 1px solid var(--gray-100);">
+                                    <strong>人工标注要点列表</strong><br>
+                                    <span style="color: var(--gray-500); font-size: var(--font-size-xs);">由领域专家提取必须包含的关键要点</span>
+                                </td>
+                                <td style="padding: 10px; border-bottom: 1px solid var(--gray-100); font-size: var(--font-size-xs);">
+                                    Q: "退货政策？"<br>GT: [7天无理由][未拆封][运费自理]
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 10px; border-bottom: 1px solid var(--gray-100);">
+                                    <span style="background: #FEF3C7; padding: 2px 6px; border-radius: 4px; font-size: var(--font-size-xs);">行为校验型</span>
+                                </td>
+                                <td style="padding: 10px; border-bottom: 1px solid var(--gray-100);">
+                                    校验Agent执行了正确动作
+                                </td>
+                                <td style="padding: 10px; text-align: center; border-bottom: 1px solid var(--gray-100);">
+                                    <span style="color: #DC2626; font-weight: 700;">必需 ✓</span>
+                                </td>
+                                <td style="padding: 10px; border-bottom: 1px solid var(--gray-100);">
+                                    <strong>定义期望的工具调用序列</strong><br>
+                                    <span style="color: var(--gray-500); font-size: var(--font-size-xs);">明确API名称、参数、调用顺序</span>
+                                </td>
+                                <td style="padding: 10px; border-bottom: 1px solid var(--gray-100); font-size: var(--font-size-xs);">
+                                    Q: "查订单"<br>GT: order_api(id=12345)
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 10px;">
+                                    <span style="background: #FCE7F3; padding: 2px 6px; border-radius: 4px; font-size: var(--font-size-xs);">语义等价型</span>
+                                </td>
+                                <td style="padding: 10px;">
+                                    意思相同即可，不要求字面一致
+                                </td>
+                                <td style="padding: 10px; text-align: center;">
+                                    <span style="color: #B45309; font-weight: 700;">可选 △</span>
+                                </td>
+                                <td style="padding: 10px;">
+                                    <strong>参考答案 + 评估标准</strong><br>
+                                    <span style="color: var(--gray-500); font-size: var(--font-size-xs);">提供参考答案，用LLM评估语义相似度</span>
+                                </td>
+                                <td style="padding: 10px; font-size: var(--font-size-xs);">
+                                    Q: "推荐送女友的礼物"<br>GT: 推荐理由合理即可
+                                </td>
+                            </tr>
+                            <tr style="background: #F5F3FF;">
+                                <td style="padding: 10px;">
+                                    <span style="background: #EDE9FE; padding: 2px 6px; border-radius: 4px; font-size: var(--font-size-xs);">无GT型</span>
+                                </td>
+                                <td style="padding: 10px;">
+                                    完全开放，无标准答案
+                                </td>
+                                <td style="padding: 10px; text-align: center;">
+                                    <span style="color: #047857; font-weight: 700;">不需要 ✗</span>
+                                </td>
+                                <td style="padding: 10px;">
+                                    <strong>纯LLM评估 / 人工打分</strong><br>
+                                    <span style="color: var(--gray-500); font-size: var(--font-size-xs);">用模型评估创意性、流畅度等维度</span>
+                                </td>
+                                <td style="padding: 10px; font-size: var(--font-size-xs);">
+                                    Q: "写一首关于春天的诗"<br>GT: 无，由评估器评分
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <!-- 🆕 Agent执行轨迹GT构造方法详解 -->
+                <div style="background: linear-gradient(135deg, #FEF3C7 0%, #FFFBEB 100%); border: 2px solid #F59E0B; border-radius: 16px; padding: var(--spacing-md); margin-bottom: var(--spacing-md);">
+                    <h5 style="color: #B45309; margin-bottom: 16px; display: flex; align-items: center; gap: 8px;">
+                        <span style="font-size: 1.25rem;">🛤️</span> Agent执行轨迹的Ground Truth构造方法
+                    </h5>
+                    
+                    <p style="font-size: 0.85rem; color: var(--gray-600); margin-bottom: 16px;">
+                        Agent执行轨迹评测不同于简单的输入输出评测，需要校验Agent的决策路径是否正确。GT构造有以下几种方式：
+                    </p>
+                    
+                    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin-bottom: 16px;">
+                        <!-- 方式1：精确轨迹匹配 -->
+                        <div style="background: white; border-radius: 12px; padding: 16px;">
+                            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px;">
+                                <span style="background: #DBEAFE; color: #1D4ED8; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: var(--font-size-sm); font-weight: 700;">1</span>
+                                <strong style="font-size: 0.9rem;">精确轨迹匹配</strong>
+                            </div>
+                            <div style="font-size: var(--font-size-sm); color: var(--gray-600); margin-bottom: 8px;">
+                                定义期望的完整调用序列，严格匹配
+                            </div>
+                            <div style="background: var(--gray-100); padding: 10px; border-radius: 6px; font-size: var(--font-size-xs); font-family: monospace;">
+                                GT: [<br>
+                                &nbsp;&nbsp;{tool: "search", params: {q: "……"}},<br>
+                                &nbsp;&nbsp;{tool: "calculate", params: {……}}<br>
+                                ]
+                            </div>
+                            <div style="margin-top: 8px; font-size: var(--font-size-xs); color: var(--gray-500);">
+                                ✅ 适合：流程固定的场景
+                            </div>
+                        </div>
+                        
+                        <!-- 方式2：关键节点校验 -->
+                        <div style="background: white; border-radius: 12px; padding: 16px;">
+                            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px;">
+                                <span style="background: #D1FAE5; color: #059669; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: var(--font-size-sm); font-weight: 700;">2</span>
+                                <strong style="font-size: 0.9rem;">关键节点校验</strong>
+                            </div>
+                            <div style="font-size: var(--font-size-sm); color: var(--gray-600); margin-bottom: 8px;">
+                                只校验必须执行的关键步骤，顺序可灵活
+                            </div>
+                            <div style="background: var(--gray-100); padding: 10px; border-radius: 6px; font-size: var(--font-size-xs); font-family: monospace;">
+                                GT: {<br>
+                                &nbsp;&nbsp;must_call: ["auth_api", "order_api"],<br>
+                                &nbsp;&nbsp;must_not_call: ["delete_api"]<br>
+                                }
+                            </div>
+                            <div style="margin-top: 8px; font-size: var(--font-size-xs); color: var(--gray-500);">
+                                ✅ 适合：多路径可行的场景
+                            </div>
+                        </div>
+                        
+                        <!-- 方式3：参数约束校验 -->
+                        <div style="background: white; border-radius: 12px; padding: 16px;">
+                            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px;">
+                                <span style="background: #FCE7F3; color: #BE185D; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: var(--font-size-sm); font-weight: 700;">3</span>
+                                <strong style="font-size: 0.9rem;">参数约束校验</strong>
+                            </div>
+                            <div style="font-size: var(--font-size-sm); color: var(--gray-600); margin-bottom: 8px;">
+                                校验工具调用的参数是否符合预期
+                            </div>
+                            <div style="background: var(--gray-100); padding: 10px; border-radius: 6px; font-size: var(--font-size-xs); font-family: monospace;">
+                                GT: {<br>
+                                &nbsp;&nbsp;tool: "transfer",<br>
+                                &nbsp;&nbsp;params: {amount: "&lt;=1000"}<br>
+                                }
+                            </div>
+                            <div style="margin-top: 8px; font-size: var(--font-size-xs); color: var(--gray-500);">
+                                ✅ 适合：参数有业务约束的场景
+                            </div>
+                        </div>
+                        
+                        <!-- 方式4：轨迹相似度评估 -->
+                        <div style="background: white; border-radius: 12px; padding: 16px;">
+                            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px;">
+                                <span style="background: #EDE9FE; color: #7C3AED; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: var(--font-size-sm); font-weight: 700;">4</span>
+                                <strong style="font-size: 0.9rem;">轨迹相似度评估</strong>
+                            </div>
+                            <div style="font-size: var(--font-size-sm); color: var(--gray-600); margin-bottom: 8px;">
+                                用LLM评估实际轨迹与参考轨迹的等价性
+                            </div>
+                            <div style="background: var(--gray-100); padding: 10px; border-radius: 6px; font-size: var(--font-size-xs); font-family: monospace;">
+                                GT: {<br>
+                                &nbsp;&nbsp;reference_trace: [……],<br>
+                                &nbsp;&nbsp;similarity_threshold: 0.8<br>
+                                }
+                            </div>
+                            <div style="margin-top: 8px; font-size: var(--font-size-xs); color: var(--gray-500);">
+                                ✅ 适合：复杂/开放式任务
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 轨迹GT构造流程 -->
+                    <div style="background: white; border-radius: 12px; padding: 16px;">
+                        <h6 style="margin-bottom: 12px; font-size: 0.85rem;">📝 轨迹GT构造流程</h6>
+                        <div style="display: flex; align-items: center; justify-content: space-between; font-size: var(--font-size-sm);">
+                            <div style="text-align: center; flex: 1;">
+                                <div style="background: #DBEAFE; padding: 8px; border-radius: 6px; margin-bottom: 4px;">1. 人工执行任务</div>
+                                <div style="font-size: var(--font-size-xs); color: var(--gray-500);">记录正确轨迹</div>
+                            </div>
+                            <div style="color: var(--color-text-tertiary);">→</div>
+                            <div style="text-align: center; flex: 1;">
+                                <div style="background: #D1FAE5; padding: 8px; border-radius: 6px; margin-bottom: 4px;">2. 提取关键节点</div>
+                                <div style="font-size: var(--font-size-xs); color: var(--gray-500);">识别必要步骤</div>
+                            </div>
+                            <div style="color: var(--color-text-tertiary);">→</div>
+                            <div style="text-align: center; flex: 1;">
+                                <div style="background: #FEF3C7; padding: 8px; border-radius: 6px; margin-bottom: 4px;">3. 定义校验规则</div>
+                                <div style="font-size: var(--font-size-xs); color: var(--gray-500);">精确/关键/参数</div>
+                            </div>
+                            <div style="color: var(--color-text-tertiary);">→</div>
+                            <div style="text-align: center; flex: 1;">
+                                <div style="background: #FCE7F3; padding: 8px; border-radius: 6px; margin-bottom: 4px;">4. 验证多种路径</div>
+                                <div style="font-size: var(--font-size-xs); color: var(--gray-500);">避免过度约束</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="funny-bubble tip" style="margin-top: 24px;">
+                    <strong>评测集准备Tips：</strong>
+                    <ul style="margin-top: 8px; font-size: 0.9rem; color: var(--gray-700);">
+                        <li>覆盖高频场景（80%用例）+ 边界场景（20%用例）</li>
+                        <li>包含正例（期望成功）和负例（期望拒绝）</li>
+                        <li>定期更新，加入线上发现的Badcase</li>
+                        <li><strong>建议配比</strong>：线上回流50% + 智能合成30% + 人工精选20%</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <!-- 🆕 如何设计评估器 -->
+            <div class="card" style="margin-bottom: var(--spacing-xl);">
+                <h3 style="margin-bottom: var(--spacing-md); display: flex; align-items: center; gap: 12px;">
+                    <span>⚖️</span> 如何设计评估器？（继续以电商客服Agent为例）
+                </h3>
+                
+                <p style="color: var(--gray-600); margin-bottom: var(--spacing-md); font-size: 0.95rem;">
+                    评估器就是"裁判"，决定Agent的回答是"好"还是"不好"。基于前面的架构分析，我们为电商客服Agent的每个组件设计对应的评估器。
+                </p>
+                
+                <!-- 评估器类型 -->
+                <h4 style="font-size: 0.95rem; margin-bottom: 16px; display: flex; align-items: center; gap: 8px;">
+                    <span>📦</span> 评估器的三大类型
+                </h4>
+                
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: var(--spacing-lg);">
+                    <!-- 规则型 -->
+                    <div style="background: linear-gradient(135deg, #DBEAFE 0%, #EFF6FF 100%); border-radius: 12px; padding: 20px; border: 2px solid #93C5FD;">
+                        <div style="font-size: 1.5rem; margin-bottom: 8px;">📏</div>
+                        <h5 style="color: #1D4ED8; margin-bottom: 8px;">规则型评估器</h5>
+                        <p style="font-size: 0.85rem; color: var(--gray-600); margin-bottom: 12px;">
+                            基于明确规则判断对错，速度快、成本低
+                        </p>
+                        <div style="background: white; padding: 12px; border-radius: 8px; font-size: var(--font-size-sm);">
+                            <strong>电商客服适用：</strong>
+                            <ul style="margin: 4px 0 0 16px; color: var(--gray-600);">
+                                <li>工具调用校验（订单API参数）</li>
+                                <li>意图分类准确率</li>
+                                <li>响应时长检测</li>
+                                <li>敏感词过滤</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <!-- 模型型 -->
+                    <div style="background: linear-gradient(135deg, #D1FAE5 0%, #ECFDF5 100%); border-radius: 12px; padding: 20px; border: 2px solid #6EE7B7;">
+                        <div style="font-size: 1.5rem; margin-bottom: 8px;">🧠</div>
+                        <h5 style="color: #059669; margin-bottom: 8px;">模型型评估器</h5>
+                        <p style="font-size: 0.85rem; color: var(--gray-600); margin-bottom: 12px;">
+                            用LLM来评判，能处理复杂语义
+                        </p>
+                        <div style="background: white; padding: 12px; border-radius: 8px; font-size: var(--font-size-sm);">
+                            <strong>电商客服适用：</strong>
+                            <ul style="margin: 4px 0 0 16px; color: var(--gray-600);">
+                                <li>回复内容质量（1-5分）</li>
+                                <li>政策解读准确性</li>
+                                <li>语义一致性检测</li>
+                                <li>情绪安抚效果</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <!-- 人工型 -->
+                    <div style="background: linear-gradient(135deg, #FEF3C7 0%, #FFFBEB 100%); border-radius: 12px; padding: 20px; border: 2px solid #FCD34D;">
+                        <div style="font-size: 1.5rem; margin-bottom: 8px;">👨‍⚖️</div>
+                        <h5 style="color: #B45309; margin-bottom: 8px;">人工评估器</h5>
+                        <p style="font-size: 0.85rem; color: var(--gray-600); margin-bottom: 12px;">
+                            人工打标，金标准但成本高
+                        </p>
+                        <div style="background: white; padding: 12px; border-radius: 8px; font-size: var(--font-size-sm);">
+                            <strong>电商客服适用：</strong>
+                            <ul style="margin: 4px 0 0 16px; color: var(--gray-600);">
+                                <li>推荐合理性评估</li>
+                                <li>复杂投诉处理判断</li>
+                                <li>校准模型评估器</li>
+                                <li>边界case仲裁</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 电商客服Agent评估器设计示例 -->
+                <h4 style="font-size: 0.95rem; margin-bottom: 16px; display: flex; align-items: center; gap: 8px;">
+                    <span>🛒</span> 电商客服Agent评估器设计（按组件）
+                </h4>
+                
+                <div style="overflow-x: auto; margin-bottom: var(--spacing-md);">
+                    <table style="width: 100%; border-collapse: collapse; font-size: 0.85rem;">
+                        <thead>
+                            <tr style="background: var(--gray-100);">
+                                <th style="padding: 12px; text-align: left; border-bottom: 2px solid var(--gray-200);">Agent组件</th>
+                                <th style="padding: 12px; text-align: left; border-bottom: 2px solid var(--gray-200);">评估维度</th>
+                                <th style="padding: 12px; text-align: left; border-bottom: 2px solid var(--gray-200);">评估器类型</th>
+                                <th style="padding: 12px; text-align: left; border-bottom: 2px solid var(--gray-200);">评估逻辑</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr style="background: #EFF6FF;">
+                                <td style="padding: 12px; border-bottom: 1px solid var(--gray-100);" rowspan="2">
+                                    <strong>🧠 意图识别</strong>
+                                </td>
+                                <td style="padding: 12px; border-bottom: 1px solid var(--gray-100);">
+                                    <span style="background: #DBEAFE; padding: 2px 8px; border-radius: 4px;">分类准确率</span>
+                                </td>
+                                <td style="padding: 12px; border-bottom: 1px solid var(--gray-100);">📏 规则型</td>
+                                <td style="padding: 12px; border-bottom: 1px solid var(--gray-100);">
+                                    预测意图 == 标注意图
+                                </td>
+                            </tr>
+                            <tr style="background: #EFF6FF;">
+                                <td style="padding: 12px; border-bottom: 1px solid var(--gray-100);">
+                                    <span style="background: #DBEAFE; padding: 2px 8px; border-radius: 4px;">意图召回率</span>
+                                </td>
+                                <td style="padding: 12px; border-bottom: 1px solid var(--gray-100);">📏 规则型</td>
+                                <td style="padding: 12px; border-bottom: 1px solid var(--gray-100);">
+                                    各类意图是否都能被正确识别
+                                </td>
+                            </tr>
+                            <tr style="background: #ECFDF5;">
+                                <td style="padding: 12px; border-bottom: 1px solid var(--gray-100);" rowspan="2">
+                                    <strong>📚 知识检索</strong>
+                                </td>
+                                <td style="padding: 12px; border-bottom: 1px solid var(--gray-100);">
+                                    <span style="background: #D1FAE5; padding: 2px 8px; border-radius: 4px;">召回相关性</span>
+                                </td>
+                                <td style="padding: 12px; border-bottom: 1px solid var(--gray-100);">🧠 模型型</td>
+                                <td style="padding: 12px; border-bottom: 1px solid var(--gray-100);">
+                                    LLM判断召回文档与问题相关度
+                                </td>
+                            </tr>
+                            <tr style="background: #ECFDF5;">
+                                <td style="padding: 12px; border-bottom: 1px solid var(--gray-100);">
+                                    <span style="background: #D1FAE5; padding: 2px 8px; border-radius: 4px;">政策准确性</span>
+                                </td>
+                                <td style="padding: 12px; border-bottom: 1px solid var(--gray-100);">📏 规则型</td>
+                                <td style="padding: 12px; border-bottom: 1px solid var(--gray-100);">
+                                    回答中的政策要点与知识库一致
+                                </td>
+                            </tr>
+                            <tr style="background: #FFFBEB;">
+                                <td style="padding: 12px; border-bottom: 1px solid var(--gray-100);" rowspan="2">
+                                    <strong>🔧 工具调用</strong>
+                                </td>
+                                <td style="padding: 12px; border-bottom: 1px solid var(--gray-100);">
+                                    <span style="background: #FEF3C7; padding: 2px 8px; border-radius: 4px;">调用正确性</span>
+                                </td>
+                                <td style="padding: 12px; border-bottom: 1px solid var(--gray-100);">📏 规则型</td>
+                                <td style="padding: 12px; border-bottom: 1px solid var(--gray-100);">
+                                    调用的API名称和参数与期望一致
+                                </td>
+                            </tr>
+                            <tr style="background: #FFFBEB;">
+                                <td style="padding: 12px; border-bottom: 1px solid var(--gray-100);">
+                                    <span style="background: #FEF3C7; padding: 2px 8px; border-radius: 4px;">参数提取</span>
+                                </td>
+                                <td style="padding: 12px; border-bottom: 1px solid var(--gray-100);">📏 规则型</td>
+                                <td style="padding: 12px; border-bottom: 1px solid var(--gray-100);">
+                                    订单号、用户ID等参数提取正确
+                                </td>
+                            </tr>
+                            <tr style="background: #FCE7F3;">
+                                <td style="padding: 12px; border-bottom: 1px solid var(--gray-100);" rowspan="2">
+                                    <strong>💬 回复生成</strong>
+                                </td>
+                                <td style="padding: 12px; border-bottom: 1px solid var(--gray-100);">
+                                    <span style="background: #FCE7F3; padding: 2px 8px; border-radius: 4px;">信息完整性</span>
+                                </td>
+                                <td style="padding: 12px; border-bottom: 1px solid var(--gray-100);">🧠 模型型</td>
+                                <td style="padding: 12px; border-bottom: 1px solid var(--gray-100);">
+                                    LLM判断回答是否包含必要信息点
+                                </td>
+                            </tr>
+                            <tr style="background: #FCE7F3;">
+                                <td style="padding: 12px; border-bottom: 1px solid var(--gray-100);">
+                                    <span style="background: #FCE7F3; padding: 2px 8px; border-radius: 4px;">语言质量</span>
+                                </td>
+                                <td style="padding: 12px; border-bottom: 1px solid var(--gray-100);">🧠 模型型</td>
+                                <td style="padding: 12px; border-bottom: 1px solid var(--gray-100);">
+                                    友好度、专业性、简洁性评分
+                                </td>
+                            </tr>
+                            <tr style="background: #EDE9FE;">
+                                <td style="padding: 12px;">
+                                    <strong>🎯 端到端</strong>
+                                </td>
+                                <td style="padding: 12px;">
+                                    <span style="background: #EDE9FE; padding: 2px 8px; border-radius: 4px;">问题解决率</span>
+                                </td>
+                                <td style="padding: 12px;">🧠 模型型 + 👨‍⚖️ 人工</td>
+                                <td style="padding: 12px;">
+                                    用户问题是否被有效解决
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <!-- 原有的客服Agent评估器设计示例标题改为评估器权重 -->
+                <h4 style="font-size: 0.95rem; margin-bottom: 16px; display: flex; align-items: center; gap: 8px;">
+                    <span>⚖️</span> 评估维度权重分配（电商客服场景）
+                </h4>
+                
+                <div style="overflow-x: auto; margin-bottom: var(--spacing-md);">
+                    <table style="width: 100%; border-collapse: collapse; font-size: 0.85rem;">
+                        <thead>
+                            <tr style="background: var(--gray-100);">
+                                <th style="padding: 12px; text-align: left; border-bottom: 2px solid var(--gray-200);">评估维度</th>
+                                <th style="padding: 12px; text-align: left; border-bottom: 2px solid var(--gray-200);">评估器类型</th>
+                                <th style="padding: 12px; text-align: left; border-bottom: 2px solid var(--gray-200);">评估逻辑</th>
+                                <th style="padding: 12px; text-align: center; border-bottom: 2px solid var(--gray-200);">权重</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td style="padding: 12px; border-bottom: 1px solid var(--gray-100);">
+                                    <span style="background: #DBEAFE; padding: 2px 8px; border-radius: 4px;">工具调用正确性</span>
+                                </td>
+                                <td style="padding: 12px; border-bottom: 1px solid var(--gray-100);">📏 规则型</td>
+                                <td style="padding: 12px; border-bottom: 1px solid var(--gray-100);">
+                                    检查是否调用了正确的API，参数是否匹配
+                                </td>
+                                <td style="padding: 12px; text-align: center; border-bottom: 1px solid var(--gray-100); font-weight: 600;">25%</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 12px; border-bottom: 1px solid var(--gray-100);">
+                                    <span style="background: #D1FAE5; padding: 2px 8px; border-radius: 4px;">答案准确性</span>
+                                </td>
+                                <td style="padding: 12px; border-bottom: 1px solid var(--gray-100);">🧠 模型型</td>
+                                <td style="padding: 12px; border-bottom: 1px solid var(--gray-100);">
+                                    用LLM判断回答是否正确回答了用户问题
+                                </td>
+                                <td style="padding: 12px; text-align: center; border-bottom: 1px solid var(--gray-100); font-weight: 600;">30%</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 12px; border-bottom: 1px solid var(--gray-100);">
+                                    <span style="background: #FEF3C7; padding: 2px 8px; border-radius: 4px;">回复完整性</span>
+                                </td>
+                                <td style="padding: 12px; border-bottom: 1px solid var(--gray-100);">🧠 模型型</td>
+                                <td style="padding: 12px; border-bottom: 1px solid var(--gray-100);">
+                                    是否包含关键信息点，有无遗漏
+                                </td>
+                                <td style="padding: 12px; text-align: center; border-bottom: 1px solid var(--gray-100); font-weight: 600;">20%</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 12px; border-bottom: 1px solid var(--gray-100);">
+                                    <span style="background: #FCE7F3; padding: 2px 8px; border-radius: 4px;">语气友好度</span>
+                                </td>
+                                <td style="padding: 12px; border-bottom: 1px solid var(--gray-100);">🧠 模型型</td>
+                                <td style="padding: 12px; border-bottom: 1px solid var(--gray-100);">
+                                    语气是否礼貌、专业、有温度
+                                </td>
+                                <td style="padding: 12px; text-align: center; border-bottom: 1px solid var(--gray-100); font-weight: 600;">10%</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 12px;">
+                                    <span style="background: #EDE9FE; padding: 2px 8px; border-radius: 4px;">安全合规</span>
+                                </td>
+                                <td style="padding: 12px;">📏 规则型</td>
+                                <td style="padding: 12px;">
+                                    无敏感词、无不当承诺、无隐私泄露
+                                </td>
+                                <td style="padding: 12px; text-align: center; font-weight: 600;">15%</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <!-- 模型型评估器Prompt示例 -->
+                <h4 style="font-size: 0.95rem; margin-bottom: 16px; display: flex; align-items: center; gap: 8px;">
+                    <span>💡</span> 模型型评估器的Prompt设计示例
+                </h4>
+                
+                <div style="background: var(--color-bg-table-header); color: var(--color-text-primary); border-radius: 12px; padding: 20px; font-family: 'Consolas', monospace; font-size: 0.85rem; margin-bottom: var(--spacing-md);">
+                    <div style="color: #6EE7B7; margin-bottom: 12px;"># 答案准确性评估器 Prompt</div>
+                    <div style="color: var(--color-text-secondary); line-height: 1.8;">
+                        你是一个专业的客服质检员，请评估以下客服回复的准确性。<br><br>
+                        <span style="color: var(--color-success);">【用户问题】</span><br>
+                        {user_question}<br><br>
+                        <span style="color: var(--color-success);">【客服回复】</span><br>
+                        {agent_response}<br><br>
+                        <span style="color: var(--color-success);">【参考答案】</span><br>
+                        {reference_answer}<br><br>
+                        请从以下维度评分（1-5分）：<br>
+                        1. 事实准确性：回答是否与参考答案一致<br>
+                        2. 信息完整性：是否包含关键信息点<br>
+                        3. 逻辑清晰度：表达是否清晰易懂<br><br>
+                        <span style="color: #1D4ED8;">输出格式（JSON）：</span><br>
+                        {"accuracy": 4, "completeness": 5, "clarity": 4, "overall": 4, "reason": "……"}
+                    </div>
+                </div>
+                
+                <!-- 评估器设计原则 -->
+                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px;">
+                    <div style="background: #D1FAE5; border-radius: 12px; padding: 20px;">
+                        <h5 style="color: #059669; margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
+                            <span>✅</span> 评估器设计原则
+                        </h5>
+                        <ul style="font-size: 0.85rem; color: var(--gray-700); margin: 0; padding-left: 20px;">
+                            <li style="padding: 4px 0;">评估标准要<strong>明确具体</strong>，避免模糊描述</li>
+                            <li style="padding: 4px 0;">能用规则型就用规则型，<strong>成本低、速度快</strong></li>
+                            <li style="padding: 4px 0;">模型型评估器要用<strong>强模型</strong>（GPT-4/Claude）</li>
+                            <li style="padding: 4px 0;">定期用人工评估<strong>校准</strong>模型评估器</li>
+                            <li style="padding: 4px 0;">输出要<strong>结构化</strong>，便于统计分析</li>
+                        </ul>
+                    </div>
+                    <div style="background: #FEF2F2; border-radius: 12px; padding: 20px;">
+                        <h5 style="color: #DC2626; margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
+                            <span>❌</span> 常见设计误区
+                        </h5>
+                        <ul style="font-size: 0.85rem; color: var(--gray-700); margin: 0; padding-left: 20px;">
+                            <li style="padding: 4px 0;">用<strong>弱模型</strong>评估强模型的输出</li>
+                            <li style="padding: 4px 0;">评估维度<strong>过多</strong>导致结果难以解读</li>
+                            <li style="padding: 4px 0;">评估Prompt<strong>太模糊</strong>（如"判断好不好"）</li>
+                            <li style="padding: 4px 0;">忽略<strong>边界case</strong>的评估设计</li>
+                            <li style="padding: 4px 0;">评估器<strong>从不迭代</strong>，业务变了评估没变</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="joke-insert" style="margin-top: 24px;">
+                    <div class="emoji">🎯</div>
+                    <div class="content">
+                        <div class="title">评估器选择速查</div>
+                        <div class="text">
+                            <strong>能用规则判断的 →</strong> 规则型（快、便宜）<br>
+                            <strong>需要理解语义的 →</strong> 模型型（准、贵点）<br>
+                            <strong>创意/争议场景 →</strong> 人工评估（金标准）
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 评测报告分析 -->
+            <div class="card" style="margin-bottom: var(--spacing-xl);">
+                <h3 style="margin-bottom: var(--spacing-md); display: flex; align-items: center; gap: 12px;">
+                    <span>📊</span> 如何分析评测报告？（继续以电商客服Agent为例）
+                </h3>
+                
+                <!-- 案例引入 -->
+                <div style="background: linear-gradient(135deg, #EFF6FF 0%, #DBEAFE 100%); border-radius: 12px; padding: 16px; margin-bottom: var(--spacing-md); border-left: 4px solid #3B82F6;">
+                    <div style="font-size: 0.9rem; color: var(--gray-700);">
+                        <strong>🛒 继续案例</strong>：电商客服Agent完成一次评测后，生成了以下报告。我们来看如何分析并找到优化方向。
+                    </div>
+                </div>
+                
+                <!-- 模拟评测报告 -->
+                <div style="background: var(--dark); color: var(--color-text-primary); border-radius: 12px; padding: var(--spacing-md); margin-bottom: var(--spacing-md);">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                        <h4 style="color: var(--color-success);">📋 电商客服Agent 评测报告 v1.2.0</h4>
+                        <span style="font-size: 0.85rem; color: var(--color-text-tertiary);">2026-02-15 14:30</span>
+                    </div>
+                    
+                    <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: var(--spacing-md);">
+                        <div style="background: rgba(255,255,255,0.1); padding: 16px; border-radius: 8px; text-align: center;">
+                            <div style="font-size: 1.75rem; font-weight: 700; color: #047857;">87.3%</div>
+                            <div style="font-size: var(--font-size-sm); color: var(--color-text-tertiary);">整体准确率</div>
+                        </div>
+                        <div style="background: rgba(255,255,255,0.1); padding: 16px; border-radius: 8px; text-align: center;">
+                            <div style="font-size: 1.75rem; font-weight: 700; color: #1D4ED8;">92.1%</div>
+                            <div style="font-size: var(--font-size-sm); color: var(--color-text-tertiary);">工具调用成功率</div>
+                        </div>
+                        <div style="background: rgba(255,255,255,0.1); padding: 16px; border-radius: 8px; text-align: center;">
+                            <div style="font-size: 1.75rem; font-weight: 700; color: #B45309;">1.2s</div>
+                            <div style="font-size: var(--font-size-sm); color: var(--color-text-tertiary);">平均响应时间</div>
+                        </div>
+                        <div style="background: rgba(255,255,255,0.1); padding: 16px; border-radius: 8px; text-align: center;">
+                            <div style="font-size: 1.75rem; font-weight: 700; color: #EC4899;">99.2%</div>
+                            <div style="font-size: var(--font-size-sm); color: var(--color-text-tertiary);">安全合规率</div>
+                        </div>
+                    </div>
+                    
+                    <!-- 按组件拆解指标 -->
+                    <div style="background: rgba(255,255,255,0.05); padding: 16px; border-radius: 8px; margin-bottom: 16px;">
+                        <div style="font-weight: 600; color: var(--color-success); margin-bottom: 12px;">📊 各组件评测指标</div>
+                        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; font-size: var(--font-size-sm);">
+                            <div style="text-align: center;">
+                                <div style="color: var(--color-text-tertiary); margin-bottom: 4px;">🧠 意图识别</div>
+                                <div style="color: #047857; font-weight: 600;">94.2%</div>
+                            </div>
+                            <div style="text-align: center;">
+                                <div style="color: var(--color-text-tertiary); margin-bottom: 4px;">📚 知识检索</div>
+                                <div style="color: #B45309; font-weight: 600;">78.5%</div>
+                            </div>
+                            <div style="text-align: center;">
+                                <div style="color: var(--color-text-tertiary); margin-bottom: 4px;">🔧 工具调用</div>
+                                <div style="color: #1D4ED8; font-weight: 600;">92.1%</div>
+                            </div>
+                            <div style="text-align: center;">
+                                <div style="color: var(--color-text-tertiary); margin-bottom: 4px;">💬 回复质量</div>
+                                <div style="color: #047857; font-weight: 600;">89.3%</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div style="background: rgba(239, 68, 68, 0.2); border: 1px solid rgba(239, 68, 68, 0.4); padding: 16px; border-radius: 8px;">
+                        <div style="font-weight: 600; color: #B91C1C; margin-bottom: 8px;">⚠️ 发现问题</div>
+                        <ul style="font-size: 0.9rem; color: var(--color-text-secondary); margin: 0; padding-left: 20px;">
+                            <li><strong>"退换货咨询"场景准确率仅72.5%</strong>，低于目标85%（知识检索召回率低）</li>
+                            <li><strong>"投诉处理"场景有3例未正确转人工</strong>（情绪识别模块问题）</li>
+                            <li>订单查询场景有5例API参数提取错误（工具调用问题）</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <!-- 问题归因分析 -->
+                <h4 style="margin-bottom: 16px; display: flex; align-items: center; gap: 8px;">
+                    <span>🔍</span> Step 1：问题归因到具体组件
+                </h4>
+                
+                <div style="background: var(--gray-100); border-radius: 12px; padding: 20px; margin-bottom: var(--spacing-md);">
+                    <p style="color: var(--gray-600); margin-bottom: 16px; font-size: 0.9rem;">
+                        根据评测报告，我们对发现的问题进行归因分析：
+                    </p>
+                    <table style="width: 100%; border-collapse: collapse; font-size: 0.85rem;">
+                        <thead>
+                            <tr style="background: white;">
+                                <th style="padding: 10px; text-align: left; border-bottom: 2px solid var(--gray-200);">问题现象</th>
+                                <th style="padding: 10px; text-align: left; border-bottom: 2px solid var(--gray-200);">定位组件</th>
+                                <th style="padding: 10px; text-align: left; border-bottom: 2px solid var(--gray-200);">根因分析</th>
+                                <th style="padding: 10px; text-align: left; border-bottom: 2px solid var(--gray-200);">优化方案</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td style="padding: 10px; border-bottom: 1px solid var(--gray-200);">退换货场景准确率72.5%</td>
+                                <td style="padding: 10px; border-bottom: 1px solid var(--gray-200);"><span style="background: #D1FAE5; padding: 2px 6px; border-radius: 4px;">📚 知识检索</span></td>
+                                <td style="padding: 10px; border-bottom: 1px solid var(--gray-200);">退换货政策文档更新后未重建索引</td>
+                                <td style="padding: 10px; border-bottom: 1px solid var(--gray-200);">重建RAG索引，优化召回策略</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 10px; border-bottom: 1px solid var(--gray-200);">3例投诉未转人工</td>
+                                <td style="padding: 10px; border-bottom: 1px solid var(--gray-200);"><span style="background: #DBEAFE; padding: 2px 6px; border-radius: 4px;">🧠 意图/情绪识别</span></td>
+                                <td style="padding: 10px; border-bottom: 1px solid var(--gray-200);">隐晦表达的负面情绪未被识别</td>
+                                <td style="padding: 10px; border-bottom: 1px solid var(--gray-200);">补充负面情绪训练样本</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 10px;">5例API参数提取错误</td>
+                                <td style="padding: 10px;"><span style="background: #FEF3C7; padding: 2px 6px; border-radius: 4px;">🔧 工具调用</span></td>
+                                <td style="padding: 10px;">订单号格式多样（如带字母前缀）</td>
+                                <td style="padding: 10px;">优化参数提取Prompt，增加格式示例</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <!-- Agent常见问题分层诊断 -->
+                <h4 style="margin-bottom: 16px; display: flex; align-items: center; gap: 8px;">
+                    <span>🔬</span> Step 2：问题分层诊断（6大层面）
+                </h4>
+                
+                <p style="color: var(--gray-600); margin-bottom: 20px; font-size: 0.9rem;">
+                    Agent效果不好时，问题可能出在多个层面。正确定位问题层级是调优的第一步：
+                </p>
+                
+                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin-bottom: var(--spacing-lg);">
+                    <!-- 第1层：Agent组件问题 -->
+                    <div style="background: linear-gradient(135deg, #DBEAFE 0%, #EFF6FF 100%); border-radius: 12px; padding: 20px; border-left: 4px solid #3B82F6;">
+                        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px;">
+                            <span style="background: #3B82F6; color: white; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: var(--font-size-xs); font-weight: 700;">1</span>
+                            <h5 style="color: #1D4ED8; margin: 0;">Agent组件问题</h5>
+                        </div>
+                        <div style="font-size: 0.85rem; color: var(--gray-700); margin-bottom: 12px;">
+                            <strong>电商客服示例：</strong>
+                            <ul style="margin: 4px 0; padding-left: 16px;">
+                                <li>Prompt导致回答风格/格式不对</li>
+                                <li>订单API调用参数错误</li>
+                                <li>退换货政策RAG召回不相关</li>
+                                <li>转人工逻辑分支错误</li>
+                            </ul>
+                        </div>
+                        <div style="background: white; padding: 10px; border-radius: 6px; font-size: var(--font-size-sm);">
+                            <strong style="color: #047857;">调优方案：</strong>优化Prompt、修复Tool定义、调整RAG参数、重构Workflow
+                        </div>
+                    </div>
+                    
+                    <!-- 第2层：Multi-Agent架构问题 -->
+                    <div style="background: linear-gradient(135deg, #D1FAE5 0%, #ECFDF5 100%); border-radius: 12px; padding: 20px; border-left: 4px solid #10B981;">
+                        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px;">
+                            <span style="background: #10B981; color: white; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: var(--font-size-xs); font-weight: 700;">2</span>
+                            <h5 style="color: #059669; margin: 0;">Multi-Agent架构问题</h5>
+                        </div>
+                        <div style="font-size: 0.85rem; color: var(--gray-700); margin-bottom: 12px;">
+                            <strong>常见症状：</strong>
+                            <ul style="margin: 4px 0; padding-left: 16px;">
+                                <li>Agent间任务分配不清晰</li>
+                                <li>信息传递丢失/失真</li>
+                                <li>死循环或无限递归</li>
+                                <li>协同决策冲突</li>
+                            </ul>
+                        </div>
+                        <div style="background: white; padding: 10px; border-radius: 6px; font-size: var(--font-size-sm);">
+                            <strong style="color: #047857;">调优方案：</strong>明确职责边界、设计通信协议、增加终止条件、引入仲裁机制
+                        </div>
+                    </div>
+                    
+                    <!-- 第3层：模型层问题 -->
+                    <div style="background: linear-gradient(135deg, #FEF3C7 0%, #FFFBEB 100%); border-radius: 12px; padding: 20px; border-left: 4px solid #F59E0B;">
+                        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px;">
+                            <span style="background: #F59E0B; color: white; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: var(--font-size-xs); font-weight: 700;">3</span>
+                            <h5 style="color: #B45309; margin: 0;">模型层问题</h5>
+                        </div>
+                        <div style="font-size: 0.85rem; color: var(--gray-700); margin-bottom: 12px;">
+                            <strong>常见症状：</strong>
+                            <ul style="margin: 4px 0; padding-left: 16px;">
+                                <li>模型能力不足（推理/理解弱）</li>
+                                <li>幻觉问题严重</li>
+                                <li>响应速度慢、成本高</li>
+                                <li>指令遵循度差</li>
+                            </ul>
+                        </div>
+                        <div style="background: white; padding: 10px; border-radius: 6px; font-size: var(--font-size-sm);">
+                            <strong style="color: #047857;">调优方案：</strong>升级模型版本、模型路由策略、使用更大参数模型、考虑模型精调
+                        </div>
+                    </div>
+                    
+                    <!-- 第4层：训练数据问题 -->
+                    <div style="background: linear-gradient(135deg, #FCE7F3 0%, #FDF2F8 100%); border-radius: 12px; padding: 20px; border-left: 4px solid #EC4899;">
+                        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px;">
+                            <span style="background: #EC4899; color: white; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: var(--font-size-xs); font-weight: 700;">4</span>
+                            <h5 style="color: #BE185D; margin: 0;">训练数据问题</h5>
+                        </div>
+                        <div style="font-size: 0.85rem; color: var(--gray-700); margin-bottom: 12px;">
+                            <strong>常见症状：</strong>
+                            <ul style="margin: 4px 0; padding-left: 16px;">
+                                <li>特定场景表现差（数据缺失）</li>
+                                <li>过拟合某些模式</li>
+                                <li>知识过时（截止日期）</li>
+                                <li>领域知识不足</li>
+                            </ul>
+                        </div>
+                        <div style="background: white; padding: 10px; border-radius: 6px; font-size: var(--font-size-sm);">
+                            <strong style="color: #047857;">调优方案：</strong>补充训练数据、数据清洗去重、增加领域数据、SFT/RLHF微调
+                        </div>
+                    </div>
+                    
+                    <!-- 第5层：知识库问题 -->
+                    <div style="background: linear-gradient(135deg, #EDE9FE 0%, #F5F3FF 100%); border-radius: 12px; padding: 20px; border-left: 4px solid #8B5CF6;">
+                        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px;">
+                            <span style="background: #8B5CF6; color: white; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: var(--font-size-xs); font-weight: 700;">5</span>
+                            <h5 style="color: #6D28D9; margin: 0;">知识库/RAG问题</h5>
+                        </div>
+                        <div style="font-size: 0.85rem; color: var(--gray-700); margin-bottom: 12px;">
+                            <strong>常见症状：</strong>
+                            <ul style="margin: 4px 0; padding-left: 16px;">
+                                <li>召回内容不相关</li>
+                                <li>答案有但召不回来</li>
+                                <li>文档切片粒度不合理</li>
+                                <li>多文档冲突</li>
+                            </ul>
+                        </div>
+                        <div style="background: white; padding: 10px; border-radius: 6px; font-size: var(--font-size-sm);">
+                            <strong style="color: #047857;">调优方案：</strong>优化切片策略、调整Embedding模型、增加重排序、知识去重/更新
+                        </div>
+                    </div>
+                    
+                    <!-- 第6层：评测本身问题 -->
+                    <div style="background: linear-gradient(135deg, #F1F5F9 0%, #E2E8F0 100%); border-radius: 12px; padding: 20px; border-left: 4px solid #64748B;">
+                        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px;">
+                            <span style="background: #64748B; color: white; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: var(--font-size-xs); font-weight: 700;">6</span>
+                            <h5 style="color: #475569; margin: 0;">评测本身问题</h5>
+                        </div>
+                        <div style="font-size: 0.85rem; color: var(--gray-700); margin-bottom: 12px;">
+                            <strong>常见症状：</strong>
+                            <ul style="margin: 4px 0; padding-left: 16px;">
+                                <li>评测集不具代表性</li>
+                                <li>Ground Truth标注错误</li>
+                                <li>评估器Prompt有偏差</li>
+                                <li>评估维度缺失</li>
+                            </ul>
+                        </div>
+                        <div style="background: white; padding: 10px; border-radius: 6px; font-size: var(--font-size-sm);">
+                            <strong style="color: #047857;">调优方案：</strong>回流线上数据、人工校准GT、迭代评估器、增加评测维度
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 问题诊断流程图 -->
+                <div style="background: var(--gray-100); border-radius: 12px; padding: 20px; margin-bottom: var(--spacing-md);">
+                    <h5 style="margin-bottom: 16px; display: flex; align-items: center; gap: 8px;">
+                        <span>🔍</span> 问题诊断决策树
+                    </h5>
+                    <div style="font-size: 0.85rem; color: var(--gray-700);">
+                        <div style="display: flex; flex-wrap: wrap; gap: 8px; align-items: center;">
+                            <span style="background: #FEF3C7; padding: 6px 12px; border-radius: 6px;">评测报告显示问题</span>
+                            <span>→</span>
+                            <span style="background: #DBEAFE; padding: 6px 12px; border-radius: 6px;">先检查评测本身是否有问题</span>
+                            <span>→</span>
+                            <span style="background: #D1FAE5; padding: 6px 12px; border-radius: 6px;">查看Trace定位问题环节</span>
+                        </div>
+                        <div style="margin-top: 12px; padding-left: 20px;">
+                            <div style="margin: 8px 0;">├─ 问题在<strong>Tool调用</strong>？→ 检查Agent组件层（Prompt/Tool定义）</div>
+                            <div style="margin: 8px 0;">├─ 问题在<strong>知识召回</strong>？→ 检查RAG层（切片/Embedding/重排序）</div>
+                            <div style="margin: 8px 0;">├─ 问题在<strong>推理过程</strong>？→ 检查模型层（能力/幻觉）</div>
+                            <div style="margin: 8px 0;">├─ 问题在<strong>多Agent协同</strong>？→ 检查架构设计（职责/通信/仲裁）</div>
+                            <div style="margin: 8px 0;">└─ 多场景都有问题？→ 可能是训练数据问题，考虑模型微调</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 原有的问题分析与优化方向 -->
+                <h4 style="margin-bottom: 16px;">🔍 具体案例：根因分析 → 优化方向</h4>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                    <div style="background: #FEF2F2; border-radius: 8px; padding: 20px;">
+                        <div style="font-weight: 600; color: #DC2626; margin-bottom: 12px;">❌ 问题：退换货场景准确率低</div>
+                        <div style="font-size: 0.85rem; color: var(--gray-500); margin-bottom: 8px;">📍 定位层级：知识库/RAG问题</div>
+                        <div style="font-size: 0.9rem; color: var(--gray-700); margin-bottom: 12px;">
+                            <strong>根因分析：</strong>知识库中退换货政策文档过长，RAG召回不准确
+                        </div>
+                        <div style="background: white; padding: 12px; border-radius: 6px; font-size: 0.85rem;">
+                            <strong style="color: #047857;">✅ 优化方案：</strong>
+                            <ul style="margin: 8px 0 0 0; padding-left: 20px; color: var(--gray-600);">
+                                <li>拆分政策文档为细粒度FAQ</li>
+                                <li>优化召回策略，增加关键词权重</li>
+                                <li>补充Prompt中的政策摘要</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div style="background: #FEF2F2; border-radius: 8px; padding: 20px;">
+                        <div style="font-weight: 600; color: #DC2626; margin-bottom: 12px;">❌ 问题：投诉场景未转人工</div>
+                        <div style="font-size: 0.85rem; color: var(--gray-500); margin-bottom: 8px;">📍 定位层级：Agent组件问题（Prompt）</div>
+                        <div style="font-size: 0.9rem; color: var(--gray-700); margin-bottom: 12px;">
+                            <strong>根因分析：</strong>情绪识别Prompt不够敏感，"态度差"未被识别为投诉
+                        </div>
+                        <div style="background: white; padding: 12px; border-radius: 6px; font-size: 0.85rem;">
+                            <strong style="color: #047857;">✅ 优化方案：</strong>
+                            <ul style="margin: 8px 0 0 0; padding-left: 20px; color: var(--gray-600);">
+                                <li>增加情绪关键词列表</li>
+                                <li>降低投诉识别阈值</li>
+                                <li>增加"宁可误转不可漏转"规则</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="joke-insert" style="margin-top: 24px;">
+                    <div class="emoji">💡</div>
+                    <div class="content">
+                        <div class="title">调优黄金法则</div>
+                        <div class="text">
+                            <strong>先定位层级，再定位组件，最后动手改</strong>。盲目改Prompt是最常见的错误，可能问题根本不在Prompt！
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 调优迭代闭环 -->
+            <div class="card" style="background: var(--color-bg-table-header); border: 1px solid var(--color-border-light); color: var(--color-text-primary);">
+                <h3 style="margin-bottom: var(--spacing-md); display: flex; align-items: center; gap: 12px; color: var(--color-success);">
+                    <span>🔄</span> 调优迭代闭环
+                </h3>
+                
+                <div style="display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap;">
+                    <div style="flex: 1; min-width: 120px; text-align: center;">
+                        <div style="background: rgba(16, 185, 129, 0.2); border: 2px solid #10B981; width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 12px; font-size: 1.5rem;">1</div>
+                        <div style="font-size: 0.9rem;">跑评测</div>
+                        <div style="font-size: var(--font-size-xs); color: var(--color-text-tertiary);">发现问题</div>
+                    </div>
+                    <div style="color: var(--gray-500);">→</div>
+                    <div style="flex: 1; min-width: 120px; text-align: center;">
+                        <div style="background: rgba(59, 130, 246, 0.2); border: 2px solid #3B82F6; width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 12px; font-size: 1.5rem;">2</div>
+                        <div style="font-size: 0.9rem;">分析报告</div>
+                        <div style="font-size: var(--font-size-xs); color: var(--color-text-tertiary);">定位根因</div>
+                    </div>
+                    <div style="color: var(--gray-500);">→</div>
+                    <div style="flex: 1; min-width: 120px; text-align: center;">
+                        <div style="background: rgba(245, 158, 11, 0.2); border: 2px solid #F59E0B; width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 12px; font-size: 1.5rem;">3</div>
+                        <div style="font-size: 0.9rem;">实施优化</div>
+                        <div style="font-size: var(--font-size-xs); color: var(--color-text-tertiary);">改Prompt/模型</div>
+                    </div>
+                    <div style="color: var(--gray-500);">→</div>
+                    <div style="flex: 1; min-width: 120px; text-align: center;">
+                        <div style="background: rgba(139, 92, 246, 0.2); border: 2px solid #8B5CF6; width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 12px; font-size: 1.5rem;">4</div>
+                        <div style="font-size: 0.9rem;">回归验证</div>
+                        <div style="font-size: var(--font-size-xs); color: var(--color-text-tertiary);">确认修复</div>
+                    </div>
+                    <div style="color: var(--gray-500);">→</div>
+                    <div style="flex: 1; min-width: 120px; text-align: center;">
+                        <div style="background: rgba(236, 72, 153, 0.2); border: 2px solid #EC4899; width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 12px; font-size: 1.5rem;">5</div>
+                        <div style="font-size: 0.9rem;">发布上线</div>
+                        <div style="font-size: var(--font-size-xs); color: var(--color-text-tertiary);">持续监控</div>
+                    </div>
+                </div>
+                
+                <div style="margin-top: 24px; padding: 16px; background: rgba(255,255,255,0.1); border-radius: 8px; font-size: 0.9rem; text-align: center;">
+                    💡 <strong style="color: var(--color-success);">关键原则：</strong>
+                    <span style="color: var(--color-text-secondary);">每次迭代只改一个变量，这样才能知道是什么改动带来了效果提升（或下降）</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 跳转下一章 -->
+    <section class="section">
+        <div class="container">
+            <div class="section-header">
+                <h2>📝 本章小结</h2>
+                <p>Agent Infra的核心要点</p>
+            </div>
+            
+            <div class="card" style="max-width: 800px; margin: 0 auto;">
+                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--spacing-md);">
+                    <div>
+                        <h4 style="margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
+                            <span>✅</span> 你应该记住的
+                        </h4>
+                        <ul style="list-style: none; color: var(--gray-700); font-size: 0.95rem;">
+                            <li style="padding: 8px 0;">• Eino是字节首选Agent开发框架</li>
+                            <li style="padding: 8px 0;">• 扣子罗盘是AgentOps核心平台</li>
+                            <li style="padding: 8px 0;">• 评测·观测·调优是三件套</li>
+                            <li style="padding: 8px 0;">• 50+评估器让效果可量化</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4 style="margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
+                            <span>💡</span> 关键洞察
+                        </h4>
+                        <ul style="list-style: none; color: var(--gray-700); font-size: 0.95rem;">
+                            <li style="padding: 8px 0;">• Agent时代，DevOps能力同样重要</li>
+                            <li style="padding: 8px 0;">• 数据驱动比"感觉良好"靠谱</li>
+                            <li style="padding: 8px 0;">• 字节的内部实践是最好的背书</li>
+                            <li style="padding: 8px 0;">• 安全合规要内置，不能事后补救</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 页面导航 -->
+            <div class="page-nav" style="max-width: 800px; margin: 60px auto 0;">
+                <a href="architecture.html">
+                    <span>←</span>
+                    <span>上一章：技术架构</span>
+                </a>
+                <a href="security-practice.html" style="margin-left: auto;">
+                    <span>下一章：安全合规与业务实践</span>
+                    <span>→</span>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- 页脚 -->
+    <footer class="footer">
+        <div class="container">
+            <h3>🚀 字节跳动AI"开挂"指南</h3>
+            <div class="footer-links">
+                <a href="../home.html">首页</a>
+                <a href="ai-history.html">AI简史</a>
+                <a href="bytedance-journey.html">字节之路</a>
+                <a href="architecture.html">技术架构</a>
+                <a href="finance-insights.html">金融启示</a>
+            </div>
+            <div class="footer-bottom">
+                <p>更新时间：2026年2月</p>
+            </div>
+        </div>
+    </footer>
+
+    <script defer>
+        function toggleTrioCard(element) {
+            const cards = document.querySelectorAll('.trio-card');
+            cards.forEach(card => {
+                if (card !== element) {
+                    card.classList.remove('active');
+                }
+            });
+            element.classList.toggle('active');
+        }
+    </script>
+</body>
+</html>
