@@ -14,7 +14,7 @@
 
 ## 🚀 在线预览
 
-访问 [GitHub Pages](https://shenlang.github.io/bytedance-ai-guide/) 查看在线版本。
+访问 [GitHub Pages](https://xiaoxiong20260206.github.io/bytedance-ai-guide/) 查看在线版本。
 
 ## 🛠️ 本地运行
 
