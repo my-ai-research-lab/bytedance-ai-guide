@@ -591,9 +591,9 @@
             <li><a href="#impact">📊 核心价值</a></li>
             <li><a href="#faq">🤔 CEO关心的问题</a></li>
             <li><a href="#scenarios">💼 应用场景</a></li>
-            <li><a href="#roi">💰 投入产出测算</a></li>
             <li><a href="#action">🚀 行动路线</a></li>
             <li><a href="#risk">⚠️ 风险与应对</a></li>
+            <li><a href="#org-transform">🏢 组织转型指南</a></li>
         </ul>
     </nav>
 
@@ -779,267 +779,348 @@
         </div>
     </section>
 
-    <!-- 真实场景展示 -->
+    <!-- 真实场景展示（按价值排序） -->
     <section class="scenarios-section" id="scenarios">
         <div class="container">
             <div class="section-header">
                 <h2>💼 AI能帮我们做什么？</h2>
-                <p>不说虚的，直接看实际场景的前后对比</p>
+                <p>私募量化公司各岗位高价值AI场景，按价值从高到低排序</p>
             </div>
             
-            <div class="scenario-tabs">
-                <button class="scenario-tab active" onclick="switchScenario('research')">📊 投研分析</button>
-                <button class="scenario-tab" onclick="switchScenario('meeting')">📝 会议纪要</button>
-                <button class="scenario-tab" onclick="switchScenario('lp')">🤝 LP服务</button>
-                <button class="scenario-tab" onclick="switchScenario('risk')">⚠️ 风险监控</button>
-            </div>
-            
-            <!-- 投研分析 -->
-            <div class="scenario-content active" id="scenario-research">
-                <div class="scenario-demo">
-                    <div class="demo-before">
-                        <div class="demo-label">😩 以前这样做</div>
-                        <div class="demo-metrics">
-                            <div class="demo-metric">
-                                <span class="label">读完一份100页研报</span>
-                                <span class="value">2小时</span>
-                            </div>
-                            <div class="demo-metric">
-                                <span class="label">追踪50个标的新闻</span>
-                                <span class="value">整个上午</span>
-                            </div>
-                            <div class="demo-metric">
-                                <span class="label">整理行业对比数据</span>
-                                <span class="value">半天</span>
-                            </div>
-                            <div class="demo-metric">
-                                <span class="label">撰写投资备忘录</span>
-                                <span class="value">2-3小时</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="demo-after">
-                        <div class="demo-label">🚀 现在这样做</div>
-                        <div class="demo-metrics">
-                            <div class="demo-metric">
-                                <span class="label">AI摘要 + 关键点提取</span>
-                                <span class="value">10分钟</span>
-                            </div>
-                            <div class="demo-metric">
-                                <span class="label">AI自动汇总 + 异常提醒</span>
-                                <span class="value">实时推送</span>
-                            </div>
-                            <div class="demo-metric">
-                                <span class="label">AI自动抓取 + 可视化</span>
-                                <span class="value">5分钟</span>
-                            </div>
-                            <div class="demo-metric">
-                                <span class="label">AI起草 + 人工微调</span>
-                                <span class="value">30分钟</span>
-                            </div>
-                        </div>
-                    </div>
+            <!-- 场景价值概览 -->
+            <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 32px;">
+                <div style="background: linear-gradient(135deg, #10B981, #059669); color: white; padding: 20px; border-radius: 12px; text-align: center;">
+                    <div style="font-size: 2rem; font-weight: 700;">46%</div>
+                    <div style="font-size: 0.85rem; opacity: 0.9;">投研核心（P0）</div>
                 </div>
-                <div class="scenario-benefit">
-                    <span class="benefit-highlight">每位研究员每天节省3-4小时</span>
-                    <span style="color: var(--gray-500);">，可以专注于更有价值的深度研究和投资判断</span>
+                <div style="background: linear-gradient(135deg, #3B82F6, #1D4ED8); color: white; padding: 20px; border-radius: 12px; text-align: center;">
+                    <div style="font-size: 2rem; font-weight: 700;">26%</div>
+                    <div style="font-size: 0.85rem; opacity: 0.9;">数据与风控（P1）</div>
+                </div>
+                <div style="background: linear-gradient(135deg, #8B5CF6, #7C3AED); color: white; padding: 20px; border-radius: 12px; text-align: center;">
+                    <div style="font-size: 2rem; font-weight: 700;">20%</div>
+                    <div style="font-size: 0.85rem; opacity: 0.9;">效率提升（P2）</div>
+                </div>
+                <div style="background: linear-gradient(135deg, #F59E0B, #D97706); color: white; padding: 20px; border-radius: 12px; text-align: center;">
+                    <div style="font-size: 2rem; font-weight: 700;">8%</div>
+                    <div style="font-size: 0.85rem; opacity: 0.9;">交易与辅助（P3-4）</div>
                 </div>
             </div>
             
-            <!-- 会议纪要 -->
-            <div class="scenario-content" id="scenario-meeting">
-                <div class="scenario-demo">
-                    <div class="demo-before">
-                        <div class="demo-label">😩 以前这样做</div>
-                        <div class="demo-metrics">
-                            <div class="demo-metric">
-                                <span class="label">会议录音转文字</span>
-                                <span class="value">外包/手动</span>
-                            </div>
-                            <div class="demo-metric">
-                                <span class="label">整理成结构化纪要</span>
-                                <span class="value">1-2小时</span>
-                            </div>
-                            <div class="demo-metric">
-                                <span class="label">提取待办事项</span>
-                                <span class="value">容易遗漏</span>
-                            </div>
-                            <div class="demo-metric">
-                                <span class="label">归档与检索</span>
-                                <span class="value">难以查找</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="demo-after">
-                        <div class="demo-label">🚀 现在这样做</div>
-                        <div class="demo-metrics">
-                            <div class="demo-metric">
-                                <span class="label">AI实时转写</span>
-                                <span class="value">自动完成</span>
-                            </div>
-                            <div class="demo-metric">
-                                <span class="label">AI自动生成结构化纪要</span>
-                                <span class="value">会后即得</span>
-                            </div>
-                            <div class="demo-metric">
-                                <span class="label">AI智能提取待办</span>
-                                <span class="value">自动分配</span>
-                            </div>
-                            <div class="demo-metric">
-                                <span class="label">全文检索 + 智能问答</span>
-                                <span class="value">秒级查询</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="scenario-benefit">
-                    <span class="benefit-highlight">会议纪要从"会后2小时"变成"会后2分钟"</span>
-                    <span style="color: var(--gray-500);">，再也不用为"谁来写纪要"发愁</span>
-                </div>
-            </div>
-            
-            <!-- LP服务 -->
-            <div class="scenario-content" id="scenario-lp">
-                <div class="scenario-demo">
-                    <div class="demo-before">
-                        <div class="demo-label">😩 以前这样做</div>
-                        <div class="demo-metrics">
-                            <div class="demo-metric">
-                                <span class="label">LP常见问题回复</span>
-                                <span class="value">逐一回复</span>
-                            </div>
-                            <div class="demo-metric">
-                                <span class="label">季度报告撰写</span>
-                                <span class="value">3-5天</span>
-                            </div>
-                            <div class="demo-metric">
-                                <span class="label">个性化信息推送</span>
-                                <span class="value">难以做到</span>
-                            </div>
-                            <div class="demo-metric">
-                                <span class="label">历史沟通记录查询</span>
-                                <span class="value">翻邮件</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="demo-after">
-                        <div class="demo-label">🚀 现在这样做</div>
-                        <div class="demo-metrics">
-                            <div class="demo-metric">
-                                <span class="label">AI智能问答 + 人工复核</span>
-                                <span class="value">分钟级</span>
-                            </div>
-                            <div class="demo-metric">
-                                <span class="label">AI自动生成 + 人工审核</span>
-                                <span class="value">1天</span>
-                            </div>
-                            <div class="demo-metric">
-                                <span class="label">AI根据LP偏好推送</span>
-                                <span class="value">自动化</span>
-                            </div>
-                            <div class="demo-metric">
-                                <span class="label">AI检索 + 智能摘要</span>
-                                <span class="value">秒级</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="scenario-benefit">
-                    <span class="benefit-highlight">LP服务效率提升3倍</span>
-                    <span style="color: var(--gray-500);">，同时提升LP满意度（响应更快、信息更全）</span>
-                </div>
-            </div>
-            
-            <!-- 风险监控 -->
-            <div class="scenario-content" id="scenario-risk">
-                <div class="scenario-demo">
-                    <div class="demo-before">
-                        <div class="demo-label">😩 以前这样做</div>
-                        <div class="demo-metrics">
-                            <div class="demo-metric">
-                                <span class="label">标的舆情追踪</span>
-                                <span class="value">人工刷新闻</span>
-                            </div>
-                            <div class="demo-metric">
-                                <span class="label">财务异常识别</span>
-                                <span class="value">季报出来才知道</span>
-                            </div>
-                            <div class="demo-metric">
-                                <span class="label">风险事件预警</span>
-                                <span class="value">经常滞后</span>
-                            </div>
-                            <div class="demo-metric">
-                                <span class="label">风险报告生成</span>
-                                <span class="value">手动汇总</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="demo-after">
-                        <div class="demo-label">🚀 现在这样做</div>
-                        <div class="demo-metrics">
-                            <div class="demo-metric">
-                                <span class="label">AI 7x24小时监控</span>
-                                <span class="value">实时推送</span>
-                            </div>
-                            <div class="demo-metric">
-                                <span class="label">AI异常模式检测</span>
-                                <span class="value">提前预警</span>
-                            </div>
-                            <div class="demo-metric">
-                                <span class="label">多源信息交叉验证</span>
-                                <span class="value">第一时间</span>
-                            </div>
-                            <div class="demo-metric">
-                                <span class="label">AI自动生成风险报告</span>
-                                <span class="value">一键生成</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="scenario-benefit">
-                    <span class="benefit-highlight">风险发现时间从"天级"缩短到"分钟级"</span>
-                    <span style="color: var(--gray-500);">，给决策争取更多反应时间</span>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- 投入产出测算 -->
-    <section class="roi-section" id="roi">
-        <div class="container">
-            <div class="section-header">
-                <h2 style="color: var(--white);">💰 投入产出测算</h2>
-                <p style="color: var(--color-text-secondary);">根据你的团队规模，估算AI带来的价值</p>
-            </div>
-            
-            <div class="roi-calculator">
-                <div class="roi-inputs">
-                    <div class="roi-input-group">
-                        <label>投研团队人数</label>
-                        <input type="number" id="teamSize" value="5" min="1" max="100" onchange="calculateROI()">
-                    </div>
-                    <div class="roi-input-group">
-                        <label>平均年薪（万元）</label>
-                        <input type="number" id="avgSalary" value="50" min="20" max="200" onchange="calculateROI()">
-                    </div>
-                    <div class="roi-input-group">
-                        <label>预计效率提升</label>
-                        <select id="efficiency" onchange="calculateROI()">
-                            <option value="0.2">20%（保守估计）</option>
-                            <option value="0.3" selected>30%（中等估计）</option>
-                            <option value="0.5">50%（乐观估计）</option>
-                        </select>
-                    </div>
-                    <div class="roi-input-group">
-                        <label>AI年投入（万元）</label>
-                        <input type="number" id="aiCost" value="80" min="30" max="500" onchange="calculateROI()">
-                    </div>
-                </div>
+            <!-- P0 高价值场景 -->
+            <div style="margin-bottom: 40px;">
+                <h3 style="color: #059669; margin-bottom: 20px; display: flex; align-items: center; gap: 12px;">
+                    <span style="background: #10B981; color: white; padding: 4px 12px; border-radius: 20px; font-size: 0.8rem;">P0 最高优先级</span>
+                    投研核心能力（占60%工作时间）
+                </h3>
                 
-                <div class="roi-result">
-                    <div class="roi-result-title">预计年化投资回报率（ROI）</div>
-                    <div class="roi-result-value" id="roiValue">187%</div>
-                    <div class="roi-result-desc" id="roiDesc">相当于每投入1元，产出2.87元价值</div>
+                <div style="display: grid; gap: 16px;">
+                    <!-- 量化策略研发 -->
+                    <div class="card" style="border-left: 4px solid #10B981;">
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px;">
+                            <div>
+                                <h4 style="margin: 0; display: flex; align-items: center; gap: 8px;">
+                                    <span style="font-size: 1.25rem;">📊</span> 量化策略研发
+                                    <span style="background: #D1FAE5; color: #059669; padding: 2px 8px; border-radius: 4px; font-size: 0.75rem;">占比18%</span>
+                                </h4>
+                                <div style="font-size: 0.85rem; color: var(--color-text-muted); margin-top: 4px;">策略编写、因子计算、回测分析</div>
+                            </div>
+                            <div style="background: #ECFDF5; color: #059669; padding: 8px 16px; border-radius: 8px; font-weight: 600;">提效 60%</div>
+                        </div>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                            <div style="background: #FEF2F2; padding: 16px; border-radius: 8px;">
+                                <div style="font-size: 0.8rem; color: #EF4444; font-weight: 600; margin-bottom: 8px;">😩 以前怎么做</div>
+                                <ul style="list-style: none; font-size: 0.85rem; color: var(--color-text-secondary);">
+                                    <li>• 手写策略代码：<strong>2-3天</strong></li>
+                                    <li>• 因子计算调试：<strong>半天</strong></li>
+                                    <li>• 回测报告整理：<strong>1天</strong></li>
+                                </ul>
+                            </div>
+                            <div style="background: #ECFDF5; padding: 16px; border-radius: 8px;">
+                                <div style="font-size: 0.8rem; color: #10B981; font-weight: 600; margin-bottom: 8px;">🚀 AI可以怎么做</div>
+                                <ul style="list-style: none; font-size: 0.85rem; color: var(--color-text-secondary);">
+                                    <li>• Quant Agent自动生成策略代码：<strong>2小时</strong></li>
+                                    <li>• AI辅助因子计算+异常检测：<strong>1小时</strong></li>
+                                    <li>• AI自动生成回测报告：<strong>10分钟</strong></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 投资研究 -->
+                    <div class="card" style="border-left: 4px solid #10B981;">
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px;">
+                            <div>
+                                <h4 style="margin: 0; display: flex; align-items: center; gap: 8px;">
+                                    <span style="font-size: 1.25rem;">📈</span> 投资研究
+                                    <span style="background: #D1FAE5; color: #059669; padding: 2px 8px; border-radius: 4px; font-size: 0.75rem;">占比15%</span>
+                                </h4>
+                                <div style="font-size: 0.85rem; color: var(--color-text-muted); margin-top: 4px;">行业研究、公司分析、研报撰写</div>
+                            </div>
+                            <div style="background: #ECFDF5; color: #059669; padding: 8px 16px; border-radius: 8px; font-weight: 600;">提效 70%</div>
+                        </div>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                            <div style="background: #FEF2F2; padding: 16px; border-radius: 8px;">
+                                <div style="font-size: 0.8rem; color: #EF4444; font-weight: 600; margin-bottom: 8px;">😩 以前怎么做</div>
+                                <ul style="list-style: none; font-size: 0.85rem; color: var(--color-text-secondary);">
+                                    <li>• 读完100页研报：<strong>2小时</strong></li>
+                                    <li>• 行业趋势分析：<strong>整天</strong></li>
+                                    <li>• 撰写投资备忘录：<strong>2-3小时</strong></li>
+                                </ul>
+                            </div>
+                            <div style="background: #ECFDF5; padding: 16px; border-radius: 8px;">
+                                <div style="font-size: 0.8rem; color: #10B981; font-weight: 600; margin-bottom: 8px;">🚀 AI可以怎么做</div>
+                                <ul style="list-style: none; font-size: 0.85rem; color: var(--color-text-secondary);">
+                                    <li>• Research Agent摘要+关键点：<strong>10分钟</strong></li>
+                                    <li>• AI整合多源信息+可视化：<strong>30分钟</strong></li>
+                                    <li>• AI起草+人工微调：<strong>30分钟</strong></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 数据获取与清洗 -->
+                    <div class="card" style="border-left: 4px solid #10B981;">
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px;">
+                            <div>
+                                <h4 style="margin: 0; display: flex; align-items: center; gap: 8px;">
+                                    <span style="font-size: 1.25rem;">🗄️</span> 数据获取与清洗
+                                    <span style="background: #D1FAE5; color: #059669; padding: 2px 8px; border-radius: 4px; font-size: 0.75rem;">占比10%</span>
+                                </h4>
+                                <div style="font-size: 0.85rem; color: var(--color-text-muted); margin-top: 4px;">数据获取、数据清洗、数据可视化</div>
+                            </div>
+                            <div style="background: #ECFDF5; color: #059669; padding: 8px 16px; border-radius: 8px; font-weight: 600;">提效 80%</div>
+                        </div>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                            <div style="background: #FEF2F2; padding: 16px; border-radius: 8px;">
+                                <div style="font-size: 0.8rem; color: #EF4444; font-weight: 600; margin-bottom: 8px;">😩 以前怎么做</div>
+                                <ul style="list-style: none; font-size: 0.85rem; color: var(--color-text-secondary);">
+                                    <li>• 写爬虫抓数据：<strong>半天</strong></li>
+                                    <li>• 数据清洗整理：<strong>2-3小时</strong></li>
+                                    <li>• 绘制可视化图表：<strong>1-2小时</strong></li>
+                                </ul>
+                            </div>
+                            <div style="background: #ECFDF5; padding: 16px; border-radius: 8px;">
+                                <div style="font-size: 0.8rem; color: #10B981; font-weight: 600; margin-bottom: 8px;">🚀 AI可以怎么做</div>
+                                <ul style="list-style: none; font-size: 0.85rem; color: var(--color-text-secondary);">
+                                    <li>• Data Agent自动抓取+API调用：<strong>10分钟</strong></li>
+                                    <li>• AI自动识别异常+标准化：<strong>5分钟</strong></li>
+                                    <li>• AI一键生成Dashboard：<strong>3分钟</strong></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- P1 高价值场景 -->
+            <div style="margin-bottom: 40px;">
+                <h3 style="color: #1D4ED8; margin-bottom: 20px; display: flex; align-items: center; gap: 12px;">
+                    <span style="background: #3B82F6; color: white; padding: 4px 12px; border-radius: 20px; font-size: 0.8rem;">P1 高优先级</span>
+                    数据与风控（占26%）
+                </h3>
+                
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                    <!-- 风险控制 -->
+                    <div class="card" style="border-left: 4px solid #3B82F6;">
+                        <h4 style="margin: 0 0 12px; display: flex; align-items: center; gap: 8px;">
+                            <span style="font-size: 1.25rem;">⚠️</span> 风险控制
+                            <span style="background: #DBEAFE; color: #1D4ED8; padding: 2px 8px; border-radius: 4px; font-size: 0.75rem;">占比12%</span>
+                        </h4>
+                        <div style="display: grid; gap: 8px; font-size: 0.85rem;">
+                            <div style="display: flex; justify-content: space-between; padding: 8px; background: #F9FAFB; border-radius: 6px;">
+                                <span>风险监控（VaR/止损）</span>
+                                <span style="color: #10B981; font-weight: 600;">人工→实时自动</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; padding: 8px; background: #F9FAFB; border-radius: 6px;">
+                                <span>压力测试</span>
+                                <span style="color: #10B981; font-weight: 600;">3天→2小时</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; padding: 8px; background: #F9FAFB; border-radius: 6px;">
+                                <span>信用分析</span>
+                                <span style="color: #10B981; font-weight: 600;">1天→1小时</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 市场分析 -->
+                    <div class="card" style="border-left: 4px solid #3B82F6;">
+                        <h4 style="margin: 0 0 12px; display: flex; align-items: center; gap: 8px;">
+                            <span style="font-size: 1.25rem;">🌐</span> 市场分析
+                            <span style="background: #DBEAFE; color: #1D4ED8; padding: 2px 8px; border-radius: 4px; font-size: 0.75rem;">占比8%</span>
+                        </h4>
+                        <div style="display: grid; gap: 8px; font-size: 0.85rem;">
+                            <div style="display: flex; justify-content: space-between; padding: 8px; background: #F9FAFB; border-radius: 6px;">
+                                <span>宏观分析</span>
+                                <span style="color: #10B981; font-weight: 600;">半天→30分钟</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; padding: 8px; background: #F9FAFB; border-radius: 6px;">
+                                <span>舆情监控</span>
+                                <span style="color: #10B981; font-weight: 600;">手动刷→实时推送</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; padding: 8px; background: #F9FAFB; border-radius: 6px;">
+                                <span>技术分析</span>
+                                <span style="color: #10B981; font-weight: 600;">1小时→5分钟</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 合规审查 -->
+                    <div class="card" style="border-left: 4px solid #3B82F6;">
+                        <h4 style="margin: 0 0 12px; display: flex; align-items: center; gap: 8px;">
+                            <span style="font-size: 1.25rem;">📋</span> 合规审查
+                            <span style="background: #DBEAFE; color: #1D4ED8; padding: 2px 8px; border-radius: 4px; font-size: 0.75rem;">占比6%</span>
+                        </h4>
+                        <div style="display: grid; gap: 8px; font-size: 0.85rem;">
+                            <div style="display: flex; justify-content: space-between; padding: 8px; background: #F9FAFB; border-radius: 6px;">
+                                <span>合规检查</span>
+                                <span style="color: #10B981; font-weight: 600;">人工→自动化</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; padding: 8px; background: #F9FAFB; border-radius: 6px;">
+                                <span>监管报送</span>
+                                <span style="color: #10B981; font-weight: 600;">2天→2小时</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; padding: 8px; background: #F9FAFB; border-radius: 6px;">
+                                <span>法规更新追踪</span>
+                                <span style="color: #10B981; font-weight: 600;">手动→自动推送</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 组合管理 -->
+                    <div class="card" style="border-left: 4px solid #3B82F6;">
+                        <h4 style="margin: 0 0 12px; display: flex; align-items: center; gap: 8px;">
+                            <span style="font-size: 1.25rem;">📊</span> 组合管理
+                            <span style="background: #DBEAFE; color: #1D4ED8; padding: 2px 8px; border-radius: 4px; font-size: 0.75rem;">占比5%</span>
+                        </h4>
+                        <div style="display: grid; gap: 8px; font-size: 0.85rem;">
+                            <div style="display: flex; justify-content: space-between; padding: 8px; background: #F9FAFB; border-radius: 6px;">
+                                <span>组合优化</span>
+                                <span style="color: #10B981; font-weight: 600;">半天→1小时</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; padding: 8px; background: #F9FAFB; border-radius: 6px;">
+                                <span>再平衡</span>
+                                <span style="color: #10B981; font-weight: 600;">手动→自动建议</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; padding: 8px; background: #F9FAFB; border-radius: 6px;">
+                                <span>业绩归因</span>
+                                <span style="color: #10B981; font-weight: 600;">2小时→10分钟</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- P2 效率提升场景 -->
+            <div style="margin-bottom: 40px;">
+                <h3 style="color: #7C3AED; margin-bottom: 20px; display: flex; align-items: center; gap: 12px;">
+                    <span style="background: #8B5CF6; color: white; padding: 4px 12px; border-radius: 20px; font-size: 0.8rem;">P2 中优先级</span>
+                    效率提升场景（占20%）
+                </h3>
+                
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;">
+                    <!-- 报告撰写 -->
+                    <div class="card" style="border-left: 4px solid #8B5CF6;">
+                        <h4 style="margin: 0 0 8px; font-size: 1rem;">📝 报告撰写</h4>
+                        <div style="font-size: 0.8rem; color: var(--color-text-muted); margin-bottom: 12px;">定期报告、投资建议书、PPT制作</div>
+                        <div style="background: #F3E8FF; padding: 12px; border-radius: 8px; text-align: center;">
+                            <div style="font-size: 0.75rem; color: #7C3AED;">提效</div>
+                            <div style="font-size: 1.5rem; font-weight: 700; color: #7C3AED;">70%</div>
+                        </div>
+                    </div>
+                    
+                    <!-- 客户沟通 -->
+                    <div class="card" style="border-left: 4px solid #8B5CF6;">
+                        <h4 style="margin: 0 0 8px; font-size: 1rem;">🤝 客户沟通</h4>
+                        <div style="font-size: 0.8rem; color: var(--color-text-muted); margin-bottom: 12px;">LP答疑、客户报告、邮件处理</div>
+                        <div style="background: #F3E8FF; padding: 12px; border-radius: 8px; text-align: center;">
+                            <div style="font-size: 0.75rem; color: #7C3AED;">提效</div>
+                            <div style="font-size: 1.5rem; font-weight: 700; color: #7C3AED;">3倍</div>
+                        </div>
+                    </div>
+                    
+                    <!-- 知识管理 -->
+                    <div class="card" style="border-left: 4px solid #8B5CF6;">
+                        <h4 style="margin: 0 0 8px; font-size: 1rem;">📚 知识管理</h4>
+                        <div style="font-size: 0.8rem; color: var(--color-text-muted); margin-bottom: 12px;">知识问答、文档管理、历史检索</div>
+                        <div style="background: #F3E8FF; padding: 12px; border-radius: 8px; text-align: center;">
+                            <div style="font-size: 0.75rem; color: #7C3AED;">查询时间</div>
+                            <div style="font-size: 1.5rem; font-weight: 700; color: #7C3AED;">秒级</div>
+                        </div>
+                    </div>
+                    
+                    <!-- 会议效率 -->
+                    <div class="card" style="border-left: 4px solid #8B5CF6;">
+                        <h4 style="margin: 0 0 8px; font-size: 1rem;">🎙️ 会议效率</h4>
+                        <div style="font-size: 0.8rem; color: var(--color-text-muted); margin-bottom: 12px;">会议纪要、日程管理</div>
+                        <div style="background: #F3E8FF; padding: 12px; border-radius: 8px; text-align: center;">
+                            <div style="font-size: 0.75rem; color: #7C3AED;">纪要生成</div>
+                            <div style="font-size: 1.5rem; font-weight: 700; color: #7C3AED;">2分钟</div>
+                        </div>
+                    </div>
+                    
+                    <!-- 市场营销 -->
+                    <div class="card" style="border-left: 4px solid #8B5CF6;">
+                        <h4 style="margin: 0 0 8px; font-size: 1rem;">📣 市场营销</h4>
+                        <div style="font-size: 0.8rem; color: var(--color-text-muted); margin-bottom: 12px;">直销获客、代销渠道、客户维护</div>
+                        <div style="background: #F3E8FF; padding: 12px; border-radius: 8px; text-align: center;">
+                            <div style="font-size: 0.75rem; color: #7C3AED;">线索挖掘</div>
+                            <div style="font-size: 1.5rem; font-weight: 700; color: #7C3AED;">自动化</div>
+                        </div>
+                    </div>
+                    
+                    <!-- 投资者服务 -->
+                    <div class="card" style="border-left: 4px solid #8B5CF6;">
+                        <h4 style="margin: 0 0 8px; font-size: 1rem;">📊 投资者服务</h4>
+                        <div style="font-size: 0.8rem; color: var(--color-text-muted); margin-bottom: 12px;">投资者报告、投资者会议、投诉处理</div>
+                        <div style="background: #F3E8FF; padding: 12px; border-radius: 8px; text-align: center;">
+                            <div style="font-size: 0.75rem; color: #7C3AED;">报告生成</div>
+                            <div style="font-size: 1.5rem; font-weight: 700; color: #7C3AED;">1天</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Agent类型概览 -->
+            <div class="card" style="background: linear-gradient(135deg, #F0FDF4 0%, #ECFDF5 100%); border: 1px solid #A7F3D0;">
+                <h4 style="margin: 0 0 16px; color: #047857;">🤖 9种Agent类型覆盖全场景</h4>
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; font-size: 0.85rem;">
+                    <div style="display: flex; align-items: center; gap: 8px; padding: 8px; background: white; border-radius: 6px;">
+                        <span style="font-weight: 600; color: #059669;">Quant Agent</span>
+                        <span style="color: var(--color-text-muted);">28%</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 8px; padding: 8px; background: white; border-radius: 6px;">
+                        <span style="font-weight: 600; color: #059669;">Research Agent</span>
+                        <span style="color: var(--color-text-muted);">18%</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 8px; padding: 8px; background: white; border-radius: 6px;">
+                        <span style="font-weight: 600; color: #059669;">Data Agent</span>
+                        <span style="color: var(--color-text-muted);">14%</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 8px; padding: 8px; background: white; border-radius: 6px;">
+                        <span style="font-weight: 600; color: #3B82F6;">Risk Agent</span>
+                        <span style="color: var(--color-text-muted);">12%</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 8px; padding: 8px; background: white; border-radius: 6px;">
+                        <span style="font-weight: 600; color: #3B82F6;">Chatbot Agent</span>
+                        <span style="color: var(--color-text-muted);">11%</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 8px; padding: 8px; background: white; border-radius: 6px;">
+                        <span style="font-weight: 600; color: #8B5CF6;">Workflow Agent</span>
+                        <span style="color: var(--color-text-muted);">9%</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 8px; padding: 8px; background: white; border-radius: 6px;">
+                        <span style="font-weight: 600; color: #F59E0B;">Trading Agent</span>
+                        <span style="color: var(--color-text-muted);">5%</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 8px; padding: 8px; background: white; border-radius: 6px;">
+                        <span style="font-weight: 600; color: #F59E0B;">Browser Agent</span>
+                        <span style="color: var(--color-text-muted);">2%</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 8px; padding: 8px; background: white; border-radius: 6px;">
+                        <span style="font-weight: 600; color: #F59E0B;">Background Agent</span>
+                        <span style="color: var(--color-text-muted);">1%</span>
+                    </div>
                 </div>
             </div>
         </div>
@@ -1213,6 +1294,277 @@
                     <h4><span>👥</span> 担心团队抵触</h4>
                     <p class="concern">"员工会不会觉得AI是来抢饭碗的，不愿意配合？"</p>
                     <p class="solution">从"帮员工省事"的角度推广，先解决大家最讨厌的重复性工作。让员工感受到AI是"助手"而不是"替代者"。</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- 组织AI转型指南 -->
+    <section class="section" id="org-transform" style="background: linear-gradient(135deg, #EEF2FF 0%, #FFFFFF 100%);">
+        <div class="container">
+            <div class="section-header">
+                <h2>🏢 组织AI转型指南</h2>
+                <p>如何让"人人都用好AI成为超级个体"，培养"能做出好Agent"的人才</p>
+            </div>
+            
+            <!-- 核心理念 -->
+            <div style="background: linear-gradient(135deg, #6366F1 0%, #8B5CF6 100%); color: white; padding: 32px; border-radius: 16px; margin-bottom: 40px; text-align: center;">
+                <div style="font-size: 1.5rem; font-weight: 700; margin-bottom: 12px;">"未来不是AI取代人类，而是会用AI的人取代不会用AI的人"</div>
+                <div style="font-size: 1rem; opacity: 0.9;">AI转型的本质是人才升级，工具只是手段</div>
+            </div>
+            
+            <!-- 两类人才培养 -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 40px;">
+                <!-- 超级个体 -->
+                <div class="card" style="border-top: 4px solid #10B981;">
+                    <h3 style="color: #047857; margin-bottom: 20px; display: flex; align-items: center; gap: 12px;">
+                        <span style="font-size: 2rem;">🦸</span>
+                        <div>
+                            <div>超级个体</div>
+                            <div style="font-size: 0.85rem; font-weight: 400; color: var(--color-text-muted);">人人都能用好AI提效</div>
+                        </div>
+                    </h3>
+                    
+                    <div style="margin-bottom: 20px;">
+                        <div style="font-size: 0.9rem; font-weight: 600; color: var(--color-text-primary); margin-bottom: 12px;">核心能力要求</div>
+                        <div style="display: grid; gap: 8px;">
+                            <div style="background: #ECFDF5; padding: 12px; border-radius: 8px; display: flex; align-items: center; gap: 12px;">
+                                <span style="font-size: 1.25rem;">💬</span>
+                                <div>
+                                    <div style="font-weight: 600; font-size: 0.9rem;">Prompt工程能力</div>
+                                    <div style="font-size: 0.8rem; color: var(--color-text-muted);">会写有效提示词，让AI理解业务需求</div>
+                                </div>
+                            </div>
+                            <div style="background: #ECFDF5; padding: 12px; border-radius: 8px; display: flex; align-items: center; gap: 12px;">
+                                <span style="font-size: 1.25rem;">🔍</span>
+                                <div>
+                                    <div style="font-weight: 600; font-size: 0.9rem;">AI评估能力</div>
+                                    <div style="font-size: 0.8rem; color: var(--color-text-muted);">能判断AI输出质量、识别幻觉</div>
+                                </div>
+                            </div>
+                            <div style="background: #ECFDF5; padding: 12px; border-radius: 8px; display: flex; align-items: center; gap: 12px;">
+                                <span style="font-size: 1.25rem;">🛠️</span>
+                                <div>
+                                    <div style="font-weight: 600; font-size: 0.9rem;">工具运用能力</div>
+                                    <div style="font-size: 0.8rem; color: var(--color-text-muted);">会用豆包、Kimi、ChatGPT等主流AI工具</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div style="background: #F0FDF4; padding: 16px; border-radius: 8px;">
+                        <div style="font-size: 0.85rem; font-weight: 600; color: #047857; margin-bottom: 8px;">📊 培养目标</div>
+                        <div style="font-size: 0.9rem; color: var(--color-text-secondary);">
+                            <strong>6个月内</strong>让全员具备基础AI能力，实现<strong>日常工作效率提升30%+</strong>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Agent人才 -->
+                <div class="card" style="border-top: 4px solid #8B5CF6;">
+                    <h3 style="color: #7C3AED; margin-bottom: 20px; display: flex; align-items: center; gap: 12px;">
+                        <span style="font-size: 2rem;">🧙</span>
+                        <div>
+                            <div>Agent Builder</div>
+                            <div style="font-size: 0.85rem; font-weight: 400; color: var(--color-text-muted);">能做出好Agent的专业人才</div>
+                        </div>
+                    </h3>
+                    
+                    <div style="margin-bottom: 20px;">
+                        <div style="font-size: 0.9rem; font-weight: 600; color: var(--color-text-primary); margin-bottom: 12px;">核心能力要求</div>
+                        <div style="display: grid; gap: 8px;">
+                            <div style="background: #F3E8FF; padding: 12px; border-radius: 8px; display: flex; align-items: center; gap: 12px;">
+                                <span style="font-size: 1.25rem;">🔧</span>
+                                <div>
+                                    <div style="font-weight: 600; font-size: 0.9rem;">Agent搭建能力</div>
+                                    <div style="font-size: 0.8rem; color: var(--color-text-muted);">会用扣子/Dify搭建业务Agent</div>
+                                </div>
+                            </div>
+                            <div style="background: #F3E8FF; padding: 12px; border-radius: 8px; display: flex; align-items: center; gap: 12px;">
+                                <span style="font-size: 1.25rem;">📊</span>
+                                <div>
+                                    <div style="font-weight: 600; font-size: 0.9rem;">RAG知识库</div>
+                                    <div style="font-size: 0.8rem; color: var(--color-text-muted);">能搭建企业知识问答系统</div>
+                                </div>
+                            </div>
+                            <div style="background: #F3E8FF; padding: 12px; border-radius: 8px; display: flex; align-items: center; gap: 12px;">
+                                <span style="font-size: 1.25rem;">⚡</span>
+                                <div>
+                                    <div style="font-weight: 600; font-size: 0.9rem;">工作流自动化</div>
+                                    <div style="font-size: 0.8rem; color: var(--color-text-muted);">设计多步骤Agent协作流程</div>
+                                </div>
+                            </div>
+                            <div style="background: #F3E8FF; padding: 12px; border-radius: 8px; display: flex; align-items: center; gap: 12px;">
+                                <span style="font-size: 1.25rem;">📈</span>
+                                <div>
+                                    <div style="font-weight: 600; font-size: 0.9rem;">AgentOps能力</div>
+                                    <div style="font-size: 0.8rem; color: var(--color-text-muted);">评测、观测、调优Agent表现</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div style="background: #F5F3FF; padding: 16px; border-radius: 8px;">
+                        <div style="font-size: 0.85rem; font-weight: 600; color: #7C3AED; margin-bottom: 8px;">📊 培养目标</div>
+                        <div style="font-size: 0.9rem; color: var(--color-text-secondary);">
+                            <strong>每个团队至少1-2人</strong>具备Agent开发能力，能独立完成业务场景的AI自动化
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 激励与培养机制 -->
+            <div style="margin-bottom: 40px;">
+                <h3 style="margin-bottom: 24px; color: var(--color-text-primary);">🎯 如何鼓励和培养？</h3>
+                
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;">
+                    <!-- 培训体系 -->
+                    <div class="card">
+                        <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
+                            <div style="width: 48px; height: 48px; background: linear-gradient(135deg, #3B82F6, #1D4ED8); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">📚</div>
+                            <h4 style="margin: 0;">培训体系</h4>
+                        </div>
+                        <ul style="list-style: none; font-size: 0.9rem; color: var(--color-text-secondary);">
+                            <li style="padding: 6px 0; border-bottom: 1px solid var(--color-border-light);">• 每周AI工具分享会（30分钟）</li>
+                            <li style="padding: 6px 0; border-bottom: 1px solid var(--color-border-light);">• 月度"最佳Prompt"评选</li>
+                            <li style="padding: 6px 0; border-bottom: 1px solid var(--color-border-light);">• Agent搭建实战训练营</li>
+                            <li style="padding: 6px 0;">• 外部AI课程学习补贴</li>
+                        </ul>
+                    </div>
+                    
+                    <!-- 激励机制 -->
+                    <div class="card">
+                        <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
+                            <div style="width: 48px; height: 48px; background: linear-gradient(135deg, #F59E0B, #D97706); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">🏆</div>
+                            <h4 style="margin: 0;">激励机制</h4>
+                        </div>
+                        <ul style="list-style: none; font-size: 0.9rem; color: var(--color-text-secondary);">
+                            <li style="padding: 6px 0; border-bottom: 1px solid var(--color-border-light);">• "AI效率之星"月度奖金</li>
+                            <li style="padding: 6px 0; border-bottom: 1px solid var(--color-border-light);">• Agent开发者专项津贴</li>
+                            <li style="padding: 6px 0; border-bottom: 1px solid var(--color-border-light);">• AI提效案例内部推广</li>
+                            <li style="padding: 6px 0;">• 绩效考核纳入AI能力项</li>
+                        </ul>
+                    </div>
+                    
+                    <!-- 文化氛围 -->
+                    <div class="card">
+                        <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
+                            <div style="width: 48px; height: 48px; background: linear-gradient(135deg, #10B981, #059669); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">🌟</div>
+                            <h4 style="margin: 0;">文化氛围</h4>
+                        </div>
+                        <ul style="list-style: none; font-size: 0.9rem; color: var(--color-text-secondary);">
+                            <li style="padding: 6px 0; border-bottom: 1px solid var(--color-border-light);">• 管理层带头使用AI</li>
+                            <li style="padding: 6px 0; border-bottom: 1px solid var(--color-border-light);">• 允许工作时间学习AI</li>
+                            <li style="padding: 6px 0; border-bottom: 1px solid var(--color-border-light);">• 建立AI使用经验Wiki</li>
+                            <li style="padding: 6px 0;">• 鼓励试错、包容失败</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Agent人才培养路径 -->
+            <div style="margin-bottom: 40px;">
+                <h3 style="margin-bottom: 24px; color: var(--color-text-primary);">🛤️ Agent Builder培养路径</h3>
+                
+                <div style="display: flex; gap: 16px; overflow-x: auto; padding-bottom: 16px;">
+                    <!-- 第一阶段 -->
+                    <div style="flex: 0 0 280px; background: white; border-radius: 12px; padding: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
+                        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 16px;">
+                            <div style="background: #DBEAFE; color: #1D4ED8; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700;">1</div>
+                            <div>
+                                <div style="font-weight: 600;">入门阶段</div>
+                                <div style="font-size: 0.8rem; color: var(--color-text-muted);">1-2周</div>
+                            </div>
+                        </div>
+                        <ul style="list-style: none; font-size: 0.85rem; color: var(--color-text-secondary);">
+                            <li style="padding: 4px 0;">✅ 熟悉扣子/Dify平台</li>
+                            <li style="padding: 4px 0;">✅ 搭建第一个Demo Agent</li>
+                            <li style="padding: 4px 0;">✅ 理解Prompt设计原则</li>
+                        </ul>
+                    </div>
+                    
+                    <div style="flex: 0 0 24px; display: flex; align-items: center; justify-content: center; color: var(--color-text-muted);">→</div>
+                    
+                    <!-- 第二阶段 -->
+                    <div style="flex: 0 0 280px; background: white; border-radius: 12px; padding: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
+                        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 16px;">
+                            <div style="background: #D1FAE5; color: #059669; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700;">2</div>
+                            <div>
+                                <div style="font-weight: 600;">进阶阶段</div>
+                                <div style="font-size: 0.8rem; color: var(--color-text-muted);">2-4周</div>
+                            </div>
+                        </div>
+                        <ul style="list-style: none; font-size: 0.85rem; color: var(--color-text-secondary);">
+                            <li style="padding: 4px 0;">✅ 搭建RAG知识库</li>
+                            <li style="padding: 4px 0;">✅ 设计多步骤工作流</li>
+                            <li style="padding: 4px 0;">✅ 对接业务系统API</li>
+                        </ul>
+                    </div>
+                    
+                    <div style="flex: 0 0 24px; display: flex; align-items: center; justify-content: center; color: var(--color-text-muted);">→</div>
+                    
+                    <!-- 第三阶段 -->
+                    <div style="flex: 0 0 280px; background: white; border-radius: 12px; padding: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
+                        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 16px;">
+                            <div style="background: #F3E8FF; color: #7C3AED; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700;">3</div>
+                            <div>
+                                <div style="font-weight: 600;">高级阶段</div>
+                                <div style="font-size: 0.8rem; color: var(--color-text-muted);">1-2个月</div>
+                            </div>
+                        </div>
+                        <ul style="list-style: none; font-size: 0.85rem; color: var(--color-text-secondary);">
+                            <li style="padding: 4px 0;">✅ 建立评测体系</li>
+                            <li style="padding: 4px 0;">✅ 持续调优Agent表现</li>
+                            <li style="padding: 4px 0;">✅ 沉淀最佳实践文档</li>
+                        </ul>
+                    </div>
+                    
+                    <div style="flex: 0 0 24px; display: flex; align-items: center; justify-content: center; color: var(--color-text-muted);">→</div>
+                    
+                    <!-- 第四阶段 -->
+                    <div style="flex: 0 0 280px; background: linear-gradient(135deg, #8B5CF6, #6366F1); color: white; border-radius: 12px; padding: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.15);">
+                        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 16px;">
+                            <div style="background: rgba(255,255,255,0.2); width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700;">🎯</div>
+                            <div>
+                                <div style="font-weight: 600;">专家阶段</div>
+                                <div style="font-size: 0.8rem; opacity: 0.8;">持续</div>
+                            </div>
+                        </div>
+                        <ul style="list-style: none; font-size: 0.85rem; opacity: 0.95;">
+                            <li style="padding: 4px 0;">🏆 成为团队AI负责人</li>
+                            <li style="padding: 4px 0;">🏆 培养其他Agent Builder</li>
+                            <li style="padding: 4px 0;">🏆 推动全公司AI转型</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 关键成功因素 -->
+            <div class="card" style="background: linear-gradient(135deg, #FEF3C7 0%, #FFFBEB 100%); border: 1px solid #FCD34D;">
+                <h4 style="color: #92400E; margin-bottom: 16px; display: flex; align-items: center; gap: 8px;">
+                    <span style="font-size: 1.25rem;">💡</span> 组织AI转型关键成功因素
+                </h4>
+                <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px;">
+                    <div style="text-align: center;">
+                        <div style="font-size: 2rem; margin-bottom: 8px;">👔</div>
+                        <div style="font-weight: 600; font-size: 0.9rem; margin-bottom: 4px;">一把手工程</div>
+                        <div style="font-size: 0.8rem; color: var(--color-text-muted);">CEO/CIO亲自推动</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="font-size: 2rem; margin-bottom: 8px;">🎯</div>
+                        <div style="font-weight: 600; font-size: 0.9rem; margin-bottom: 4px;">场景驱动</div>
+                        <div style="font-size: 0.8rem; color: var(--color-text-muted);">从痛点出发而非技术</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="font-size: 2rem; margin-bottom: 8px;">📊</div>
+                        <div style="font-weight: 600; font-size: 0.9rem; margin-bottom: 4px;">量化效果</div>
+                        <div style="font-size: 0.8rem; color: var(--color-text-muted);">用数据证明AI价值</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="font-size: 2rem; margin-bottom: 8px;">🔄</div>
+                        <div style="font-weight: 600; font-size: 0.9rem; margin-bottom: 4px;">持续迭代</div>
+                        <div style="font-size: 0.8rem; color: var(--color-text-muted);">小步快跑、快速验证</div>
+                    </div>
                 </div>
             </div>
         </div>
