@@ -756,6 +756,18 @@
         </div>
     </nav>
 
+    <!-- 左侧悬浮导航 -->
+    <nav class="page-sidebar-nav" id="sidebar-nav">
+        <button class="nav-toggle" onclick="toggleSidebar()" title="收起/展开">☰</button>
+        <div class="nav-title">本页导航</div>
+        <ul>
+            <li><a href="#timeline">📅 发展时间线</a></li>
+            <li><a href="#status">📊 现状数据</a></li>
+            <li><a href="#competitive">🎯 竞争力分析</a></li>
+            <li><a href="#business">🎯 商业布局</a></li>
+        </ul>
+    </nav>
+
     <!-- 页面头部 -->
     <section class="page-hero">
         <div class="container">
@@ -765,7 +777,7 @@
     </section>
 
     <!-- 发展时间线 -->
-    <section class="section">
+    <section class="section" id="timeline">
         <div class="container">
             <div class="section-header">
                 <h2>📅 字节AI发展时间线</h2>
@@ -927,7 +939,7 @@
     </section>
 
     <!-- 现状数据 -->
-    <section class="status-section">
+    <section class="status-section" id="status">
         <div class="container">
             <div class="section-header">
                 <h2 style="color: var(--color-text-primary);">📊 字节AI现在有多能打？</h2>
@@ -1185,7 +1197,7 @@
     </section>
 
     <!-- 竞争力分析（简洁版） -->
-    <section class="radar-section">
+    <section class="radar-section" id="competitive">
         <div class="container">
             <div class="section-header">
                 <h2>🎯 字节AI竞争力分析</h2>
@@ -1327,7 +1339,7 @@
     </section>
 
     <!-- 商业布局 -->
-    <section class="business-section">
+    <section class="business-section" id="business">
         <div class="container">
             <div class="section-header">
                 <h2>🎯 字节AI未来商业布局</h2>
@@ -1622,5 +1634,36 @@
             </div>
         </div>
     </footer>
+
+    <!-- 侧边栏导航脚本 -->
+    <script>
+        function toggleSidebar() {
+            const nav = document.getElementById('sidebar-nav');
+            nav.classList.toggle('collapsed');
+        }
+
+        function updateActiveNav() {
+            const sections = document.querySelectorAll('[id]');
+            const navLinks = document.querySelectorAll('.page-sidebar-nav a');
+            
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                if (window.scrollY >= sectionTop - 200) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === '#' + current) {
+                    link.classList.add('active');
+                }
+            });
+        }
+
+        window.addEventListener('scroll', updateActiveNav);
+        document.addEventListener('DOMContentLoaded', updateActiveNav);
+    </script>
 </body>
 </html>

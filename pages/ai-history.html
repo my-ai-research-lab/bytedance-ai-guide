@@ -396,6 +396,19 @@
         </div>
     </nav>
 
+    <!-- 左侧悬浮导航 -->
+    <nav class="page-sidebar-nav" id="sidebar-nav">
+        <button class="nav-toggle" onclick="toggleSidebar()" title="收起/展开">☰</button>
+        <div class="nav-title">本页导航</div>
+        <ul>
+            <li><a href="#past">📜 过去：AI的寒冬与曙光</a></li>
+            <li><a href="#present">🔥 现在：军备竞赛</a></li>
+            <li><a href="#overseas"> → 海外AI势力图</a></li>
+            <li><a href="#domestic"> → 国内AI势力图</a></li>
+            <li><a href="#future">🔮 未来：AI走向何方</a></li>
+        </ul>
+    </nav>
+
     <!-- 页面头部 -->
     <section class="page-hero">
         <div class="container">
@@ -409,7 +422,7 @@
         <div class="container">
             
             <!-- 过去 -->
-            <div class="era-card">
+            <div class="era-card" id="past">
                 <div class="era-header past">
                     <h2><span>📜</span> 过去：AI的"漫长冬天"与曙光</h2>
                     <p>从1950年代到2010年代，AI经历了多次"大起大落"</p>
@@ -459,7 +472,7 @@
             </div>
 
             <!-- 现在 -->
-            <div class="era-card">
+            <div class="era-card" id="present">
                 <div class="era-header present">
                     <h2><span>🔥</span> 现在：大模型时代的"军备竞赛"</h2>
                     <p>2022年ChatGPT发布后，全球AI进入"疯狂内卷"模式</p>
@@ -473,7 +486,7 @@
                         </div>
                     </div>
                     
-                    <h3 style="margin-top: var(--spacing-lg);">🌎 海外AI势力图</h3>
+                    <h3 id="overseas" style="margin-top: var(--spacing-lg);">🌎 海外AI势力图</h3>
                     <table class="compare-table">
                         <thead>
                             <tr>
@@ -572,7 +585,7 @@
                         </tbody>
                     </table>
                     
-                    <h3 style="margin-top: 32px;">🇨🇳 国内AI势力图</h3>
+                    <h3 id="domestic" style="margin-top: 32px;">🇨🇳 国内AI势力图</h3>
                     <table class="compare-table">
                         <thead>
                             <tr>
@@ -691,7 +704,7 @@
             </div>
 
             <!-- 未来 -->
-            <div class="era-card">
+            <div class="era-card" id="future">
                 <div class="era-header future">
                     <h2><span>🔮</span> 未来：AI将走向何方？</h2>
                     <p>AGI、具身智能、AI Agent……下一个十年会发生什么？</p>
@@ -794,5 +807,38 @@
             </div>
         </div>
     </footer>
+
+    <!-- 侧边栏导航脚本 -->
+    <script>
+        // 切换侧边栏展开/收起
+        function toggleSidebar() {
+            const nav = document.getElementById('sidebar-nav');
+            nav.classList.toggle('collapsed');
+        }
+
+        // 滚动时高亮当前章节
+        function updateActiveNav() {
+            const sections = document.querySelectorAll('[id]');
+            const navLinks = document.querySelectorAll('.page-sidebar-nav a');
+            
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                if (window.scrollY >= sectionTop - 200) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === '#' + current) {
+                    link.classList.add('active');
+                }
+            });
+        }
+
+        window.addEventListener('scroll', updateActiveNav);
+        document.addEventListener('DOMContentLoaded', updateActiveNav);
+    </script>
 </body>
 </html>

@@ -363,6 +363,18 @@
         </div>
     </nav>
 
+    <!-- 左侧悬浮导航 -->
+    <nav class="page-sidebar-nav" id="sidebar-nav">
+        <button class="nav-toggle" onclick="toggleSidebar()" title="收起/展开">☰</button>
+        <div class="nav-title">本页导航</div>
+        <ul>
+            <li><a href="#overview">🎯 安全合规总览</a></li>
+            <li><a href="#developer-section">👨‍💻 面向开发者</a></li>
+            <li><a href="#user-section">👤 面向用户</a></li>
+            <li><a href="#cases">🌟 业务实践案例</a></li>
+        </ul>
+    </nav>
+
     <!-- 页面头部 -->
     <section class="page-hero">
         <div class="container">
@@ -372,7 +384,7 @@
     </section>
 
     <!-- 安全合规总览 -->
-    <section class="section" style="background: var(--bg-main);">
+    <section class="section" id="overview" style="background: var(--bg-main);">
         <div class="container">
             <div class="section-header">
                 <h2>🎯 安全合规的两个视角</h2>
@@ -952,7 +964,7 @@
     </section>
 
     <!-- 业务案例 -->
-    <section class="cases-section">
+    <section class="cases-section" id="cases">
         <div class="container">
             <div class="section-header">
                 <h2>🌟 有影响力的业务实践</h2>
@@ -1130,6 +1142,35 @@
             });
             element.classList.toggle('active');
         }
+
+        // 侧边栏导航脚本
+        function toggleSidebar() {
+            const nav = document.getElementById('sidebar-nav');
+            nav.classList.toggle('collapsed');
+        }
+
+        function updateActiveNav() {
+            const sections = document.querySelectorAll('[id]');
+            const navLinks = document.querySelectorAll('.page-sidebar-nav a');
+            
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                if (window.scrollY >= sectionTop - 200) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === '#' + current) {
+                    link.classList.add('active');
+                }
+            });
+        }
+
+        window.addEventListener('scroll', updateActiveNav);
+        document.addEventListener('DOMContentLoaded', updateActiveNav);
     </script>
 </body>
 </html>

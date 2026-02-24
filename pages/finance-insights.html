@@ -583,6 +583,20 @@
         </div>
     </nav>
 
+    <!-- 左侧悬浮导航 -->
+    <nav class="page-sidebar-nav" id="sidebar-nav">
+        <button class="nav-toggle" onclick="toggleSidebar()" title="收起/展开">☰</button>
+        <div class="nav-title">本页导航</div>
+        <ul>
+            <li><a href="#impact">📊 核心价值</a></li>
+            <li><a href="#faq">🤔 CEO关心的问题</a></li>
+            <li><a href="#scenarios">💼 应用场景</a></li>
+            <li><a href="#roi">💰 投入产出测算</a></li>
+            <li><a href="#action">🚀 行动路线</a></li>
+            <li><a href="#risk">⚠️ 风险与应对</a></li>
+        </ul>
+    </nav>
+
     <!-- 页面头部 -->
     <section class="page-hero">
         <div class="container">
@@ -599,7 +613,7 @@
     </section>
 
     <!-- 核心价值数据 -->
-    <section class="impact-section">
+    <section class="impact-section" id="impact">
         <div class="container">
             <div class="section-header">
                 <h2>📊 AI能给我们带来什么？</h2>
@@ -632,7 +646,7 @@
     </section>
 
     <!-- CEO关心的问题 -->
-    <section class="faq-section">
+    <section class="faq-section" id="faq">
         <div class="container">
             <div class="section-header">
                 <h2>🤔 决策层最关心的5个问题</h2>
@@ -766,7 +780,7 @@
     </section>
 
     <!-- 真实场景展示 -->
-    <section class="scenarios-section">
+    <section class="scenarios-section" id="scenarios">
         <div class="container">
             <div class="section-header">
                 <h2>💼 AI能帮我们做什么？</h2>
@@ -991,7 +1005,7 @@
     </section>
 
     <!-- 投入产出测算 -->
-    <section class="roi-section">
+    <section class="roi-section" id="roi">
         <div class="container">
             <div class="section-header">
                 <h2 style="color: var(--white);">💰 投入产出测算</h2>
@@ -1032,7 +1046,7 @@
     </section>
 
     <!-- 行动路线 -->
-    <section class="action-section">
+    <section class="action-section" id="action">
         <div class="container">
             <div class="section-header">
                 <h2>🚀 接下来怎么做？</h2>
@@ -1169,7 +1183,7 @@
     </section>
 
     <!-- 风险与应对 -->
-    <section class="risk-section">
+    <section class="risk-section" id="risk">
         <div class="container">
             <div class="section-header">
                 <h2>⚠️ 常见顾虑与应对方案</h2>
@@ -1291,6 +1305,35 @@
         
         // 初始化计算
         calculateROI();
+
+        // 侧边栏导航脚本
+        function toggleSidebar() {
+            const nav = document.getElementById('sidebar-nav');
+            nav.classList.toggle('collapsed');
+        }
+
+        function updateActiveNav() {
+            const sections = document.querySelectorAll('[id]');
+            const navLinks = document.querySelectorAll('.page-sidebar-nav a');
+            
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                if (window.scrollY >= sectionTop - 200) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === '#' + current) {
+                    link.classList.add('active');
+                }
+            });
+        }
+
+        window.addEventListener('scroll', updateActiveNav);
+        document.addEventListener('DOMContentLoaded', updateActiveNav);
     </script>
 </body>
 </html>
