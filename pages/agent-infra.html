@@ -437,7 +437,7 @@
         }
     </style>
 </head>
-<body>
+<body class="has-sidebar">
     <!-- 导航 -->
     <nav class="nav">
         <div class="container nav-container">
@@ -473,10 +473,41 @@
     <!-- 页面头部 -->
     <section class="page-hero">
         <div class="container">
+            <div class="hero-badge">Agent Infra 完整指南</div>
             <h1>🤖 Agent基础设施<span style="color: var(--color-success);">揭秘</span></h1>
             <p>Eino、扣子罗盘、AgentKit……这些都是什么？能吃吗？（不能，但能让AI更好用）</p>
         </div>
     </section>
+
+    <!-- Tab导航 - 清爽调研报告风格强制组件 -->
+    <div class="container">
+        <nav class="tab-nav" role="navigation" aria-label="章节导航">
+            <button class="tab-btn active" data-tab="section-1" aria-selected="true">
+                <span class="tab-btn-num">1</span>
+                <span class="tab-btn-text">什么是Agent Infra</span>
+            </button>
+            <button class="tab-btn" data-tab="section-2" aria-selected="false">
+                <span class="tab-btn-num">2</span>
+                <span class="tab-btn-text">全家桶工具</span>
+            </button>
+            <button class="tab-btn" data-tab="section-3" aria-selected="false">
+                <span class="tab-btn-num">3</span>
+                <span class="tab-btn-text">评测·观测·调优</span>
+            </button>
+            <button class="tab-btn" data-tab="section-4" aria-selected="false">
+                <span class="tab-btn-num">4</span>
+                <span class="tab-btn-text">从0到1开发</span>
+            </button>
+            <button class="tab-btn" data-tab="section-5" aria-selected="false">
+                <span class="tab-btn-num">5</span>
+                <span class="tab-btn-text">调优全流程</span>
+            </button>
+            <button class="tab-btn" data-tab="section-6" aria-selected="false">
+                <span class="tab-btn-num">6</span>
+                <span class="tab-btn-text">本章小结</span>
+            </button>
+        </nav>
+    </div>
 
     <!-- 什么是Agent Infra -->
     <section class="section" id="what-is-agent-infra" style="background: var(--bg-main);">
@@ -2534,6 +2565,128 @@
 
         window.addEventListener('scroll', updateActiveNav);
         document.addEventListener('DOMContentLoaded', updateActiveNav);
+
+        // Tab导航切换功能
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                // 移除所有active
+                document.querySelectorAll('.tab-btn').forEach(b => {
+                    b.classList.remove('active');
+                    b.setAttribute('aria-selected', 'false');
+                });
+                
+                // 添加active到当前按钮
+                btn.classList.add('active');
+                btn.setAttribute('aria-selected', 'true');
+                
+                // 获取目标section的id
+                const tabId = btn.dataset.tab;
+                const sectionMap = {
+                    'section-1': 'what-is-agent-infra',
+                    'section-2': 'bytedance-agent-tools',
+                    'section-3': 'evaluation-trio',
+                    'section-4': 'build-agent-tutorial',
+                    'section-5': 'agent-optimization',
+                    'section-6': 'summary'
+                };
+                
+                // 滚动到对应section
+                const targetSection = document.getElementById(sectionMap[tabId]);
+                if (targetSection) {
+                    targetSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
+
+        // 根据滚动位置更新Tab导航状态
+        function updateTabNav() {
+            const sectionMap = {
+                'what-is-agent-infra': 'section-1',
+                'bytedance-agent-tools': 'section-2',
+                'evaluation-trio': 'section-3',
+                'build-agent-tutorial': 'section-4',
+                'agent-optimization': 'section-5',
+                'summary': 'section-6'
+            };
+            
+            let currentSection = '';
+            Object.keys(sectionMap).forEach(sectionId => {
+                const section = document.getElementById(sectionId);
+                if (section) {
+                    const rect = section.getBoundingClientRect();
+                    if (rect.top <= 150) {
+                        currentSection = sectionMap[sectionId];
+                    }
+                }
+            });
+            
+            if (currentSection) {
+                document.querySelectorAll('.tab-btn').forEach(btn => {
+                    btn.classList.remove('active');
+                    btn.setAttribute('aria-selected', 'false');
+                    if (btn.dataset.tab === currentSection) {
+                        btn.classList.add('active');
+                        btn.setAttribute('aria-selected', 'true');
+                    }
+                });
+            }
+        }
+
+        window.addEventListener('scroll', updateTabNav);
+
+        // 移动端Tips点击交互
+        function initMobileTips() {
+            const isMobile = window.matchMedia('(max-width: 768px)').matches;
+            if (!isMobile) return;
+            
+            // 创建遮罩层
+            if (!document.querySelector('.tip-overlay')) {
+                const overlay = document.createElement('div');
+                overlay.className = 'tip-overlay';
+                document.body.appendChild(overlay);
+                overlay.addEventListener('click', closeMobileTip);
+            }
+            
+            // 为所有.has-tip元素绑定点击事件
+            document.querySelectorAll('.has-tip').forEach(el => {
+                const tipBox = el.querySelector('.tip-box');
+                if (tipBox && !tipBox.querySelector('.tip-close')) {
+                    const closeBtn = document.createElement('button');
+                    closeBtn.className = 'tip-close';
+                    closeBtn.innerHTML = '×';
+                    closeBtn.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        closeMobileTip();
+                    });
+                    tipBox.appendChild(closeBtn);
+                }
+                
+                el.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    document.querySelectorAll('.has-tip.tip-active').forEach(active => {
+                        active.classList.remove('tip-active');
+                    });
+                    el.classList.add('tip-active');
+                    document.querySelector('.tip-overlay').classList.add('active');
+                });
+            });
+        }
+
+        function closeMobileTip() {
+            document.querySelectorAll('.has-tip.tip-active').forEach(el => {
+                el.classList.remove('tip-active');
+            });
+            const overlay = document.querySelector('.tip-overlay');
+            if (overlay) overlay.classList.remove('active');
+        }
+
+        document.addEventListener('DOMContentLoaded', initMobileTips);
+        window.addEventListener('resize', () => {
+            if (!window.matchMedia('(max-width: 768px)').matches) {
+                closeMobileTip();
+            }
+        });
     </script>
 </body>
 </html>

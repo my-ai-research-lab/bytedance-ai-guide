@@ -344,7 +344,7 @@
         }
     </style>
 </head>
-<body>
+<body class="has-sidebar">
     <!-- 导航 -->
     <nav class="nav">
         <div class="container nav-container">
@@ -378,10 +378,33 @@
     <!-- 页面头部 -->
     <section class="page-hero">
         <div class="container">
+            <div class="hero-badge">安全合规完整指南</div>
             <h1>🛡️ 安全合规<span style="color: var(--color-success);">全攻略</span></h1>
             <p>Agent安全：开发者如何保障质量 + 用户如何安全使用</p>
         </div>
     </section>
+
+    <!-- Tab导航 - 清爽调研报告风格强制组件 -->
+    <div class="container">
+        <nav class="tab-nav" role="navigation" aria-label="章节导航">
+            <button class="tab-btn active" data-tab="section-1" aria-selected="true">
+                <span class="tab-btn-num">1</span>
+                <span class="tab-btn-text">安全合规总览</span>
+            </button>
+            <button class="tab-btn" data-tab="section-2" aria-selected="false">
+                <span class="tab-btn-num">2</span>
+                <span class="tab-btn-text">面向开发者</span>
+            </button>
+            <button class="tab-btn" data-tab="section-3" aria-selected="false">
+                <span class="tab-btn-num">3</span>
+                <span class="tab-btn-text">面向用户</span>
+            </button>
+            <button class="tab-btn" data-tab="section-4" aria-selected="false">
+                <span class="tab-btn-num">4</span>
+                <span class="tab-btn-text">业务实践案例</span>
+            </button>
+        </nav>
+    </div>
 
     <!-- 安全合规总览 -->
     <section class="section" id="overview" style="background: var(--bg-main);">
@@ -1171,6 +1194,66 @@
 
         window.addEventListener('scroll', updateActiveNav);
         document.addEventListener('DOMContentLoaded', updateActiveNav);
+
+        // Tab导航切换功能
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.tab-btn').forEach(b => {
+                    b.classList.remove('active');
+                    b.setAttribute('aria-selected', 'false');
+                });
+                
+                btn.classList.add('active');
+                btn.setAttribute('aria-selected', 'true');
+                
+                const tabId = btn.dataset.tab;
+                const sectionMap = {
+                    'section-1': 'overview',
+                    'section-2': 'developer-section',
+                    'section-3': 'user-section',
+                    'section-4': 'cases'
+                };
+                
+                const targetSection = document.getElementById(sectionMap[tabId]);
+                if (targetSection) {
+                    targetSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
+
+        // 根据滚动位置更新Tab导航状态
+        function updateTabNav() {
+            const sectionMap = {
+                'overview': 'section-1',
+                'developer-section': 'section-2',
+                'user-section': 'section-3',
+                'cases': 'section-4'
+            };
+            
+            let currentSection = '';
+            Object.keys(sectionMap).forEach(sectionId => {
+                const section = document.getElementById(sectionId);
+                if (section) {
+                    const rect = section.getBoundingClientRect();
+                    if (rect.top <= 150) {
+                        currentSection = sectionMap[sectionId];
+                    }
+                }
+            });
+            
+            if (currentSection) {
+                document.querySelectorAll('.tab-btn').forEach(btn => {
+                    btn.classList.remove('active');
+                    btn.setAttribute('aria-selected', 'false');
+                    if (btn.dataset.tab === currentSection) {
+                        btn.classList.add('active');
+                        btn.setAttribute('aria-selected', 'true');
+                    }
+                });
+            }
+        }
+
+        window.addEventListener('scroll', updateTabNav);
     </script>
 </body>
 </html>

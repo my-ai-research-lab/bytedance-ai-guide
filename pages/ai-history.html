@@ -97,7 +97,7 @@
             background: rgba(0, 0, 0, 0.02);
         }
         
-        /* 故事Tooltip */
+        /* 故事Tooltip - 改为固定定位，显示在页面中央 */
         .story-row {
             position: relative;
         }
@@ -107,13 +107,25 @@
             cursor: help;
         }
         
+        /* 确保表格容器不会裁剪tooltip */
+        .table-scroll-wrapper {
+            overflow-x: auto;
+            overflow-y: visible;
+        }
+        
+        .compare-table {
+            overflow: visible;
+        }
+        
         .story-tooltip {
-            position: absolute;
-            bottom: calc(100% + 10px);
+            position: fixed;
+            top: 50%;
             left: 50%;
-            transform: translateX(-50%);
-            width: 420px;
+            transform: translate(-50%, -50%);
+            width: 450px;
             max-width: 90vw;
+            max-height: 80vh;
+            overflow-y: auto;
             background: var(--color-bg-card);
             color: var(--color-text-primary);
             padding: var(--spacing-lg);
@@ -133,13 +145,7 @@
         }
         
         .story-tooltip::after {
-            content: '';
-            position: absolute;
-            top: 100%;
-            left: 50%;
-            transform: translateX(-50%);
-            border: 8px solid transparent;
-            border-top-color: var(--color-bg-card);
+            display: none;
         }
         
         .story-tooltip .story-title {
@@ -187,7 +193,7 @@
             }
         }
         
-        /* 未来卡片Tooltip */
+        /* 未来卡片Tooltip - 也改为固定定位 */
         .future-card {
             position: relative;
             cursor: pointer;
@@ -195,12 +201,14 @@
         }
         
         .future-tooltip {
-            position: absolute;
-            bottom: 100%;
+            position: fixed;
+            top: 50%;
             left: 50%;
-            transform: translateX(-50%);
-            width: 400px;
+            transform: translate(-50%, -50%);
+            width: 450px;
             max-width: 90vw;
+            max-height: 80vh;
+            overflow-y: auto;
             background: var(--color-bg-card);
             color: var(--color-text-primary);
             padding: var(--spacing-lg);
@@ -217,17 +225,10 @@
         .future-card:hover .future-tooltip {
             opacity: 1;
             visibility: visible;
-            bottom: calc(100% + 15px);
         }
         
         .future-tooltip::after {
-            content: '';
-            position: absolute;
-            top: 100%;
-            left: 50%;
-            transform: translateX(-50%);
-            border: 8px solid transparent;
-            border-top-color: var(--color-bg-card);
+            display: none;
         }
         
         .future-tooltip .story-title {
@@ -375,9 +376,50 @@
             color: var(--color-text-primary);
             margin-bottom: var(--spacing-md);
         }
+        
+        /* 全宽模式容器 */
+        .container-full {
+            max-width: 100%;
+            margin: 0 auto;
+            padding: 0 var(--spacing-lg);
+        }
+        
+        /* 表格滚动容器 */
+        .table-scroll-wrapper {
+            width: 100%;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            margin: var(--spacing-md) 0;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--color-border-light);
+        }
+        
+        .table-scroll-wrapper .compare-table {
+            min-width: 1100px;
+            margin: 0;
+            border: none;
+        }
+        
+        .table-scroll-wrapper::-webkit-scrollbar {
+            height: 8px;
+        }
+        
+        .table-scroll-wrapper::-webkit-scrollbar-track {
+            background: var(--color-bg-table-header);
+            border-radius: 4px;
+        }
+        
+        .table-scroll-wrapper::-webkit-scrollbar-thumb {
+            background: var(--color-border);
+            border-radius: 4px;
+        }
+        
+        .table-scroll-wrapper::-webkit-scrollbar-thumb:hover {
+            background: var(--color-text-muted);
+        }
     </style>
 </head>
-<body>
+<body class="has-sidebar">
     <!-- 导航 -->
     <nav class="nav">
         <div class="container nav-container">
@@ -405,27 +447,50 @@
             <li><a href="#present">🔥 现在：军备竞赛</a></li>
             <li><a href="#overseas"> → 海外AI势力图</a></li>
             <li><a href="#domestic"> → 国内AI势力图</a></li>
-            <li><a href="#capability-analysis">📊 深度：多维度能力对比</a></li>
-            <li><a href="#swot-analysis">🎯 深度：SWOT分析</a></li>
-            <li><a href="#next-phase">🚀 深度：下一阶段拼什么</a></li>
-            <li><a href="#differentiation">💡 深度：如何脱颖而出</a></li>
-            <li><a href="#opportunities">🗺️ 深度：机会地图</a></li>
+            <li><a href="#ai-future">🚀 AI的下半场</a></li>
+            <li><a href="#strategic-opportunities">🎯 深度：AI竞争战略与机会分析</a></li>
             <li><a href="#finance-lessons">💹 深度：金融量化借鉴</a></li>
-            <li><a href="#future">🔮 未来：AI走向何方</a></li>
         </ul>
     </nav>
 
     <!-- 页面头部 -->
     <section class="page-hero">
         <div class="container">
+            <div class="hero-badge">AI行业深度分析</div>
             <h1>🌍 AI行业的<span class="text-gradient">前世今生与三国杀</span></h1>
             <p>海外OpenAI、Anthropic、Google打得火热，国内谁在闷声发大财？</p>
         </div>
     </section>
 
+    <!-- Tab导航 - 清爽调研报告风格强制组件 -->
+    <div class="container">
+        <nav class="tab-nav" role="navigation" aria-label="章节导航">
+            <button class="tab-btn active" data-tab="section-1" aria-selected="true">
+                <span class="tab-btn-num">1</span>
+                <span class="tab-btn-text">过去：AI寒冬与曙光</span>
+            </button>
+            <button class="tab-btn" data-tab="section-2" aria-selected="false">
+                <span class="tab-btn-num">2</span>
+                <span class="tab-btn-text">现在：大模型军备竞赛</span>
+            </button>
+            <button class="tab-btn" data-tab="section-3" aria-selected="false">
+                <span class="tab-btn-num">3</span>
+                <span class="tab-btn-text">AI的下半场</span>
+            </button>
+            <button class="tab-btn" data-tab="section-4" aria-selected="false">
+                <span class="tab-btn-num">4</span>
+                <span class="tab-btn-text">深度：竞争战略分析</span>
+            </button>
+            <button class="tab-btn" data-tab="section-5" aria-selected="false">
+                <span class="tab-btn-num">5</span>
+                <span class="tab-btn-text">金融量化借鉴</span>
+            </button>
+        </nav>
+    </div>
+
     <!-- 主要内容 -->
     <section class="era-section">
-        <div class="container">
+        <div class="container-full">
             
             <!-- 过去 -->
             <div class="era-card" id="past">
@@ -435,7 +500,7 @@
                 </div>
                 <div class="era-body">
                     <!-- 一句话总结 -->
-                    <div style="background: linear-gradient(135deg, #F59E0B, #D97706); color: white; padding: 20px 24px; border-radius: var(--radius-lg); margin-bottom: 24px;">
+                    <div style="background: linear-gradient(135deg, #4B5563, #374151); color: white; padding: 20px 24px; border-radius: var(--radius-lg); margin-bottom: 24px; border-left: 4px solid #6B7280;">
                         <p style="margin: 0; font-size: 1.05rem; line-height: 1.7;">
                             <strong>一句话总结：</strong>AI从1950年代诞生，经历了两次"AI寒冬"（资金断裂、研究停滞），直到2012年深度学习爆发才迎来真正的复兴——<strong>70年间，从"20年内实现AGI"的豪言壮语，到"学会不把猫认成狗"的艰难探索</strong>。
                         </p>
@@ -492,6 +557,7 @@
                     </div>
                     
                     <h3 id="overseas" style="margin-top: var(--spacing-lg);">🌎 海外AI势力图</h3>
+                    <div class="table-scroll-wrapper">
                     <table class="compare-table">
                         <thead>
                             <tr>
@@ -607,8 +673,10 @@
                             </tr>
                         </tbody>
                     </table>
+                    </div>
                     
                     <h3 id="domestic" style="margin-top: 32px;">🇨🇳 国内AI势力图</h3>
+                    <div class="table-scroll-wrapper">
                     <table class="compare-table">
                         <thead>
                             <tr>
@@ -744,469 +812,741 @@
                             </tr>
                         </tbody>
                     </table>
-                </div>
-            </div>
-
-            <!-- 深度分析：SWOT分析 -->
-            <div class="era-card" id="swot-analysis">
-                <div class="era-header present">
-                    <h2><span>🎯</span> 深度分析：主要玩家SWOT</h2>
-                    <p>优势、劣势、机会、威胁——一张表看清各家的"命门"和"护城河"</p>
-                </div>
-                <div class="era-body">
-                    <h3 style="margin-top: var(--spacing-md);">🇺🇸 OpenAI SWOT分析</h3>
-                    <div class="grid-2" style="margin-bottom: 24px;">
-                        <div class="card" style="border-left: 3px solid var(--color-success);">
-                            <h4 style="color: var(--color-success);">✓ 优势 (Strengths)</h4>
-                            <ul style="margin-top: 8px; padding-left: 20px; color: var(--color-text-secondary);">
-                                <li>先发优势，品牌认知度最高</li>
-                                <li>微软强力支持（资金+算力+渠道）</li>
-                                <li>GPT系列持续保持领先</li>
-                                <li>ChatGPT用户基数庞大</li>
-                            </ul>
-                        </div>
-                        <div class="card" style="border-left: 3px solid var(--color-danger);">
-                            <h4 style="color: var(--color-danger);">✗ 劣势 (Weaknesses)</h4>
-                            <ul style="margin-top: 8px; padding-left: 20px; color: var(--color-text-secondary);">
-                                <li>闭源路线受开源社区质疑</li>
-                                <li>商业化与创始使命冲突</li>
-                                <li>内部管理频繁动荡</li>
-                                <li>成本结构高企</li>
-                            </ul>
-                        </div>
-                        <div class="card" style="border-left: 3px solid var(--color-info);">
-                            <h4 style="color: var(--color-info);">○ 机会 (Opportunities)</h4>
-                            <ul style="margin-top: 8px; padding-left: 20px; color: var(--color-text-secondary);">
-                                <li>AGI叙事持续吸引资本</li>
-                                <li>企业市场需求爆发</li>
-                                <li>Agent时代平台地位机会</li>
-                                <li>Sora等多模态领先</li>
-                            </ul>
-                        </div>
-                        <div class="card" style="border-left: 3px solid var(--color-warning);">
-                            <h4 style="color: var(--color-warning);">⚠ 威胁 (Threats)</h4>
-                            <ul style="margin-top: 8px; padding-left: 20px; color: var(--color-text-secondary);">
-                                <li>DeepSeek等开源模型冲击</li>
-                                <li>Anthropic/Google持续追赶</li>
-                                <li>算力成本持续高企</li>
-                                <li>监管和合规压力</li>
-                            </ul>
-                        </div>
-                    </div>
-
-                    <h3>🚀 字节跳动 SWOT分析</h3>
-                    <div class="grid-2" style="margin-bottom: 24px;">
-                        <div class="card" style="border-left: 3px solid var(--color-success);">
-                            <h4 style="color: var(--color-success);">✓ 优势 (Strengths)</h4>
-                            <ul style="margin-top: 8px; padding-left: 20px; color: var(--color-text-secondary);">
-                                <li>全栈布局最完整（模型+平台+应用）</li>
-                                <li>价格屠夫策略（0.8厘/千Token）</li>
-                                <li>亿级DAU产品验证场景</li>
-                                <li>组织敏捷，执行力强</li>
-                            </ul>
-                        </div>
-                        <div class="card" style="border-left: 3px solid var(--color-danger);">
-                            <h4 style="color: var(--color-danger);">✗ 劣势 (Weaknesses)</h4>
-                            <ul style="margin-top: 8px; padding-left: 20px; color: var(--color-text-secondary);">
-                                <li>AI品牌认知度弱于百度/阿里</li>
-                                <li>模型能力仍在追赶中</li>
-                                <li>TikTok政策不确定性</li>
-                                <li>开源社区影响力不足</li>
-                            </ul>
-                        </div>
-                        <div class="card" style="border-left: 3px solid var(--color-info);">
-                            <h4 style="color: var(--color-info);">○ 机会 (Opportunities)</h4>
-                            <ul style="margin-top: 8px; padding-left: 20px; color: var(--color-text-secondary);">
-                                <li>Agent平台（扣子+罗盘）先机</li>
-                                <li>出海AI服务机会</li>
-                                <li>具身智能布局（GR-3机器人）</li>
-                                <li>短视频+AI融合创新</li>
-                            </ul>
-                        </div>
-                        <div class="card" style="border-left: 3px solid var(--color-warning);">
-                            <h4 style="color: var(--color-warning);">⚠ 威胁 (Threats)</h4>
-                            <ul style="margin-top: 8px; padding-left: 20px; color: var(--color-text-secondary);">
-                                <li>DeepSeek持续技术领先</li>
-                                <li>阿里Qwen开源竞争</li>
-                                <li>芯片供应链风险</li>
-                                <li>地缘政治影响</li>
-                            </ul>
-                        </div>
-                    </div>
-
-                    <h3>⚡ DeepSeek SWOT分析</h3>
-                    <div class="grid-2">
-                        <div class="card" style="border-left: 3px solid var(--color-success);">
-                            <h4 style="color: var(--color-success);">✓ 优势 (Strengths)</h4>
-                            <ul style="margin-top: 8px; padding-left: 20px; color: var(--color-text-secondary);">
-                                <li>极致工程效率（R1震惊全球）</li>
-                                <li>开源影响力爆发</li>
-                                <li>成本结构优势明显</li>
-                                <li>幻方量化资金支持</li>
-                            </ul>
-                        </div>
-                        <div class="card" style="border-left: 3px solid var(--color-danger);">
-                            <h4 style="color: var(--color-danger);">✗ 劣势 (Weaknesses)</h4>
-                            <ul style="margin-top: 8px; padding-left: 20px; color: var(--color-text-secondary);">
-                                <li>商业化路径不清晰</li>
-                                <li>团队规模相对小</li>
-                                <li>应用生态尚薄弱</li>
-                                <li>数据资产相对弱</li>
-                            </ul>
-                        </div>
-                        <div class="card" style="border-left: 3px solid var(--color-info);">
-                            <h4 style="color: var(--color-info);">○ 机会 (Opportunities)</h4>
-                            <ul style="margin-top: 8px; padding-left: 20px; color: var(--color-text-secondary);">
-                                <li>开源生态领导者地位</li>
-                                <li>企业私有化部署需求</li>
-                                <li>国际影响力持续扩大</li>
-                                <li>量化+AI融合创新</li>
-                            </ul>
-                        </div>
-                        <div class="card" style="border-left: 3px solid var(--color-warning);">
-                            <h4 style="color: var(--color-warning);">⚠ 威胁 (Threats)</h4>
-                            <ul style="margin-top: 8px; padding-left: 20px; color: var(--color-text-secondary);">
-                                <li>巨头快速跟进效仿</li>
-                                <li>持续创新压力</li>
-                                <li>核心人才被挖角</li>
-                                <li>算力供应受限</li>
-                            </ul>
-                        </div>
                     </div>
                 </div>
             </div>
 
-            <!-- 深度分析：下一阶段竞争焦点 -->
-            <div class="era-card" id="next-phase">
+            <!-- AI的下半场：竞争焦点与未来方向 -->
+            <div class="era-card" id="ai-future">
                 <div class="era-header future">
-                    <h2><span>🚀</span> 深度分析：下一阶段拼什么？</h2>
-                    <p>从"训练大力出奇迹"到"推理效率为王"，军备竞赛的赛道正在切换</p>
+                    <h2><span>🚀</span> AI的下半场</h2>
+                    <p>从"规模竞赛"到"效率革命"，从"问答助手"到"数字员工"，AI竞争的终局在哪里？</p>
                 </div>
                 <div class="era-body">
-                    <div class="joke-insert">
-                        <div class="emoji">🔄</div>
+                    
+                    <!-- 核心洞察 -->
+                    <div class="joke-insert" style="margin-bottom: 24px;">
+                        <div class="emoji">🎯</div>
                         <div class="content">
-                            <div class="title">范式转移</div>
-                            <div class="text">训练发生一次，推理发生百万次。以前比的是"谁的模型大"，现在比的是"谁推理便宜"。DeepSeek R1用实际行动证明：效率可以打败规模。</div>
+                            <div class="title">一句话看懂AI下半场</div>
+                            <div class="text">上半场比的是"谁的模型大"，下半场比的是"谁落地深"。训练发生一次，推理发生百万次——DeepSeek用实际行动证明：效率可以打败规模。</div>
                         </div>
                     </div>
 
-                    <h3 style="margin-top: var(--spacing-lg);">📈 竞争焦点演进时间线</h3>
+                    <!-- Part 1: 竞争焦点演进 -->
+                    <h3 style="margin-top: var(--spacing-md);">📈 一、竞争焦点的四次范式转移</h3>
+                    
+                    <p style="color: var(--color-text-secondary); margin-bottom: 16px;">AI行业的竞争焦点经历了清晰的阶段演进，每次转移都带来新的赢家和输家：</p>
+
+                    <div class="table-scroll-wrapper">
                     <table class="compare-table">
                         <thead>
                             <tr>
-                                <th>阶段</th>
-                                <th>时间</th>
-                                <th>竞争焦点</th>
-                                <th>代表事件</th>
+                                <th style="min-width: 100px;">阶段</th>
+                                <th style="min-width: 100px;">时间</th>
+                                <th style="min-width: 140px;">竞争焦点</th>
+                                <th style="min-width: 200px;">代表事件</th>
+                                <th style="min-width: 200px;">胜出者特征</th>
+                                <th style="min-width: 180px;">对后来者的启示</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
-                                <td><strong>规模竞赛</strong></td>
+                                <td><strong>🏔️ 规模竞赛</strong></td>
                                 <td>2022-2023</td>
                                 <td>模型参数规模</td>
-                                <td>GPT-4的1.8万亿参数震惊业界</td>
+                                <td>GPT-4的1.8万亿参数震惊业界；各大厂疯狂堆参数</td>
+                                <td>资金雄厚、算力充足的巨头</td>
+                                <td>这场游戏已经结束，后来者不要再卷参数</td>
                             </tr>
                             <tr>
-                                <td><strong>效率革命</strong></td>
+                                <td><strong>⚡ 效率革命</strong></td>
                                 <td>2024-2025</td>
                                 <td>推理效率与成本</td>
-                                <td>DeepSeek R1用更少算力达到相近效果</td>
+                                <td>DeepSeek R1用1/10成本达到GPT-4水平；MoE架构成主流</td>
+                                <td>工程能力强、架构创新的团队</td>
+                                <td>效率优化仍有巨大空间，适合技术型创业者</td>
                             </tr>
                             <tr>
-                                <td><strong>场景落地</strong></td>
+                                <td><strong>🎯 场景落地</strong></td>
                                 <td>2025-2026</td>
                                 <td>Agent + 垂直应用</td>
-                                <td>AI Agent从玩具变成生产力工具</td>
+                                <td>AI Agent从玩具变成生产力工具；Harvey、Cursor等垂直应用爆发</td>
+                                <td>懂场景、能落地的团队</td>
+                                <td>现在是最佳窗口期，行业know-how是关键</td>
                             </tr>
                             <tr>
-                                <td><strong>端侧普及</strong></td>
+                                <td><strong>📱 端侧普及</strong></td>
                                 <td>2027+</td>
                                 <td>设备本地运行</td>
-                                <td>手机/PC/车载本地AI，隐私优先</td>
+                                <td>手机/PC/车载本地AI；Apple M系列芯片引领；隐私合规驱动</td>
+                                <td>掌握端侧优化技术的玩家</td>
+                                <td>需要提前布局模型压缩和端侧部署能力</td>
                             </tr>
                         </tbody>
                     </table>
+                    </div>
 
-                    <h3 style="margin-top: 32px;">🎯 六大下一阶段竞争赛道</h3>
+                    <!-- Part 2: 六大核心赛道 -->
+                    <h3 style="margin-top: 32px;">🏁 二、下半场的六大核心赛道</h3>
+                    
                     <div class="grid-3" style="margin-top: var(--spacing-md);">
-                        <div class="card">
+                        <div class="card future-card" style="border-top: 3px solid var(--color-info);">
                             <div style="font-size: 2rem; margin-bottom: var(--spacing-sm);">🤖</div>
-                            <h4>Agentic AI</h4>
-                            <p style="color: var(--color-text-secondary); font-size: var(--font-size-sm);">
+                            <h4>Agentic AI（智能体）</h4>
+                            <p style="color: var(--color-text-secondary); font-size: var(--font-size-sm); margin-top: var(--spacing-xs);">
                                 从问答到执行，AI Agent成为"虚拟员工"，自主规划和完成复杂任务
                             </p>
+                            <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--color-border-light);">
+                                <span style="font-size: var(--font-size-xs); color: var(--color-info); font-weight: 600;">🔥 2025-2026主战场</span>
+                            </div>
+                            <div class="future-tooltip">
+                                <div class="story-title">🎬 从"问答"到"干活"</div>
+                                <div class="story-content">
+                                    <strong>通俗解释：</strong>ChatGPT像个"百科全书"，你问它答。AI Agent像个"实习生"，你给它任务，它自己想办法完成——上网查资料、调用工具、写代码、发邮件，全自动。<br><br>
+                                    <strong>行业预测：</strong>2025年被称为"AI Agent元年"。各大公司都在布局：豆包有智能体平台、Claude有Computer Use、OpenAI有Operator。<br><br>
+                                    <strong>段子：</strong>程序员问老板："AI Agent能自己写代码了，那我们干啥？"老板："你负责给Agent改Bug。"程序员："……那Agent能自己改Bug吗？"老板微笑不语。
+                                </div>
+                                <span class="story-tag">🎙️ 演讲素材</span>
+                            </div>
                         </div>
-                        <div class="card">
+                        <div class="card" style="border-top: 3px solid var(--color-success);">
                             <div style="font-size: 2rem; margin-bottom: var(--spacing-sm);">⚡</div>
-                            <h4>推理效率</h4>
-                            <p style="color: var(--color-text-secondary); font-size: var(--font-size-sm);">
-                                单位算力产出最大化，DeepSeek模式被全球效仿
+                            <h4>推理效率优化</h4>
+                            <p style="color: var(--color-text-secondary); font-size: var(--font-size-sm); margin-top: var(--spacing-xs);">
+                                单位算力产出最大化，MoE、量化、蒸馏技术持续突破，DeepSeek模式被全球效仿
                             </p>
+                            <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--color-border-light);">
+                                <span style="font-size: var(--font-size-xs); color: var(--color-success); font-weight: 600;">✅ 技术型创业机会</span>
+                            </div>
                         </div>
-                        <div class="card">
+                        <div class="card" style="border-top: 3px solid #8250DF;">
+                            <div style="font-size: 2rem; margin-bottom: var(--spacing-sm);">🏥</div>
+                            <h4>垂直场景深耕</h4>
+                            <p style="color: var(--color-text-secondary); font-size: var(--font-size-sm); margin-top: var(--spacing-xs);">
+                                金融/医疗/法律等专业领域深耕，行业know-how+AI能力形成护城河
+                            </p>
+                            <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--color-border-light);">
+                                <span style="font-size: var(--font-size-xs); color: #8250DF; font-weight: 600;">💎 高壁垒蓝海</span>
+                            </div>
+                        </div>
+                        <div class="card" style="border-top: 3px solid var(--color-warning);">
                             <div style="font-size: 2rem; margin-bottom: var(--spacing-sm);">📱</div>
                             <h4>端侧部署</h4>
-                            <p style="color: var(--color-text-secondary); font-size: var(--font-size-sm);">
-                                手机/PC/车载本地运行AI，Apple M系列芯片引领趋势
+                            <p style="color: var(--color-text-secondary); font-size: var(--font-size-sm); margin-top: var(--spacing-xs);">
+                                手机/PC/车载本地运行AI，Apple M系列芯片引领，隐私合规需求驱动
                             </p>
+                            <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--color-border-light);">
+                                <span style="font-size: var(--font-size-xs); color: var(--color-warning); font-weight: 600;">📈 2027+爆发</span>
+                            </div>
                         </div>
-                        <div class="card">
-                            <div style="font-size: 2rem; margin-bottom: var(--spacing-sm);">🏥</div>
-                            <h4>垂直场景</h4>
-                            <p style="color: var(--color-text-secondary); font-size: var(--font-size-sm);">
-                                金融/医疗/法律等专业领域深耕，通用模型难以替代
-                            </p>
-                        </div>
-                        <div class="card">
+                        <div class="card" style="border-top: 3px solid var(--color-danger);">
                             <div style="font-size: 2rem; margin-bottom: var(--spacing-sm);">🎬</div>
                             <h4>多模态融合</h4>
-                            <p style="color: var(--color-text-secondary); font-size: var(--font-size-sm);">
-                                视觉+语音+文本一体化理解与生成，Sora/Gemini引领
+                            <p style="color: var(--color-text-secondary); font-size: var(--font-size-sm); margin-top: var(--spacing-xs);">
+                                视觉+语音+文本一体化理解与生成，Sora/Gemini引领，内容创作革命
                             </p>
+                            <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--color-border-light);">
+                                <span style="font-size: var(--font-size-xs); color: var(--color-danger); font-weight: 600;">🔥 内容创作主战场</span>
+                            </div>
                         </div>
-                        <div class="card">
+                        <div class="card future-card" style="border-top: 3px solid var(--color-info);">
                             <div style="font-size: 2rem; margin-bottom: var(--spacing-sm);">🦾</div>
                             <h4>具身智能</h4>
-                            <p style="color: var(--color-text-secondary); font-size: var(--font-size-sm);">
-                                AI+机器人，从数字世界进入物理世界，Figure/Tesla领跑
+                            <p style="color: var(--color-text-secondary); font-size: var(--font-size-sm); margin-top: var(--spacing-xs);">
+                                AI+机器人，从数字世界进入物理世界，Figure/Tesla/字节GR-3领跑
                             </p>
+                            <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--color-border-light);">
+                                <span style="font-size: var(--font-size-xs); color: var(--color-info); font-weight: 600;">🚀 长期最大变量</span>
+                            </div>
+                            <div class="future-tooltip">
+                                <div class="story-title">🎬 当AI学会"动手"</div>
+                                <div class="story-content">
+                                    <strong>行业笑话：</strong>大模型很聪明，但让它倒杯水？抱歉，它连手都没有。所以大家开始琢磨：给AI装个身体！<br><br>
+                                    <strong>真实案例：</strong>Figure公司的人形机器人能一边和你聊天，一边给你递苹果。特斯拉Optimus号称要"解放人类双手"，字节的GR-3机器人也在悄悄布局。<br><br>
+                                    <strong>投资人视角：</strong>2024年具身智能融资超过100亿美元。有人调侃："以前投互联网是'软件吃掉世界'，现在投机器人是'AI站起来吃掉世界'。"
+                                </div>
+                                <span class="story-tag">🎙️ 演讲素材</span>
+                            </div>
                         </div>
                     </div>
 
-                    <div class="quote-box" style="margin-top: 24px;">
-                        <p>"AI竞争的下半场，不是比谁的模型更大，而是比谁的落地更深、成本更低、迭代更快。"</p>
+                    <!-- Part 3: AGI展望 -->
+                    <h3 style="margin-top: 32px;">🧠 三、终极问题：AGI何时到来？</h3>
+                    
+                    <div class="grid-2" style="margin-top: var(--spacing-md);">
+                        <div class="card future-card" style="background: linear-gradient(135deg, rgba(130, 80, 223, 0.05), rgba(9, 105, 218, 0.05));">
+                            <h4 style="color: #8250DF;">🔮 乐观派观点</h4>
+                            <ul style="margin-top: 12px; padding-left: 20px; color: var(--color-text-secondary); line-height: 1.8;">
+                                <li><strong>Sam Altman（OpenAI）：</strong>"2027年前实现AGI"</li>
+                                <li><strong>Demis Hassabis（DeepMind）：</strong>"5-10年内"</li>
+                                <li><strong>论据：</strong>GPT-5/Claude 4/Gemini 3.0展现的能力飞跃，多模态理解突破，推理能力持续提升</li>
+                            </ul>
+                            <div class="future-tooltip">
+                                <div class="story-title">🎬 AGI：一场"狼来了"的故事？</div>
+                                <div class="story-content">
+                                    <strong>有趣的历史：</strong>1956年达特茅斯会议上，科学家们预测"20年内实现通用人工智能"。结果呢？快70年过去了，我们还在预测。<br><br>
+                                    <strong>段子：</strong>Sam Altman说"AGI两年内到来"，学术界集体翻白眼："你倒是给个定义啊？"OpenAI的AGI定义是"能完成大多数经济价值工作的系统"——听起来像是为了融资写的。<br><br>
+                                    <strong>真实进展：</strong>GPT-5、Claude 4确实展现了惊人能力，但离"通用"还差得远。科学家调侃："现在的AI是个偏科严重的学霸，语文满分，但让它折个纸飞机都费劲。"
+                                </div>
+                                <span class="story-tag">🎙️ 演讲素材</span>
+                            </div>
+                        </div>
+                        <div class="card" style="background: rgba(110, 119, 129, 0.05);">
+                            <h4 style="color: var(--color-text-muted);">🤔 谨慎派观点</h4>
+                            <ul style="margin-top: 12px; padding-left: 20px; color: var(--color-text-secondary); line-height: 1.8;">
+                                <li><strong>Yann LeCun（Meta）：</strong>"现有架构无法实现AGI"</li>
+                                <li><strong>学术界主流：</strong>"定义都没统一，谈什么时间表"</li>
+                                <li><strong>论据：</strong>物理世界理解能力缺失，因果推理能力有限，泛化能力仍受限</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="joke-insert" style="margin-top: 24px;">
+                        <div class="emoji">💡</div>
+                        <div class="content">
+                            <div class="title">务实的判断</div>
+                            <div class="text">与其争论AGI何时到来，不如关注确定性更高的趋势：<strong>AI Agent</strong>正在从玩具变成生产力工具，<strong>垂直场景</strong>的AI应用正在创造真实价值，<strong>效率优化</strong>让AI普惠化成为可能。这些才是当下最值得关注的机会。</div>
+                        </div>
+                    </div>
+
+                    <!-- Part 4: 不同角色的应对策略 -->
+                    <h3 style="margin-top: 32px;">🎬 四、不同角色的下半场策略</h3>
+
+                    <div class="grid-2" style="margin-top: var(--spacing-md);">
+                        <div class="card" style="border-top: 3px solid var(--color-info);">
+                            <h4 style="color: var(--color-info);">👨‍💻 技术从业者</h4>
+                            <ol style="margin-top: 12px; padding-left: 20px; color: var(--color-text-secondary); line-height: 1.8;">
+                                <li><strong>优先学习Agent开发</strong> — 2026年最稀缺的技能</li>
+                                <li><strong>掌握评测与调优</strong> — 会用AI不稀缺，会优化AI才稀缺</li>
+                                <li><strong>深耕一个垂直领域</strong> — 金融/医疗/法律的AI专家溢价最高</li>
+                            </ol>
+                        </div>
+                        <div class="card" style="border-top: 3px solid var(--color-success);">
+                            <h4 style="color: var(--color-success);">🏢 企业决策者</h4>
+                            <ol style="margin-top: 12px; padding-left: 20px; color: var(--color-text-secondary); line-height: 1.8;">
+                                <li><strong>先做内部提效</strong> — 从AI辅助内部工作流开始，风险最低</li>
+                                <li><strong>建立数据资产</strong> — 私有数据是未来AI竞争的核心壁垒</li>
+                                <li><strong>组建AI评估能力</strong> — 能评估AI效果比能开发AI更重要</li>
+                            </ol>
+                        </div>
+                        <div class="card" style="border-top: 3px solid #8250DF;">
+                            <h4 style="color: #8250DF;">🚀 创业者/投资者</h4>
+                            <ol style="margin-top: 12px; padding-left: 20px; color: var(--color-text-secondary); line-height: 1.8;">
+                                <li><strong>避开通用大模型</strong> — 这是巨头的游戏</li>
+                                <li><strong>找垂直场景切入</strong> — 行业know-how+AI=护城河</li>
+                                <li><strong>关注Agent基础设施</strong> — 下一波基础设施红利</li>
+                            </ol>
+                        </div>
+                        <div class="card" style="border-top: 3px solid var(--color-warning);">
+                            <h4 style="color: var(--color-warning);">👤 普通用户</h4>
+                            <ol style="margin-top: 12px; padding-left: 20px; color: var(--color-text-secondary); line-height: 1.8;">
+                                <li><strong>学会使用AI工具</strong> — 这是新时代的基本技能</li>
+                                <li><strong>建立AI协作思维</strong> — 把AI当成能力放大器</li>
+                                <li><strong>保持学习心态</strong> — AI在进化，你也需要进化</li>
+                            </ol>
+                        </div>
+                    </div>
+
+                    <!-- 结尾金句 -->
+                    <div class="quote-box" style="margin-top: 32px; background: linear-gradient(135deg, rgba(130, 80, 223, 0.08), rgba(9, 105, 218, 0.08));">
+                        <p>"未来不是AI取代人类，而是<strong>会用AI的人取代不会用AI的人</strong>。"</p>
+                        <cite>—— AI下半场的核心法则</cite>
+                    </div>
+
+                    <div class="quote-box" style="margin-top: 16px;">
+                        <p>"AI竞争的下半场，不是比谁的模型更大，而是比<strong>谁的落地更深、成本更低、迭代更快</strong>。"</p>
                         <cite>—— McKinsey Technology Trends Outlook 2025</cite>
                     </div>
                 </div>
             </div>
 
-            <!-- 深度分析：如何脱颖而出 -->
-            <div class="era-card" id="differentiation">
+            <!-- 页面导航 -->
+            <div class="era-card" id="strategic-opportunities">
                 <div class="era-header present">
-                    <h2><span>💡</span> 深度分析：如何脱颖而出？</h2>
-                    <p>在巨头林立的AI赛道，模型和应用如何找到自己的"生存空间"</p>
+                    <h2><span>🎯</span> 深度分析：AI竞争战略与机会分析</h2>
+                    <p>从巨头博弈规律中提炼差异化策略，从市场空白中发现战略级机会</p>
                 </div>
                 <div class="era-body">
-                    <h3 style="margin-top: var(--spacing-md);">🏆 模型层差异化策略</h3>
-                    <table class="compare-table">
-                        <thead>
-                            <tr>
-                                <th>策略</th>
-                                <th>核心思路</th>
-                                <th>代表案例</th>
-                                <th>适用场景</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td><strong>极致效率</strong></td>
-                                <td>用更少算力达到相同效果</td>
-                                <td>DeepSeek R1</td>
-                                <td>算力受限/成本敏感场景</td>
-                            </tr>
-                            <tr>
-                                <td><strong>垂直深耕</strong></td>
-                                <td>在特定领域做到绝对领先</td>
-                                <td>Bloomberg GPT（金融）</td>
-                                <td>专业领域/高门槛场景</td>
-                            </tr>
-                            <tr>
-                                <td><strong>开源生态</strong></td>
-                                <td>通过开源建立影响力和标准</td>
-                                <td>Meta Llama、阿里Qwen</td>
-                                <td>开发者生态/长期布局</td>
-                            </tr>
-                            <tr>
-                                <td><strong>安全对齐</strong></td>
-                                <td>以安全可信为核心卖点</td>
-                                <td>Anthropic Claude</td>
-                                <td>企业级/强监管场景</td>
-                            </tr>
-                            <tr>
-                                <td><strong>多模态原生</strong></td>
-                                <td>从设计之初就是多模态</td>
-                                <td>Google Gemini</td>
-                                <td>复杂交互/创意场景</td>
-                            </tr>
-                        </tbody>
-                    </table>
+                    
+                    <!-- Part 1: 竞争格局深度剖析 -->
+                    <h3 style="margin-top: var(--spacing-md);">📊 一、竞争格局深度剖析：三大战场的攻防态势</h3>
+                    
+                    <div class="joke-insert" style="margin-bottom: 24px;">
+                        <div class="emoji">🎯</div>
+                        <div class="content">
+                            <div class="title">核心洞察</div>
+                            <div class="text">AI竞争已从"单一模型能力比拼"演变为"系统性生态战争"。2024-2026年的竞争焦点经历了三次转移：训练效率 → 推理成本 → Agent落地能力。未来的赢家不是"模型最强的"，而是"生态闭环最完整的"。</div>
+                        </div>
+                    </div>
 
-                    <h3 style="margin-top: 32px;">🚀 应用层差异化策略</h3>
+                    <div class="table-scroll-wrapper">
                     <table class="compare-table">
                         <thead>
                             <tr>
-                                <th>策略</th>
-                                <th>核心思路</th>
-                                <th>代表案例</th>
-                                <th>护城河强度</th>
+                                <th style="min-width: 100px;">战场</th>
+                                <th style="min-width: 180px;">当前格局</th>
+                                <th style="min-width: 200px;">关键成功因素</th>
+                                <th style="min-width: 180px;">后来者切入点</th>
+                                <th style="min-width: 150px;">2026年趋势判断</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
-                                <td><strong>场景深耕</strong></td>
-                                <td>在垂直场景做到极致</td>
-                                <td>Harvey（法律AI）、Coze（Agent平台）</td>
-                                <td>⭐⭐⭐⭐⭐ 最强</td>
+                                <td><strong>🧠 模型层</strong></td>
+                                <td>
+                                    <strong>闭源阵营：</strong>OpenAI (GPT-5)、Anthropic (Claude 4)、Google (Gemini 3.0)三足鼎立<br><br>
+                                    <strong>开源阵营：</strong>Meta Llama 4 vs 阿里Qwen3 vs DeepSeek R2争夺开源王座
+                                </td>
+                                <td>
+                                    • <strong>训练效率：</strong>DeepSeek用1/10成本达到GPT-4水平，重新定义行业基准<br>
+                                    • <strong>数据质量：</strong>合成数据和RLHF数据成为核心资产<br>
+                                    • <strong>推理优化：</strong>MoE架构成主流，稀疏激活降本50%+
+                                </td>
+                                <td>
+                                    • <strong>极致效率路线：</strong>学习DeepSeek，用更少资源做出更好效果<br>
+                                    • <strong>垂直深耕路线：</strong>金融/医疗/法律专用模型，准确率>通用性<br>
+                                    • <strong>边缘部署路线：</strong>端侧小模型，满足隐私和延迟需求
+                                </td>
+                                <td>
+                                    开源与闭源差距持续缩小；<br>
+                                    模型能力差异<10%时，竞争转向工程效率和落地速度
+                                </td>
                             </tr>
                             <tr>
-                                <td><strong>工作流整合</strong></td>
-                                <td>融入用户现有工作流</td>
-                                <td>Notion AI、飞书AI、GitHub Copilot</td>
-                                <td>⭐⭐⭐⭐ 强</td>
+                                <td><strong>🔧 平台层</strong></td>
+                                <td>
+                                    <strong>海外：</strong>OpenAI API + Azure、AWS Bedrock、Google Vertex AI<br><br>
+                                    <strong>国内：</strong>字节扣子/火山引擎 vs 阿里百炼 vs 腾讯混元 vs 百度千帆
+                                </td>
+                                <td>
+                                    • <strong>Agent工具链：</strong>编排、调试、监控、评测一站式能力<br>
+                                    • <strong>生态丰富度：</strong>插件/工具市场的开发者活跃度<br>
+                                    • <strong>企业级能力：</strong>安全、合规、私有化部署、SLA保障
+                                </td>
+                                <td>
+                                    • <strong>垂直行业平台：</strong>金融AI平台、医疗AI平台（监管壁垒=护城河）<br>
+                                    • <strong>AgentOps工具：</strong>专注Agent可观测性、调试、评测的独立工具<br>
+                                    • <strong>数据闭环服务：</strong>帮助企业构建私有知识库和反馈闭环
+                                </td>
+                                <td>
+                                    平台层将出现"云厂商+AI厂商"的深度绑定；<br>
+                                    独立AI平台面临被整合或边缘化风险
+                                </td>
                             </tr>
                             <tr>
-                                <td><strong>数据壁垒</strong></td>
-                                <td>用独特数据建立护城河</td>
-                                <td>Bloomberg Terminal + AI、医疗AI</td>
-                                <td>⭐⭐⭐⭐⭐ 最强</td>
-                            </tr>
-                            <tr>
-                                <td><strong>网络效应</strong></td>
-                                <td>用户越多越好用</td>
-                                <td>ChatGPT的对话学习</td>
-                                <td>⭐⭐⭐⭐ 强</td>
-                            </tr>
-                            <tr>
-                                <td><strong>成本领先</strong></td>
-                                <td>做最便宜的AI服务</td>
-                                <td>字节豆包（0.8厘/千Token）</td>
-                                <td>⭐⭐⭐ 中等（易被追赶）</td>
+                                <td><strong>📱 应用层</strong></td>
+                                <td>
+                                    <strong>C端：</strong>ChatGPT、豆包、Kimi白热化竞争，用户留存成挑战<br><br>
+                                    <strong>B端：</strong>AI编程（Cursor/Copilot）、AI客服、AI营销等场景先行
+                                </td>
+                                <td>
+                                    • <strong>场景深度：</strong>解决具体问题vs通用对话的差距<br>
+                                    • <strong>用户粘性：</strong>工作流整合>独立App<br>
+                                    • <strong>数据飞轮：</strong>用户使用数据反哺模型优化
+                                </td>
+                                <td>
+                                    • <strong>AI Native应用：</strong>从AI能力出发设计产品，而非给现有产品加AI<br>
+                                    • <strong>垂直场景打穿：</strong>法律AI（Harvey）、投研AI、教育AI等<br>
+                                    • <strong>工作流嵌入：</strong>成为Notion/飞书/VS Code的插件
+                                </td>
+                                <td>
+                                    通用AI助手将趋同，差异化来自垂直场景；<br>
+                                    AI应用的"超级入口"之争远未结束
+                                </td>
                             </tr>
                         </tbody>
                     </table>
+                    </div>
+
+                    <!-- Part 2: 差异化策略矩阵 -->
+                    <h3 style="margin-top: 32px;">💡 二、差异化策略矩阵：六大可行路径</h3>
+                    
+                    <p style="color: var(--color-text-secondary); margin-bottom: 16px;">基于对全球50+AI公司的分析，我们提炼出六种经过验证的差异化策略，每种策略都有明确的适用条件和成功案例：</p>
+
+                    <div class="table-scroll-wrapper">
+                    <table class="compare-table">
+                        <thead>
+                            <tr>
+                                <th style="min-width: 110px;">策略</th>
+                                <th style="min-width: 180px;">核心逻辑</th>
+                                <th style="min-width: 150px;">代表案例</th>
+                                <th style="min-width: 150px;">适用条件</th>
+                                <th style="min-width: 120px;">护城河强度</th>
+                                <th style="min-width: 150px;">风险点</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>🚀 极致效率派</strong></td>
+                                <td>
+                                    用更少算力达到相同效果，重新定义"性价比"基准线<br><br>
+                                    <em>关键能力：工程优化、架构创新、算法突破</em>
+                                </td>
+                                <td>
+                                    <strong>DeepSeek R1：</strong>用1/10成本训练达到GPT-4水平，开源后引发行业震动<br><br>
+                                    <strong>Mistral：</strong>小团队做出与大厂媲美的模型
+                                </td>
+                                <td>
+                                    • 有顶尖工程团队<br>
+                                    • 算力资源受限<br>
+                                    • 追求技术影响力
+                                </td>
+                                <td>⭐⭐⭐<br>中等（技术可被追赶）</td>
+                                <td>技术壁垒有时效性，需持续创新保持领先</td>
+                            </tr>
+                            <tr>
+                                <td><strong>🏥 垂直深耕派</strong></td>
+                                <td>
+                                    在特定领域做到绝对领先，用专业度构建壁垒<br><br>
+                                    <em>关键能力：行业know-how、专业数据、领域专家</em>
+                                </td>
+                                <td>
+                                    <strong>Harvey（法律）：</strong>律所专用AI，被A&O等顶级律所采用<br><br>
+                                    <strong>Bloomberg GPT（金融）：</strong>在金融NLP任务上远超通用模型
+                                </td>
+                                <td>
+                                    • 有行业资源/背景<br>
+                                    • 能获取专业数据<br>
+                                    • 目标客户明确
+                                </td>
+                                <td>⭐⭐⭐⭐⭐<br>最强</td>
+                                <td>市场规模有限，需平衡深度与广度</td>
+                            </tr>
+                            <tr>
+                                <td><strong>🌐 开源生态派</strong></td>
+                                <td>
+                                    通过开源建立影响力和标准，用社区力量对抗巨头<br><br>
+                                    <em>关键能力：技术实力、社区运营、商业化能力</em>
+                                </td>
+                                <td>
+                                    <strong>Meta Llama：</strong>开源模型下载量超10亿次，成为"开源版ChatGPT"<br><br>
+                                    <strong>阿里Qwen：</strong>国内开源影响力第一，被大量公司采用
+                                </td>
+                                <td>
+                                    • 有足够资源持续投入<br>
+                                    • 长期布局心态<br>
+                                    • 有配套商业化路径
+                                </td>
+                                <td>⭐⭐⭐⭐<br>强</td>
+                                <td>开源不直接赚钱，需要找到商业化闭环</td>
+                            </tr>
+                            <tr>
+                                <td><strong>🔒 安全对齐派</strong></td>
+                                <td>
+                                    以安全可信为核心卖点，服务强监管行业<br><br>
+                                    <em>关键能力：安全研究、合规能力、企业信任</em>
+                                </td>
+                                <td>
+                                    <strong>Anthropic Claude：</strong>Constitutional AI方法论，成为企业首选<br><br>
+                                    <strong>华为盘古：</strong>强调自主可控，服务政企市场
+                                </td>
+                                <td>
+                                    • 目标客户是大企业/政府<br>
+                                    • 有安全合规能力<br>
+                                    • 愿意接受增长较慢
+                                </td>
+                                <td>⭐⭐⭐⭐<br>强</td>
+                                <td>安全要求可能限制模型能力和迭代速度</td>
+                            </tr>
+                            <tr>
+                                <td><strong>📦 工作流整合派</strong></td>
+                                <td>
+                                    嵌入用户现有工作流，成为"不可替换的一部分"<br><br>
+                                    <em>关键能力：产品设计、开发者体验、生态整合</em>
+                                </td>
+                                <td>
+                                    <strong>GitHub Copilot：</strong>直接嵌入VS Code，日活开发者超1000万<br><br>
+                                    <strong>Notion AI：</strong>写作场景无缝集成，提升付费转化
+                                </td>
+                                <td>
+                                    • 有现成的产品/平台<br>
+                                    • 用户工作流清晰<br>
+                                    • 能快速迭代产品
+                                </td>
+                                <td>⭐⭐⭐⭐<br>强</td>
+                                <td>依赖宿主平台，可能被平台方替代</td>
+                            </tr>
+                            <tr>
+                                <td><strong>💰 成本领先派</strong></td>
+                                <td>
+                                    做最便宜的AI服务，用价格撬动市场<br><br>
+                                    <em>关键能力：运营效率、规模效应、持续烧钱能力</em>
+                                </td>
+                                <td>
+                                    <strong>字节豆包：</strong>0.8厘/千Token，比行业价低一个数量级<br><br>
+                                    <strong>DeepSeek API：</strong>开源模型+低价API，冲击商业模型市场
+                                </td>
+                                <td>
+                                    • 有充足资金<br>
+                                    • 能承受亏损换市场<br>
+                                    • 有后续变现路径
+                                </td>
+                                <td>⭐⭐⭐<br>中等（易被追赶）</td>
+                                <td>价格战没有赢家，需要转化为其他壁垒</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    </div>
 
                     <div class="joke-insert" style="margin-top: 24px;">
                         <div class="emoji">📐</div>
                         <div class="content">
-                            <div class="title">脱颖而出的核心公式</div>
-                            <div class="text" style="font-family: var(--font-mono);">差异化竞争力 = (场景理解深度 × 工程落地效率 × 迭代速度) ÷ 成本</div>
+                            <div class="title">差异化竞争力评估公式</div>
+                            <div class="text" style="font-family: var(--font-mono);">差异化竞争力 = (场景理解深度 × 工程落地效率 × 迭代速度 × 生态完整度) ÷ (总成本 × 竞争强度)</div>
                         </div>
                     </div>
-                </div>
-            </div>
 
-            <!-- 深度分析：机会地图 -->
-            <div class="era-card" id="opportunities">
-                <div class="era-header present">
-                    <h2><span>🗺️</span> 深度分析：机会地图</h2>
-                    <p>哪些领域还有机会切入？哪些是蓝海？哪些已经红海？</p>
-                </div>
-                <div class="era-body">
-                    <h3 style="margin-top: var(--spacing-md);">🏭 按行业维度的机会分析</h3>
+                    <!-- Part 3: 机会全景图 -->
+                    <h3 style="margin-top: 32px;">🗺️ 三、机会全景图：蓝海与红海的系统性扫描</h3>
+
+                    <h4 style="margin-top: 20px; color: var(--color-text-primary);">3.1 按行业维度的机会分析</h4>
+                    
+                    <div class="table-scroll-wrapper">
                     <table class="compare-table">
                         <thead>
                             <tr>
-                                <th>行业</th>
-                                <th>核心机会点</th>
-                                <th>进入难度</th>
-                                <th>市场潜力</th>
-                                <th>关键说明</th>
+                                <th style="min-width: 80px;">行业</th>
+                                <th style="min-width: 200px;">核心机会点</th>
+                                <th style="min-width: 80px;">进入难度</th>
+                                <th style="min-width: 80px;">市场潜力</th>
+                                <th style="min-width: 200px;">深度分析</th>
+                                <th style="min-width: 150px;">代表玩家</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
                                 <td><strong>💰 金融</strong></td>
-                                <td>投研Agent、风控AI、量化增强</td>
+                                <td>
+                                    • <strong>投研Agent：</strong>自动化研报生成、数据抓取、观点提炼<br>
+                                    • <strong>风控AI：</strong>实时反欺诈、信用评估、异常检测<br>
+                                    • <strong>量化增强：</strong>因子挖掘、策略生成、市场预测
+                                </td>
                                 <td>⭐⭐⭐⭐ 高</td>
                                 <td>⭐⭐⭐⭐⭐</td>
-                                <td>数据敏感，监管严格，但ROI高</td>
+                                <td>
+                                    <strong>为何是蓝海：</strong>数据敏感+监管严格=天然壁垒<br>
+                                    <strong>关键成功因素：</strong>合规能力、行业关系、私有化部署<br>
+                                    <strong>ROI特征：</strong>单客户价值极高（百万-千万级）
+                                </td>
+                                <td>Bloomberg GPT、Kensho、恒生电子</td>
                             </tr>
                             <tr>
                                 <td><strong>🏥 医疗</strong></td>
-                                <td>辅助诊断、药物研发、医学影像</td>
+                                <td>
+                                    • <strong>辅助诊断：</strong>影像分析、病历解读、诊断建议<br>
+                                    • <strong>药物研发：</strong>分子设计、临床预测、文献挖掘<br>
+                                    • <strong>医学写作：</strong>论文辅助、申报材料、患教内容
+                                </td>
                                 <td>⭐⭐⭐⭐⭐ 最高</td>
                                 <td>⭐⭐⭐⭐⭐</td>
-                                <td>准入门槛高，合规复杂，市场巨大</td>
+                                <td>
+                                    <strong>为何是蓝海：</strong>准入门槛高+责任风险大=护城河<br>
+                                    <strong>关键成功因素：</strong>医学专家团队、临床验证数据、合规资质<br>
+                                    <strong>ROI特征：</strong>周期长但天花板极高
+                                </td>
+                                <td>Tempus、Recursion、医渡云</td>
                             </tr>
                             <tr>
                                 <td><strong>⚖️ 法律</strong></td>
-                                <td>合同审核、案例检索、法规合规</td>
+                                <td>
+                                    • <strong>合同审核：</strong>条款识别、风险提示、版本对比<br>
+                                    • <strong>案例检索：</strong>相似案例匹配、裁判预测、论证生成<br>
+                                    • <strong>合规管理：</strong>法规更新追踪、合规检查清单
+                                </td>
                                 <td>⭐⭐⭐ 中</td>
                                 <td>⭐⭐⭐⭐</td>
-                                <td>文本密集，AI适配度高</td>
-                            </tr>
-                            <tr>
-                                <td><strong>📚 教育</strong></td>
-                                <td>个性化学习、智能题库、AI助教</td>
-                                <td>⭐⭐⭐ 中</td>
-                                <td>⭐⭐⭐⭐</td>
-                                <td>需求明确，付费意愿提升</td>
+                                <td>
+                                    <strong>为何是机会：</strong>文本密集+逻辑性强=AI天然适配<br>
+                                    <strong>关键成功因素：</strong>法律专业背景、律所渠道<br>
+                                    <strong>竞争现状：</strong>Harvey融资超$1B，国内尚无领头羊
+                                </td>
+                                <td>Harvey、CoCounsel、幂律智能</td>
                             </tr>
                             <tr>
                                 <td><strong>🏭 制造</strong></td>
-                                <td>质检AI、预测性维护、供应链优化</td>
+                                <td>
+                                    • <strong>质检AI：</strong>视觉缺陷检测、良率预测、根因分析<br>
+                                    • <strong>预测性维护：</strong>设备故障预警、维修计划优化<br>
+                                    • <strong>供应链优化：</strong>需求预测、库存优化、物流调度
+                                </td>
                                 <td>⭐⭐⭐ 中</td>
                                 <td>⭐⭐⭐⭐</td>
-                                <td>数据丰富，降本空间大</td>
+                                <td>
+                                    <strong>为何是机会：</strong>数据丰富+降本刚需=ROI清晰<br>
+                                    <strong>关键成功因素：</strong>工业know-how、部署能力<br>
+                                    <strong>挑战：</strong>长尾场景多，标准化难度大
+                                </td>
+                                <td>创新奇智、百度智能云、西门子</td>
+                            </tr>
+                            <tr>
+                                <td><strong>📚 教育</strong></td>
+                                <td>
+                                    • <strong>个性化学习：</strong>知识图谱、学习路径规划、薄弱点诊断<br>
+                                    • <strong>智能题库：</strong>自动出题、难度分级、答案解析<br>
+                                    • <strong>AI助教：</strong>答疑、批改、学情分析
+                                </td>
+                                <td>⭐⭐⭐ 中</td>
+                                <td>⭐⭐⭐⭐</td>
+                                <td>
+                                    <strong>为何是机会：</strong>需求明确+付费意愿高+AI效果可感知<br>
+                                    <strong>关键成功因素：</strong>教育内容积累、用户增长能力<br>
+                                    <strong>挑战：</strong>政策监管、获客成本
+                                </td>
+                                <td>Khan Academy、Duolingo、学而思</td>
                             </tr>
                         </tbody>
                     </table>
+                    </div>
 
-                    <h3 style="margin-top: 32px;">🔧 按技术维度的机会分析</h3>
+                    <h4 style="margin-top: 28px; color: var(--color-text-primary);">3.2 按技术维度的机会分析</h4>
+                    
+                    <div class="table-scroll-wrapper">
                     <table class="compare-table">
                         <thead>
                             <tr>
-                                <th>方向</th>
-                                <th>核心机会点</th>
-                                <th>市场成熟度</th>
-                                <th>竞争格局</th>
+                                <th style="min-width: 120px;">技术方向</th>
+                                <th style="min-width: 180px;">核心机会点</th>
+                                <th style="min-width: 80px;">成熟度</th>
+                                <th style="min-width: 150px;">竞争格局</th>
+                                <th style="min-width: 180px;">创业/投资建议</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
-                                <td><strong>Agent基础设施</strong></td>
-                                <td>AgentOps、评测、调优工具链</td>
+                                <td><strong>🤖 Agent基础设施</strong></td>
+                                <td>
+                                    • AgentOps（可观测性、调试、监控）<br>
+                                    • 评测框架（多维度能力评估）<br>
+                                    • 编排引擎（多Agent协作）
+                                </td>
                                 <td>早期</td>
-                                <td>字节扣子罗盘、LangChain领跑</td>
+                                <td>字节扣子罗盘、LangChain、CrewAI领跑，但格局未定</td>
+                                <td>
+                                    <strong>🔥 强烈推荐</strong><br>
+                                    Agent普及刚开始，基础设施需求即将爆发
+                                </td>
                             </tr>
                             <tr>
-                                <td><strong>RAG增强</strong></td>
-                                <td>知识库管理、向量数据库</td>
+                                <td><strong>📚 RAG与知识管理</strong></td>
+                                <td>
+                                    • 企业知识库构建<br>
+                                    • 向量数据库优化<br>
+                                    • 混合检索策略
+                                </td>
                                 <td>成长期</td>
-                                <td>Pinecone、Milvus等竞争激烈</td>
+                                <td>Pinecone、Milvus、Weaviate等激烈竞争</td>
+                                <td>
+                                    <strong>⚠️ 谨慎切入</strong><br>
+                                    技术同质化严重，需找垂直场景切入
+                                </td>
                             </tr>
                             <tr>
-                                <td><strong>模型压缩</strong></td>
-                                <td>量化、蒸馏、剪枝技术</td>
-                                <td>成熟</td>
-                                <td>仍有创新空间</td>
-                            </tr>
-                            <tr>
-                                <td><strong>安全合规</strong></td>
-                                <td>AI安全评测、红队测试</td>
+                                <td><strong>🔐 AI安全与合规</strong></td>
+                                <td>
+                                    • AI安全评测（红队测试）<br>
+                                    • 内容安全过滤<br>
+                                    • 合规审计工具
+                                </td>
                                 <td>早期</td>
-                                <td>需求快速增长，供给不足</td>
+                                <td>需求快速增长，供给严重不足</td>
+                                <td>
+                                    <strong>🔥 强烈推荐</strong><br>
+                                    监管趋严是确定趋势，合规是刚需
+                                </td>
                             </tr>
                             <tr>
-                                <td><strong>数据标注</strong></td>
-                                <td>高质量RLHF数据、偏好数据</td>
+                                <td><strong>⚡ 模型推理优化</strong></td>
+                                <td>
+                                    • 量化/蒸馏/剪枝<br>
+                                    • 推理引擎优化<br>
+                                    • 边缘部署方案
+                                </td>
                                 <td>成熟</td>
-                                <td>Scale AI等头部，持续需求</td>
+                                <td>技术门槛高，但有持续创新空间</td>
+                                <td>
+                                    <strong>✅ 推荐</strong><br>
+                                    推理成本是痛点，优化有持续价值
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>🏷️ 数据标注与合成</strong></td>
+                                <td>
+                                    • 高质量RLHF数据<br>
+                                    • 合成数据生成<br>
+                                    • 偏好数据收集
+                                </td>
+                                <td>成熟</td>
+                                <td>Scale AI头部，但细分领域仍有机会</td>
+                                <td>
+                                    <strong>✅ 推荐垂直切入</strong><br>
+                                    通用数据红海，垂直数据是蓝海
+                                </td>
                             </tr>
                         </tbody>
                     </table>
+                    </div>
 
-                    <h3 style="margin-top: 32px;">🗺️ 机会象限图</h3>
+                    <h4 style="margin-top: 28px; color: var(--color-text-primary);">3.3 机会象限总览</h4>
+                    
                     <div class="grid-2" style="margin-top: var(--spacing-md);">
-                        <div class="card" style="border-left: 3px solid var(--color-success); background: rgba(26, 127, 55, 0.04);">
-                            <h4 style="color: var(--color-success);">🌟 高机会 + 低竞争 (蓝海)</h4>
-                            <ul style="margin-top: 8px; padding-left: 20px; color: var(--color-text-secondary);">
-                                <li>金融领域Agent基础设施</li>
-                                <li>医疗AI合规工具</li>
-                                <li>本地化/私有化部署方案</li>
-                                <li>垂直领域评测与调优</li>
+                        <div class="card" style="border-left: 4px solid var(--color-success); background: rgba(26, 127, 55, 0.04);">
+                            <h4 style="color: var(--color-success);">🌟 高机会 + 低竞争（蓝海，优先进入）</h4>
+                            <ul style="margin-top: 12px; padding-left: 20px; color: var(--color-text-secondary); line-height: 1.8;">
+                                <li><strong>金融领域Agent基础设施</strong> — 数据敏感=天然壁垒</li>
+                                <li><strong>医疗AI合规与安全工具</strong> — 监管=护城河</li>
+                                <li><strong>本地化/私有化部署方案</strong> — 企业刚需，供给不足</li>
+                                <li><strong>Agent可观测性与评测</strong> — Agent普及带来的必然需求</li>
+                                <li><strong>垂直领域RLHF数据服务</strong> — 数据是AI的石油</li>
                             </ul>
                         </div>
-                        <div class="card" style="border-left: 3px solid var(--color-warning); background: rgba(191, 135, 0, 0.04);">
-                            <h4 style="color: var(--color-warning);">⚔️ 高机会 + 高竞争 (红海)</h4>
-                            <ul style="margin-top: 8px; padding-left: 20px; color: var(--color-text-secondary);">
-                                <li>通用大模型</li>
-                                <li>AI编程助手</li>
-                                <li>智能客服</li>
-                                <li>AI写作工具</li>
+                        <div class="card" style="border-left: 4px solid var(--color-warning); background: rgba(191, 135, 0, 0.04);">
+                            <h4 style="color: var(--color-warning);">⚔️ 高机会 + 高竞争（红海，谨慎进入）</h4>
+                            <ul style="margin-top: 12px; padding-left: 20px; color: var(--color-text-secondary); line-height: 1.8;">
+                                <li><strong>通用大模型</strong> — 资金门槛极高，头部效应明显</li>
+                                <li><strong>AI编程助手</strong> — Cursor/Copilot已建立优势</li>
+                                <li><strong>智能客服</strong> — 竞争激烈，利润被压缩</li>
+                                <li><strong>AI写作/对话工具</strong> — 同质化严重，难以差异化</li>
+                                <li><strong>通用向量数据库</strong> — 技术趋同，价格战开始</li>
                             </ul>
+                        </div>
+                    </div>
+
+                    <!-- Part 4: 行动建议 -->
+                    <h3 style="margin-top: 32px;">🎬 四、行动建议：不同角色的最佳策略</h3>
+
+                    <div class="grid-2" style="margin-top: var(--spacing-md);">
+                        <div class="card" style="border-top: 3px solid var(--color-info);">
+                            <h4 style="color: var(--color-info);">👨‍💻 对于开发者/技术人员</h4>
+                            <ol style="margin-top: 12px; padding-left: 20px; color: var(--color-text-secondary); line-height: 1.8;">
+                                <li><strong>优先学习Agent开发</strong> — 这是2026年最稀缺的技能</li>
+                                <li><strong>深耕一个垂直领域</strong> — 金融/医疗/法律的AI专家溢价最高</li>
+                                <li><strong>掌握评测与调优</strong> — 会用AI不稀缺，会评估和优化AI才稀缺</li>
+                            </ol>
+                        </div>
+                        <div class="card" style="border-top: 3px solid var(--color-success);">
+                            <h4 style="color: var(--color-success);">🏢 对于企业决策者</h4>
+                            <ol style="margin-top: 12px; padding-left: 20px; color: var(--color-text-secondary); line-height: 1.8;">
+                                <li><strong>先做内部提效</strong> — 从AI辅助内部工作流开始，风险最低</li>
+                                <li><strong>建立数据资产</strong> — 私有数据是未来AI竞争的核心壁垒</li>
+                                <li><strong>组建AI评估能力</strong> — 能评估AI效果比能开发AI更重要</li>
+                            </ol>
+                        </div>
+                        <div class="card" style="border-top: 3px solid #8250DF;">
+                            <h4 style="color: #8250DF;">🚀 对于创业者/投资者</h4>
+                            <ol style="margin-top: 12px; padding-left: 20px; color: var(--color-text-secondary); line-height: 1.8;">
+                                <li><strong>避开通用大模型</strong> — 这是巨头的游戏，除非你是DeepSeek</li>
+                                <li><strong>找垂直场景切入</strong> — 行业know-how+AI能力=护城河</li>
+                                <li><strong>关注Agent基础设施</strong> — 这是下一波基础设施红利</li>
+                            </ol>
+                        </div>
+                        <div class="card" style="border-top: 3px solid var(--color-warning);">
+                            <h4 style="color: var(--color-warning);">💼 对于金融从业者</h4>
+                            <ol style="margin-top: 12px; padding-left: 20px; color: var(--color-text-secondary); line-height: 1.8;">
+                                <li><strong>学习DeepSeek路径</strong> — 量化思维+AI能力是降维打击</li>
+                                <li><strong>投资AI基础设施</strong> — 比投资AI应用风险更低</li>
+                                <li><strong>关注合规科技</strong> — 监管趋严是确定趋势</li>
+                            </ol>
                         </div>
                     </div>
                 </div>
@@ -1223,198 +1563,469 @@
                         <div class="emoji">🎰</div>
                         <div class="content">
                             <div class="title">幻方模式启示</div>
-                            <div class="text">DeepSeek背后是量化私募巨头幻方。梁文锋说过："做量化是为了赚钱，做AI是为了花钱。"但没想到，做AI做出了比量化更大的影响力。</div>
+                            <div class="text">DeepSeek背后是量化私募巨头幻方。梁文锋说过："做量化是为了赚钱，做AI是为了花钱。"但没想到，做AI做出了比量化更大的影响力——R1发布当天，英伟达市值蒸发5000亿美元。</div>
                         </div>
                     </div>
 
-                    <h3 style="margin-top: var(--spacing-lg);">📖 DeepSeek/幻方模式的核心经验</h3>
-                    <table class="compare-table">
-                        <thead>
-                            <tr>
-                                <th>经验</th>
-                                <th>幻方做法</th>
-                                <th>金融公司借鉴</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td><strong>算法效率优先</strong></td>
-                                <td>用更少算力做更好效果</td>
-                                <td>量化策略同理：效率 &gt; 规模</td>
-                            </tr>
-                            <tr>
-                                <td><strong>工程文化极致</strong></td>
-                                <td>代码质量和工程纪律一流</td>
-                                <td>交易系统稳定性第一</td>
-                            </tr>
-                            <tr>
-                                <td><strong>数据为王</strong></td>
-                                <td>独特数据是核心壁垒</td>
-                                <td>另类数据挖掘与积累</td>
-                            </tr>
-                            <tr>
-                                <td><strong>快速迭代</strong></td>
-                                <td>小步快跑，持续优化</td>
-                                <td>策略迭代周期缩短</td>
-                            </tr>
-                            <tr>
-                                <td><strong>开源作为护城河</strong></td>
-                                <td>影响力带来人才和机会</td>
-                                <td>技术分享建立行业影响力</td>
-                            </tr>
-                        </tbody>
-                    </table>
+                    <!-- Part 1: DeepSeek技术演进深度解析 -->
+                    <h3 style="margin-top: var(--spacing-lg);">🔬 一、DeepSeek技术演进：每次突破背后的关键创新</h3>
+                    
+                    <p style="color: var(--color-text-secondary); margin-bottom: 16px;">DeepSeek的崛起不是偶然，而是一系列精准技术决策的累积结果。鼠标悬浮查看每个版本的技术细节：</p>
 
-                    <h3 style="margin-top: 32px;">🎯 金融AI应用优先级建议</h3>
+                    <!-- 时间线卡片式展示 -->
+                    <div style="display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 24px;">
+                        <!-- V1 -->
+                        <div class="deepseek-version-card" style="flex: 1; min-width: 180px; background: white; border: 1px solid var(--color-border-light); border-radius: 12px; padding: 20px; cursor: pointer; position: relative; transition: all 0.3s;">
+                            <div style="font-weight: 700; font-size: 1.1rem; color: var(--color-text-primary); margin-bottom: 4px;">DeepSeek-V1</div>
+                            <div style="font-size: 0.85rem; color: var(--color-text-muted); margin-bottom: 12px;">2024.01</div>
+                            <div style="font-size: 0.9rem; font-weight: 600; color: #3B82F6;">MoE架构首次应用</div>
+                            <div style="font-size: 0.8rem; color: var(--color-text-secondary);">67B总参数，仅激活21B</div>
+                            <div style="position: absolute; bottom: 8px; right: 12px; font-size: 0.75rem; color: var(--color-text-muted);">悬浮查看详情 →</div>
+                            <!-- 悬浮详情 -->
+                            <div class="version-tooltip" style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 400px; background: white; border-radius: 12px; padding: 24px; box-shadow: 0 20px 40px rgba(0,0,0,0.15); z-index: 1000; opacity: 0; visibility: hidden; transition: all 0.3s;">
+                                <div style="font-weight: 700; font-size: 1.2rem; color: #3B82F6; margin-bottom: 16px;">DeepSeek-V1 技术详解</div>
+                                <div style="margin-bottom: 16px;">
+                                    <div style="font-weight: 600; margin-bottom: 8px;">为什么能提升能力：</div>
+                                    <ul style="font-size: 0.9rem; color: var(--color-text-secondary); padding-left: 20px; line-height: 1.8;">
+                                        <li><strong>稀疏激活：</strong>每次推理只用部分专家网络，大幅降低计算量</li>
+                                        <li><strong>专家分工：</strong>不同专家处理不同类型任务，提升专业性</li>
+                                    </ul>
+                                </div>
+                                <div style="background: #EFF6FF; padding: 12px; border-radius: 8px; font-size: 0.85rem; color: #1D4ED8;">
+                                    <strong>行业影响：</strong>证明中国团队能做出世界级开源模型
+                                </div>
+                            </div>
+                        </div>
+                        <!-- V2 -->
+                        <div class="deepseek-version-card" style="flex: 1; min-width: 180px; background: white; border: 1px solid var(--color-border-light); border-radius: 12px; padding: 20px; cursor: pointer; position: relative; transition: all 0.3s;">
+                            <div style="font-weight: 700; font-size: 1.1rem; color: var(--color-text-primary); margin-bottom: 4px;">DeepSeek-V2</div>
+                            <div style="font-size: 0.85rem; color: var(--color-text-muted); margin-bottom: 12px;">2024.05</div>
+                            <div style="font-size: 0.9rem; font-weight: 600; color: #8B5CF6;">MLA注意力机制</div>
+                            <div style="font-size: 0.8rem; color: var(--color-text-secondary);">236B参数，激活21B</div>
+                            <div style="position: absolute; bottom: 8px; right: 12px; font-size: 0.75rem; color: var(--color-text-muted);">悬浮查看详情 →</div>
+                            <div class="version-tooltip" style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 400px; background: white; border-radius: 12px; padding: 24px; box-shadow: 0 20px 40px rgba(0,0,0,0.15); z-index: 1000; opacity: 0; visibility: hidden; transition: all 0.3s;">
+                                <div style="font-weight: 700; font-size: 1.2rem; color: #8B5CF6; margin-bottom: 16px;">DeepSeek-V2 技术详解</div>
+                                <div style="margin-bottom: 16px;">
+                                    <div style="font-weight: 600; margin-bottom: 8px;">为什么能提升能力：</div>
+                                    <ul style="font-size: 0.9rem; color: var(--color-text-secondary); padding-left: 20px; line-height: 1.8;">
+                                        <li><strong>KV Cache压缩：</strong>将KV Cache从每token 100KB压缩到5KB，内存占用降20倍</li>
+                                        <li><strong>推理成本骤降：</strong>API定价仅为GPT-4的1/100</li>
+                                    </ul>
+                                </div>
+                                <div style="background: #F5F3FF; padding: 12px; border-radius: 8px; font-size: 0.85rem; color: #7C3AED;">
+                                    <strong>行业影响：</strong>重新定义大模型推理成本基准线，引发行业价格战
+                                </div>
+                            </div>
+                        </div>
+                        <!-- R1 -->
+                        <div class="deepseek-version-card" style="flex: 1; min-width: 180px; background: linear-gradient(135deg, #ECFDF5, #FFFFFF); border: 2px solid #10B981; border-radius: 12px; padding: 20px; cursor: pointer; position: relative; transition: all 0.3s;">
+                            <div style="position: absolute; top: -8px; right: 12px; background: #10B981; color: white; font-size: 0.7rem; padding: 2px 8px; border-radius: 4px;">🔥 震动全球</div>
+                            <div style="font-weight: 700; font-size: 1.1rem; color: var(--color-text-primary); margin-bottom: 4px;">DeepSeek-R1</div>
+                            <div style="font-size: 0.85rem; color: var(--color-text-muted); margin-bottom: 12px;">2025.01</div>
+                            <div style="font-size: 0.9rem; font-weight: 600; color: #10B981;">纯强化学习训练推理</div>
+                            <div style="font-size: 0.8rem; color: var(--color-text-secondary);">不依赖蒸馏，从零训练CoT</div>
+                            <div style="position: absolute; bottom: 8px; right: 12px; font-size: 0.75rem; color: var(--color-text-muted);">悬浮查看详情 →</div>
+                            <div class="version-tooltip" style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 400px; background: white; border-radius: 12px; padding: 24px; box-shadow: 0 20px 40px rgba(0,0,0,0.15); z-index: 1000; opacity: 0; visibility: hidden; transition: all 0.3s;">
+                                <div style="font-weight: 700; font-size: 1.2rem; color: #10B981; margin-bottom: 16px;">DeepSeek-R1 技术详解 🔥</div>
+                                <div style="margin-bottom: 16px;">
+                                    <div style="font-weight: 600; margin-bottom: 8px;">为什么能提升能力：</div>
+                                    <ul style="font-size: 0.9rem; color: var(--color-text-secondary); padding-left: 20px; line-height: 1.8;">
+                                        <li><strong>GRPO算法：</strong>Group Relative Policy Optimization，比PPO更高效</li>
+                                        <li><strong>无需教师模型：</strong>从零学会"思考过程"，成本仅$5.6M（OpenAI的1/10）</li>
+                                        <li><strong>涌现能力：</strong>自发学会反思、验证、回溯</li>
+                                    </ul>
+                                </div>
+                                <div style="background: #ECFDF5; padding: 12px; border-radius: 8px; font-size: 0.85rem; color: #047857;">
+                                    <strong>行业影响：</strong>震动全球，证明推理能力可低成本获得，英伟达单日暴跌17%
+                                </div>
+                            </div>
+                        </div>
+                        <!-- V3 -->
+                        <div class="deepseek-version-card" style="flex: 1; min-width: 180px; background: white; border: 1px solid var(--color-border-light); border-radius: 12px; padding: 20px; cursor: pointer; position: relative; transition: all 0.3s;">
+                            <div style="font-weight: 700; font-size: 1.1rem; color: var(--color-text-primary); margin-bottom: 4px;">DeepSeek-V3</div>
+                            <div style="font-size: 0.85rem; color: var(--color-text-muted); margin-bottom: 12px;">2025.02</div>
+                            <div style="font-size: 0.9rem; font-weight: 600; color: #F59E0B;">多Token预测 + FP8</div>
+                            <div style="font-size: 0.8rem; color: var(--color-text-secondary);">671B参数，激活37B</div>
+                            <div style="position: absolute; bottom: 8px; right: 12px; font-size: 0.75rem; color: var(--color-text-muted);">悬浮查看详情 →</div>
+                            <div class="version-tooltip" style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 400px; background: white; border-radius: 12px; padding: 24px; box-shadow: 0 20px 40px rgba(0,0,0,0.15); z-index: 1000; opacity: 0; visibility: hidden; transition: all 0.3s;">
+                                <div style="font-weight: 700; font-size: 1.2rem; color: #F59E0B; margin-bottom: 16px;">DeepSeek-V3 技术详解</div>
+                                <div style="margin-bottom: 16px;">
+                                    <div style="font-weight: 600; margin-bottom: 8px;">为什么能提升能力：</div>
+                                    <ul style="font-size: 0.9rem; color: var(--color-text-secondary); padding-left: 20px; line-height: 1.8;">
+                                        <li><strong>MTP（Multi-Token Prediction）：</strong>一次预测多个token，提速30%</li>
+                                        <li><strong>FP8训练：</strong>8位浮点计算，内存和算力效率翻倍</li>
+                                        <li><strong>无辅助损失MoE：</strong>去掉负载均衡辅助损失，提升训练效率</li>
+                                    </ul>
+                                </div>
+                                <div style="background: #FEF3C7; padding: 12px; border-radius: 8px; font-size: 0.85rem; color: #92400E;">
+                                    <strong>行业影响：</strong>在多项榜单超越Claude 3.5和GPT-4o
+                                </div>
+                            </div>
+                        </div>
+                        <!-- R2 - 2026年新增 -->
+                        <div class="deepseek-version-card" style="flex: 1; min-width: 180px; background: linear-gradient(135deg, #FEF3C7, #FFFFFF); border: 2px solid #F59E0B; border-radius: 12px; padding: 20px; cursor: pointer; position: relative; transition: all 0.3s;">
+                            <div style="position: absolute; top: -8px; right: 12px; background: #F59E0B; color: white; font-size: 0.7rem; padding: 2px 8px; border-radius: 4px;">🆕 最新</div>
+                            <div style="font-weight: 700; font-size: 1.1rem; color: var(--color-text-primary); margin-bottom: 4px;">DeepSeek-R2</div>
+                            <div style="font-size: 0.85rem; color: var(--color-text-muted); margin-bottom: 12px;">2026.02</div>
+                            <div style="font-size: 0.9rem; font-weight: 600; color: #DC2626;">多模态推理 + Agent能力</div>
+                            <div style="font-size: 0.8rem; color: var(--color-text-secondary);">1.2T参数，激活64B</div>
+                            <div style="position: absolute; bottom: 8px; right: 12px; font-size: 0.75rem; color: var(--color-text-muted);">悬浮查看详情 →</div>
+                            <div class="version-tooltip" style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 400px; background: white; border-radius: 12px; padding: 24px; box-shadow: 0 20px 40px rgba(0,0,0,0.15); z-index: 1000; opacity: 0; visibility: hidden; transition: all 0.3s;">
+                                <div style="font-weight: 700; font-size: 1.2rem; color: #DC2626; margin-bottom: 16px;">DeepSeek-R2 技术详解 🆕</div>
+                                <div style="margin-bottom: 16px;">
+                                    <div style="font-weight: 600; margin-bottom: 8px;">为什么能提升能力：</div>
+                                    <ul style="font-size: 0.9rem; color: var(--color-text-secondary); padding-left: 20px; line-height: 1.8;">
+                                        <li><strong>多模态推理：</strong>支持图像、视频、代码联合推理，理解能力大幅提升</li>
+                                        <li><strong>原生Agent能力：</strong>内置工具调用、长程任务规划、多轮对话记忆</li>
+                                        <li><strong>超长上下文：</strong>支持200K token上下文窗口</li>
+                                        <li><strong>推理效率再升级：</strong>推理速度提升50%，成本再降60%</li>
+                                    </ul>
+                                </div>
+                                <div style="background: #FEE2E2; padding: 12px; border-radius: 8px; font-size: 0.85rem; color: #991B1B;">
+                                    <strong>行业影响：</strong>首次实现多模态+推理+Agent三合一，对标GPT-5，开源社区最强模型
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <style>
+                        .deepseek-version-card:hover {
+                            transform: translateY(-4px);
+                            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+                        }
+                        .deepseek-version-card:hover .version-tooltip {
+                            opacity: 1 !important;
+                            visibility: visible !important;
+                        }
+                    </style>
+
+                    <div class="joke-insert" style="margin-top: 20px;">
+                        <div class="emoji">💡</div>
+                        <div class="content">
+                            <div class="title">核心启示：效率创新 > 规模堆料</div>
+                            <div class="text">DeepSeek的每一次突破都不是靠"更多GPU"，而是靠<strong>架构创新</strong>（MoE、MLA）和<strong>算法创新</strong>（GRPO、MTP）。这正是量化思维的体现：用最小的资源获得最大的效果。</div>
+                        </div>
+                    </div>
+
+                    <!-- Part 2: 幻方模式的深层逻辑 -->
+                    <h3 style="margin-top: 32px;">🏦 二、幻方模式的深层逻辑：为什么量化公司能做出DeepSeek？</h3>
+
+                    <div class="grid-2" style="margin-top: var(--spacing-md);">
+                        <div class="card" style="border-left: 4px solid var(--color-success);">
+                            <h4 style="color: var(--color-success);">✅ 量化基因带来的优势</h4>
+                            <ul style="margin-top: 12px; padding-left: 20px; color: var(--color-text-secondary); line-height: 1.9;">
+                                <li><strong>极致效率文化：</strong>量化策略每一毫秒、每一分钱都要计算ROI，这种思维迁移到AI就是"用更少算力做更好效果"</li>
+                                <li><strong>工程纪律一流：</strong>交易系统容不得Bug，代码质量和测试覆盖要求极高</li>
+                                <li><strong>数据敏感度高：</strong>量化交易本质是"从数据中挖掘信号"，这与AI训练高度契合</li>
+                                <li><strong>快速迭代习惯：</strong>策略需要日级别迭代，形成了小步快跑的开发节奏</li>
+                                <li><strong>算力调度经验：</strong>幻方本身就是国内最大的AI算力用户之一，对GPU集群调度有深厚积累</li>
+                            </ul>
+                        </div>
+                        <div class="card" style="border-left: 4px solid var(--color-info);">
+                            <h4 style="color: var(--color-info);">🎯 关键决策复盘</h4>
+                            <ul style="margin-top: 12px; padding-left: 20px; color: var(--color-text-secondary); line-height: 1.9;">
+                                <li><strong>选择MoE架构：</strong>2023年多数公司还在走Dense路线时，幻方就押注MoE，事后证明这是正确选择</li>
+                                <li><strong>自研MLA注意力：</strong>不满足于现有Transformer架构，从底层重新设计注意力机制</li>
+                                <li><strong>纯RL训练推理：</strong>不走蒸馏捷径，从头训练强化学习，虽然难但效果更好</li>
+                                <li><strong>开源策略：</strong>用开源建立影响力，吸引人才和合作伙伴</li>
+                                <li><strong>独立公司运作：</strong>DeepSeek独立于幻方量化业务，避免利益冲突</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Part 3: 金融AI落地场景全景 -->
+                    <h3 style="margin-top: 32px;">🗺️ 三、金融AI落地场景全景图</h3>
+                    
+                    <p style="color: var(--color-text-secondary); margin-bottom: 16px;">金融行业AI应用可分为<strong>业务场景</strong>（直接服务业务）、<strong>产研提效</strong>（提升研发效率）、<strong>职能提效</strong>（提升职能部门效率）三大类：</p>
+
+                    <!-- 可折叠表格 -->
+                    <div class="collapsible-table" style="border: 1px solid var(--color-border-light); border-radius: 12px; overflow: hidden;">
+                        <div class="table-toggle" onclick="this.parentElement.classList.toggle('expanded')" style="display: flex; justify-content: space-between; align-items: center; padding: 16px 24px; background: linear-gradient(135deg, #F8FAFC, #FFFFFF); cursor: pointer; user-select: none;">
+                            <div style="display: flex; align-items: center; gap: 12px;">
+                                <span style="font-size: 1.25rem;">📊</span>
+                                <div>
+                                    <div style="font-weight: 600; color: var(--color-text-primary);">金融AI落地场景全景表（共14个场景）</div>
+                                    <div style="font-size: 0.85rem; color: var(--color-text-muted);">包含业务场景、产研提效、职能提效三大类</div>
+                                </div>
+                            </div>
+                            <div class="toggle-icon" style="width: 32px; height: 32px; background: var(--color-border-light); border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: transform 0.3s;">
+                                <span style="font-size: 0.8rem;">▼</span>
+                            </div>
+                        </div>
+                        <div class="table-content" style="max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out;">
+                            <div class="table-scroll-wrapper">
+                            <table class="compare-table">
+                                <thead>
+                                    <tr>
+                                        <th style="min-width: 80px;">类别</th>
+                                        <th style="min-width: 120px;">场景</th>
+                                        <th style="min-width: 200px;">具体应用</th>
+                                        <th style="min-width: 150px;">AI能力要求</th>
+                                        <th style="min-width: 80px;">落地难度</th>
+                                        <th style="min-width: 150px;">典型ROI</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- 业务场景 -->
+                                    <tr style="background: rgba(9, 105, 218, 0.04);">
+                                        <td rowspan="6"><strong style="color: var(--color-info);">💼 业务场景</strong></td>
+                                        <td><strong>投研Agent</strong></td>
+                                        <td>• 自动抓取公告/研报/新闻<br>• 生成行业/公司研究报告<br>• 财务数据对比分析</td>
+                                        <td>RAG + 长文本理解 + 结构化输出</td>
+                                        <td>⭐⭐ 低</td>
+                                        <td>研究员效率提升50%+</td>
+                                    </tr>
+                                    <tr style="background: rgba(9, 105, 218, 0.04);">
+                                        <td><strong>数据查询Agent</strong></td>
+                                        <td>• 自然语言转SQL/API调用<br>• 多数据源联合查询<br>• 数据可视化生成</td>
+                                        <td>Text-to-SQL + 数据理解</td>
+                                        <td>⭐⭐ 低</td>
+                                        <td>数据获取时间从小时级→分钟级</td>
+                                    </tr>
+                                    <tr style="background: rgba(9, 105, 218, 0.04);">
+                                        <td><strong>风险监控Agent</strong></td>
+                                        <td>• 舆情实时监控与预警<br>• 异常交易模式识别<br>• 风险事件自动归因</td>
+                                        <td>实时流处理 + 异常检测 + 推理</td>
+                                        <td>⭐⭐⭐ 中</td>
+                                        <td>风险发现提前2-4小时</td>
+                                    </tr>
+                                    <tr style="background: rgba(9, 105, 218, 0.04);">
+                                        <td><strong>合规审核Agent</strong></td>
+                                        <td>• 合同条款智能审核<br>• 法规变更影响分析<br>• 合规检查清单自动化</td>
+                                        <td>法律文本理解 + 规则推理</td>
+                                        <td>⭐⭐⭐ 中</td>
+                                        <td>合规审核时间减少60%</td>
+                                    </tr>
+                                    <tr style="background: rgba(9, 105, 218, 0.04);">
+                                        <td><strong>客户服务Agent</strong></td>
+                                        <td>• 智能客服问答<br>• 客户画像分析<br>• 产品推荐与解释</td>
+                                        <td>对话理解 + 知识库检索</td>
+                                        <td>⭐⭐ 低</td>
+                                        <td>客服人力成本降低40%</td>
+                                    </tr>
+                                    <tr style="background: rgba(9, 105, 218, 0.04);">
+                                        <td><strong>量化策略增强</strong></td>
+                                        <td>• 因子挖掘与验证<br>• 策略逻辑生成<br>• 回测报告解读</td>
+                                        <td>代码生成 + 金融推理</td>
+                                        <td>⭐⭐⭐⭐⭐ 高</td>
+                                        <td>高风险高回报，需审慎验证</td>
+                                    </tr>
+                                    <!-- 产研提效 -->
+                                    <tr style="background: rgba(26, 127, 55, 0.04);">
+                                        <td rowspan="4"><strong style="color: var(--color-success);">🔧 产研提效</strong></td>
+                                        <td><strong>AI编程助手</strong></td>
+                                        <td>• 代码补全与生成<br>• 代码审查与Bug检测<br>• 单元测试自动生成</td>
+                                        <td>代码理解 + 生成</td>
+                                        <td>⭐ 最低</td>
+                                        <td>开发效率提升30-50%</td>
+                                    </tr>
+                                    <tr style="background: rgba(26, 127, 55, 0.04);">
+                                        <td><strong>需求分析Agent</strong></td>
+                                        <td>• PRD智能生成<br>• 需求拆解与排期建议<br>• 历史需求相似度分析</td>
+                                        <td>文档理解 + 结构化输出</td>
+                                        <td>⭐⭐ 低</td>
+                                        <td>需求分析时间减少40%</td>
+                                    </tr>
+                                    <tr style="background: rgba(26, 127, 55, 0.04);">
+                                        <td><strong>测试Agent</strong></td>
+                                        <td>• 测试用例自动生成<br>• 回归测试智能选择<br>• 缺陷根因分析</td>
+                                        <td>代码理解 + 逻辑推理</td>
+                                        <td>⭐⭐ 低</td>
+                                        <td>测试覆盖率提升20%，时间减少30%</td>
+                                    </tr>
+                                    <tr style="background: rgba(26, 127, 55, 0.04);">
+                                        <td><strong>文档Agent</strong></td>
+                                        <td>• API文档自动生成<br>• 代码注释补全<br>• 技术文档更新同步</td>
+                                        <td>代码理解 + 文档生成</td>
+                                        <td>⭐ 最低</td>
+                                        <td>文档维护成本降低60%</td>
+                                    </tr>
+                                    <!-- 职能提效 -->
+                                    <tr style="background: rgba(130, 80, 223, 0.04);">
+                                        <td rowspan="4"><strong style="color: #8250DF;">📋 职能提效</strong></td>
+                                        <td><strong>会议Agent</strong></td>
+                                        <td>• 会议纪要自动生成<br>• 行动项提取与跟踪<br>• 会议内容搜索</td>
+                                        <td>语音转文字 + 摘要生成</td>
+                                        <td>⭐ 最低</td>
+                                        <td>会议整理时间从30分钟→2分钟</td>
+                                    </tr>
+                                    <tr style="background: rgba(130, 80, 223, 0.04);">
+                                        <td><strong>招聘Agent</strong></td>
+                                        <td>• 简历智能筛选<br>• JD自动生成<br>• 面试问题推荐</td>
+                                        <td>文本匹配 + 推理</td>
+                                        <td>⭐⭐ 低</td>
+                                        <td>简历筛选效率提升5倍</td>
+                                    </tr>
+                                    <tr style="background: rgba(130, 80, 223, 0.04);">
+                                        <td><strong>行政Agent</strong></td>
+                                        <td>• 报销单据智能审核<br>• 流程状态智能查询<br>• 常见问题自动解答</td>
+                                        <td>OCR + 规则理解</td>
+                                        <td>⭐⭐ 低</td>
+                                        <td>行政工单处理效率提升3倍</td>
+                                    </tr>
+                                    <tr style="background: rgba(130, 80, 223, 0.04);">
+                                        <td><strong>知识管理Agent</strong></td>
+                                        <td>• 内部知识库智能问答<br>• 制度文档解读<br>• 最佳实践推荐</td>
+                                        <td>RAG + 知识图谱</td>
+                                        <td>⭐⭐ 低</td>
+                                        <td>信息获取时间减少70%</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <style>
+                        .collapsible-table.expanded .table-content {
+                            max-height: 2000px !important;
+                        }
+                        .collapsible-table.expanded .toggle-icon {
+                            transform: rotate(180deg);
+                        }
+                        .collapsible-table .table-toggle:hover {
+                            background: linear-gradient(135deg, #EEF2FF, #FFFFFF) !important;
+                        }
+                    </style>
+
+                    <!-- Part 4: 金融AI应用优先级建议 -->
+                    <h3 style="margin-top: 32px;">🎯 四、金融AI应用优先级建议</h3>
+                    
+                    <p style="color: var(--color-text-secondary); margin-bottom: 16px;">根据<strong>风险等级</strong>、<strong>落地难度</strong>和<strong>业务价值</strong>综合评估，建议按以下优先级推进：</p>
+
+                    <div class="table-scroll-wrapper">
                     <table class="compare-table">
                         <thead>
                             <tr>
-                                <th>优先级</th>
-                                <th>场景</th>
-                                <th>风险等级</th>
-                                <th>理由</th>
+                                <th style="min-width: 60px;">优先级</th>
+                                <th style="min-width: 100px;">类别</th>
+                                <th style="min-width: 120px;">场景</th>
+                                <th style="min-width: 60px;">风险</th>
+                                <th style="min-width: 200px;">推荐理由</th>
+                                <th style="min-width: 150px;">落地建议</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr style="background: rgba(26, 127, 55, 0.04);">
+                            <tr style="background: rgba(26, 127, 55, 0.06);">
                                 <td><strong style="color: var(--color-success);">P0</strong></td>
+                                <td>产研提效</td>
+                                <td>AI编程助手</td>
+                                <td>极低</td>
+                                <td>技术成熟（Cursor/Copilot）、效果可量化、开发者接受度高</td>
+                                <td>直接采购成熟产品，快速铺开</td>
+                            </tr>
+                            <tr style="background: rgba(26, 127, 55, 0.06);">
+                                <td><strong style="color: var(--color-success);">P0</strong></td>
+                                <td>职能提效</td>
+                                <td>会议Agent</td>
+                                <td>极低</td>
+                                <td>场景明确、不涉及敏感数据、效果立竿见影</td>
+                                <td>飞书/钉钉/腾讯会议自带功能即可</td>
+                            </tr>
+                            <tr style="background: rgba(26, 127, 55, 0.06);">
+                                <td><strong style="color: var(--color-success);">P0</strong></td>
+                                <td>业务场景</td>
                                 <td>投研Agent</td>
                                 <td>低</td>
-                                <td>数据密集，AI增益明显，不直接影响交易</td>
+                                <td>数据密集、AI增益明显、不直接影响交易决策</td>
+                                <td>从研报摘要生成开始，逐步扩展</td>
                             </tr>
-                            <tr style="background: rgba(26, 127, 55, 0.04);">
+                            <tr style="background: rgba(26, 127, 55, 0.06);">
                                 <td><strong style="color: var(--color-success);">P0</strong></td>
+                                <td>业务场景</td>
                                 <td>数据查询Agent</td>
                                 <td>低</td>
-                                <td>自然语言替代SQL，效率提升显著</td>
+                                <td>自然语言替代SQL，效率提升显著，技术成熟</td>
+                                <td>Text-to-SQL方案成熟，可快速落地</td>
                             </tr>
                             <tr>
                                 <td><strong style="color: var(--color-info);">P1</strong></td>
+                                <td>产研提效</td>
+                                <td>测试Agent</td>
+                                <td>低</td>
+                                <td>提升测试效率和覆盖率，不影响生产环境</td>
+                                <td>与CI/CD流程集成，逐步推广</td>
+                            </tr>
+                            <tr>
+                                <td><strong style="color: var(--color-info);">P1</strong></td>
+                                <td>职能提效</td>
+                                <td>知识管理Agent</td>
+                                <td>低</td>
+                                <td>解决"找不到信息"的普遍痛点</td>
+                                <td>搭建内部RAG系统，接入制度文档</td>
+                            </tr>
+                            <tr>
+                                <td><strong style="color: var(--color-info);">P1</strong></td>
+                                <td>业务场景</td>
                                 <td>风险监控Agent</td>
                                 <td>中</td>
-                                <td>实时预警，减少人工，需人工复核</td>
+                                <td>实时预警价值大，但需人工复核机制</td>
+                                <td>作为辅助工具，不替代人工判断</td>
                             </tr>
                             <tr>
                                 <td><strong style="color: var(--color-info);">P1</strong></td>
+                                <td>业务场景</td>
                                 <td>合规审核Agent</td>
                                 <td>中</td>
-                                <td>文本密集，规则明确，适合AI</td>
+                                <td>文本密集、规则明确，适合AI</td>
+                                <td>先做合同审核，积累经验后扩展</td>
                             </tr>
                             <tr>
                                 <td><strong style="color: var(--color-warning);">P2</strong></td>
+                                <td>职能提效</td>
+                                <td>招聘/行政Agent</td>
+                                <td>低</td>
+                                <td>效率提升明显，但优先级低于核心业务</td>
+                                <td>可采购SaaS产品，无需自研</td>
+                            </tr>
+                            <tr>
+                                <td><strong style="color: var(--color-warning);">P2</strong></td>
+                                <td>业务场景</td>
                                 <td>客户服务Agent</td>
                                 <td>中</td>
-                                <td>需求明确，技术成熟</td>
+                                <td>技术成熟，但需关注客户体验和投诉风险</td>
+                                <td>人机协作模式，复杂问题转人工</td>
                             </tr>
                             <tr style="background: rgba(207, 34, 46, 0.04);">
                                 <td><strong style="color: var(--color-danger);">P3</strong></td>
+                                <td>业务场景</td>
                                 <td>量化策略AI增强</td>
                                 <td>高</td>
-                                <td>高风险，需审慎验证，谨慎上线</td>
+                                <td>高风险高回报，需审慎验证，谨慎上线</td>
+                                <td>先在模拟环境验证，建立严格评测体系</td>
                             </tr>
                         </tbody>
                     </table>
+                    </div>
 
-                    <h3 style="margin-top: 32px;">🛤️ 落地路径建议</h3>
+                    <!-- Part 5: 落地路径建议 -->
+                    <h3 style="margin-top: 32px;">🛤️ 五、落地路径建议</h3>
                     <div class="milestones">
                         <div class="milestone">
-                            <div class="milestone-year">第一步</div>
-                            <h4>低风险场景切入</h4>
-                            <p>从报告生成、数据查询等低风险场景开始，积累经验和信任</p>
+                            <div class="milestone-year">阶段一：快速起步（1-3个月）</div>
+                            <h4>从"零风险"场景切入</h4>
+                            <p>部署AI编程助手、会议Agent等成熟工具，让团队快速体验AI价值，建立信心和认知</p>
                         </div>
                         <div class="milestone">
-                            <div class="milestone-year">第二步</div>
-                            <h4>建设评测体系</h4>
-                            <p>量化AI带来的价值，建立效果评估和风险监控机制</p>
+                            <div class="milestone-year">阶段二：能力建设（3-6个月）</div>
+                            <h4>建设评测体系与基础设施</h4>
+                            <p>搭建内部RAG平台、建立AI效果评估机制、培养AI Prompt Engineering能力</p>
                         </div>
                         <div class="milestone">
-                            <div class="milestone-year">第三步</div>
-                            <h4>向核心场景扩展</h4>
-                            <p>有了经验后，逐步扩展到投研、风控等核心场景</p>
+                            <div class="milestone-year">阶段三：业务渗透（6-12个月）</div>
+                            <h4>向核心业务场景扩展</h4>
+                            <p>落地投研Agent、数据查询Agent等P0业务场景，量化业务价值，积累领域经验</p>
                         </div>
                         <div class="milestone">
-                            <div class="milestone-year">第四步</div>
-                            <h4>建设自研能力</h4>
-                            <p>形成差异化AI能力，建立长期竞争优势</p>
+                            <div class="milestone-year">阶段四：深度融合（12个月+）</div>
+                            <h4>建设差异化AI能力</h4>
+                            <p>基于业务数据训练垂直模型，建立自研Agent能力，形成长期竞争优势</p>
                         </div>
                     </div>
 
                     <div class="quote-box" style="margin-top: 24px;">
-                        <p>"金融AI的竞争，不是比谁的模型参数大，而是比谁的场景理解深、工程落地稳、迭代速度快。"</p>
-                        <cite>—— 行业洞察</cite>
-                    </div>
-                </div>
-            </div>
-
-            <!-- 未来 -->
-            <div class="era-card" id="future">
-                <div class="era-header future">
-                    <h2><span>🔮</span> 未来：AI将走向何方？</h2>
-                    <p>AGI、具身智能、AI Agent……下一个十年会发生什么？</p>
-                </div>
-                <div class="era-body">
-                    <div class="joke-insert">
-                        <div class="emoji">🤖</div>
-                        <div class="content">
-                            <div class="title">未来可期（？）</div>
-                            <div class="text">2030年预测：AI会替代大部分工作。2030年现实（也许）：AI帮我写周报，我帮AI改Bug。</div>
-                        </div>
-                    </div>
-                    
-                    <div class="grid-3" style="margin-top: var(--spacing-lg);">
-                        <div class="card future-card">
-                            <div style="font-size: 2rem; margin-bottom: var(--spacing-sm);">🧠</div>
-                            <h4>通用人工智能 (AGI)</h4>
-                            <p style="color: var(--color-text-secondary); font-size: var(--font-size-sm); margin-top: var(--spacing-xs);">
-                                具备人类级别的通用认知能力，能够学习任何任务。OpenAI说2027年，其他人说"慢点吹"。
-                            </p>
-                            <div class="future-tooltip">
-                                <div class="story-title">🎬 AGI：一场"狼来了"的故事？</div>
-                                <div class="story-content">
-                                    <strong>有趣的历史：</strong>1956年达特茅斯会议上，科学家们预测"20年内实现通用人工智能"。结果呢？快70年过去了，我们还在预测。<br><br>
-                                    <strong>段子：</strong>Sam Altman说"AGI两年内到来"，学术界集体翻白眼："你倒是给个定义啊？"OpenAI的AGI定义是"能完成大多数经济价值工作的系统"——听起来像是为了融资写的。<br><br>
-                                    <strong>真实进展：</strong>GPT-5、Claude 4确实展现了惊人能力，但离"通用"还差得远。科学家调侃："现在的AI是个偏科严重的学霸，语文满分，但让它折个纸飞机都费劲。"
-                                </div>
-                                <span class="story-tag">🎙️ 演讲素材</span>
-                            </div>
-                        </div>
-                        <div class="card future-card">
-                            <div style="font-size: 2rem; margin-bottom: var(--spacing-sm);">🤖</div>
-                            <h4>具身智能 (Embodied AI)</h4>
-                            <p style="color: var(--color-text-secondary); font-size: var(--font-size-sm); margin-top: var(--spacing-xs);">
-                                AI走出屏幕，进入物理世界。机器人+大模型=？字节Seed团队已在布局GR-3机器人。
-                            </p>
-                            <div class="future-tooltip">
-                                <div class="story-title">🎬 当AI学会"动手"</div>
-                                <div class="story-content">
-                                    <strong>行业笑话：</strong>大模型很聪明，但让它倒杯水？抱歉，它连手都没有。所以大家开始琢磨：给AI装个身体！<br><br>
-                                    <strong>真实案例：</strong>Figure公司的人形机器人能一边和你聊天，一边给你递苹果。特斯拉Optimus号称要"解放人类双手"，马斯克说未来每家都会有一个。字节的GR-3机器人也在悄悄布局。<br><br>
-                                    <strong>投资人视角：</strong>2024年具身智能融资超过100亿美元。有人调侃："以前投互联网是'软件吃掉世界'，现在投机器人是'AI站起来吃掉世界'。"
-                                </div>
-                                <span class="story-tag">🎙️ 演讲素材</span>
-                            </div>
-                        </div>
-                        <div class="card future-card">
-                            <div style="font-size: 2rem; margin-bottom: var(--spacing-sm);">🕹️</div>
-                            <h4>AI Agent 时代</h4>
-                            <p style="color: var(--color-text-secondary); font-size: var(--font-size-sm); margin-top: var(--spacing-xs);">
-                                AI不再只是"问答机器"，而是能自主规划、使用工具、完成任务的"数字员工"。
-                            </p>
-                            <div class="future-tooltip">
-                                <div class="story-title">🎬 从"问答"到"干活"</div>
-                                <div class="story-content">
-                                    <strong>通俗解释：</strong>ChatGPT像个"百科全书"，你问它答。AI Agent像个"实习生"，你给它任务，它自己想办法完成——上网查资料、调用工具、写代码、发邮件，全自动。<br><br>
-                                    <strong>行业预测：</strong>2025年被称为"AI Agent元年"。各大公司都在布局：豆包有智能体平台、Claude有Computer Use、OpenAI有Operator。<br><br>
-                                    <strong>段子：</strong>程序员问老板："AI Agent能自己写代码了，那我们干啥？"老板："你负责给Agent改Bug。"程序员："……那Agent能自己改Bug吗？"老板微笑不语。
-                                </div>
-                                <span class="story-tag">🎙️ 演讲素材</span>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="quote-box" style="margin-top: 32px;">
-                        <p>"未来不是AI取代人类，而是会用AI的人取代不会用AI的人。"</p>
-                        <cite>—— 某不愿透露姓名的AI从业者</cite>
+                        <p>"金融AI的竞争，不是比谁的模型参数大，而是比<strong>谁的场景理解深、工程落地稳、迭代速度快</strong>。DeepSeek的成功告诉我们：效率创新永远有机会。"</p>
+                        <cite>—— 金融AI落地核心法则</cite>
                     </div>
                 </div>
             </div>
@@ -1482,6 +2093,68 @@
 
         window.addEventListener('scroll', updateActiveNav);
         document.addEventListener('DOMContentLoaded', updateActiveNav);
+
+        // Tab导航切换功能
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.tab-btn').forEach(b => {
+                    b.classList.remove('active');
+                    b.setAttribute('aria-selected', 'false');
+                });
+                
+                btn.classList.add('active');
+                btn.setAttribute('aria-selected', 'true');
+                
+                const tabId = btn.dataset.tab;
+                const sectionMap = {
+                    'section-1': 'past',
+                    'section-2': 'present',
+                    'section-3': 'ai-future',
+                    'section-4': 'strategic-opportunities',
+                    'section-5': 'finance-lessons'
+                };
+                
+                const targetSection = document.getElementById(sectionMap[tabId]);
+                if (targetSection) {
+                    targetSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
+
+        // 根据滚动位置更新Tab导航状态
+        function updateTabNav() {
+            const sectionMap = {
+                'past': 'section-1',
+                'present': 'section-2',
+                'ai-future': 'section-3',
+                'strategic-opportunities': 'section-4',
+                'finance-lessons': 'section-5'
+            };
+            
+            let currentSection = '';
+            Object.keys(sectionMap).forEach(sectionId => {
+                const section = document.getElementById(sectionId);
+                if (section) {
+                    const rect = section.getBoundingClientRect();
+                    if (rect.top <= 150) {
+                        currentSection = sectionMap[sectionId];
+                    }
+                }
+            });
+            
+            if (currentSection) {
+                document.querySelectorAll('.tab-btn').forEach(btn => {
+                    btn.classList.remove('active');
+                    btn.setAttribute('aria-selected', 'false');
+                    if (btn.dataset.tab === currentSection) {
+                        btn.classList.add('active');
+                        btn.setAttribute('aria-selected', 'true');
+                    }
+                });
+            }
+        }
+
+        window.addEventListener('scroll', updateTabNav);
     </script>
 </body>
 </html>
