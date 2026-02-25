@@ -479,36 +479,6 @@
         </div>
     </section>
 
-    <!-- Tab导航 - 清爽调研报告风格强制组件 -->
-    <div class="container">
-        <nav class="tab-nav" role="navigation" aria-label="章节导航">
-            <button class="tab-btn active" data-tab="section-1" aria-selected="true">
-                <span class="tab-btn-num">1</span>
-                <span class="tab-btn-text">什么是Agent Infra</span>
-            </button>
-            <button class="tab-btn" data-tab="section-2" aria-selected="false">
-                <span class="tab-btn-num">2</span>
-                <span class="tab-btn-text">全家桶工具</span>
-            </button>
-            <button class="tab-btn" data-tab="section-3" aria-selected="false">
-                <span class="tab-btn-num">3</span>
-                <span class="tab-btn-text">评测·观测·调优</span>
-            </button>
-            <button class="tab-btn" data-tab="section-4" aria-selected="false">
-                <span class="tab-btn-num">4</span>
-                <span class="tab-btn-text">从0到1开发</span>
-            </button>
-            <button class="tab-btn" data-tab="section-5" aria-selected="false">
-                <span class="tab-btn-num">5</span>
-                <span class="tab-btn-text">调优全流程</span>
-            </button>
-            <button class="tab-btn" data-tab="section-6" aria-selected="false">
-                <span class="tab-btn-num">6</span>
-                <span class="tab-btn-text">本章小结</span>
-            </button>
-        </nav>
-    </div>
-
     <!-- 什么是Agent Infra -->
     <section class="section" id="what-is-agent-infra" style="background: var(--bg-main);">
         <div class="container">
@@ -2565,74 +2535,6 @@
 
         window.addEventListener('scroll', updateActiveNav);
         document.addEventListener('DOMContentLoaded', updateActiveNav);
-
-        // Tab导航切换功能
-        document.querySelectorAll('.tab-btn').forEach(btn => {
-            btn.addEventListener('click', () => {
-                // 移除所有active
-                document.querySelectorAll('.tab-btn').forEach(b => {
-                    b.classList.remove('active');
-                    b.setAttribute('aria-selected', 'false');
-                });
-                
-                // 添加active到当前按钮
-                btn.classList.add('active');
-                btn.setAttribute('aria-selected', 'true');
-                
-                // 获取目标section的id
-                const tabId = btn.dataset.tab;
-                const sectionMap = {
-                    'section-1': 'what-is-agent-infra',
-                    'section-2': 'bytedance-agent-tools',
-                    'section-3': 'evaluation-trio',
-                    'section-4': 'build-agent-tutorial',
-                    'section-5': 'agent-optimization',
-                    'section-6': 'summary'
-                };
-                
-                // 滚动到对应section
-                const targetSection = document.getElementById(sectionMap[tabId]);
-                if (targetSection) {
-                    targetSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                }
-            });
-        });
-
-        // 根据滚动位置更新Tab导航状态
-        function updateTabNav() {
-            const sectionMap = {
-                'what-is-agent-infra': 'section-1',
-                'bytedance-agent-tools': 'section-2',
-                'evaluation-trio': 'section-3',
-                'build-agent-tutorial': 'section-4',
-                'agent-optimization': 'section-5',
-                'summary': 'section-6'
-            };
-            
-            let currentSection = '';
-            Object.keys(sectionMap).forEach(sectionId => {
-                const section = document.getElementById(sectionId);
-                if (section) {
-                    const rect = section.getBoundingClientRect();
-                    if (rect.top <= 150) {
-                        currentSection = sectionMap[sectionId];
-                    }
-                }
-            });
-            
-            if (currentSection) {
-                document.querySelectorAll('.tab-btn').forEach(btn => {
-                    btn.classList.remove('active');
-                    btn.setAttribute('aria-selected', 'false');
-                    if (btn.dataset.tab === currentSection) {
-                        btn.classList.add('active');
-                        btn.setAttribute('aria-selected', 'true');
-                    }
-                });
-            }
-        }
-
-        window.addEventListener('scroll', updateTabNav);
 
         // 移动端Tips点击交互
         function initMobileTips() {

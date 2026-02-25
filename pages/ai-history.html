@@ -462,32 +462,6 @@
         </div>
     </section>
 
-    <!-- Tab导航 - 清爽调研报告风格强制组件 -->
-    <div class="container">
-        <nav class="tab-nav" role="navigation" aria-label="章节导航">
-            <button class="tab-btn active" data-tab="section-1" aria-selected="true">
-                <span class="tab-btn-num">1</span>
-                <span class="tab-btn-text">过去：AI寒冬与曙光</span>
-            </button>
-            <button class="tab-btn" data-tab="section-2" aria-selected="false">
-                <span class="tab-btn-num">2</span>
-                <span class="tab-btn-text">现在：大模型军备竞赛</span>
-            </button>
-            <button class="tab-btn" data-tab="section-3" aria-selected="false">
-                <span class="tab-btn-num">3</span>
-                <span class="tab-btn-text">AI的下半场</span>
-            </button>
-            <button class="tab-btn" data-tab="section-4" aria-selected="false">
-                <span class="tab-btn-num">4</span>
-                <span class="tab-btn-text">深度：竞争战略分析</span>
-            </button>
-            <button class="tab-btn" data-tab="section-5" aria-selected="false">
-                <span class="tab-btn-num">5</span>
-                <span class="tab-btn-text">金融量化借鉴</span>
-            </button>
-        </nav>
-    </div>
-
     <!-- 主要内容 -->
     <section class="era-section">
         <div class="container-full">
@@ -2093,68 +2067,6 @@
 
         window.addEventListener('scroll', updateActiveNav);
         document.addEventListener('DOMContentLoaded', updateActiveNav);
-
-        // Tab导航切换功能
-        document.querySelectorAll('.tab-btn').forEach(btn => {
-            btn.addEventListener('click', () => {
-                document.querySelectorAll('.tab-btn').forEach(b => {
-                    b.classList.remove('active');
-                    b.setAttribute('aria-selected', 'false');
-                });
-                
-                btn.classList.add('active');
-                btn.setAttribute('aria-selected', 'true');
-                
-                const tabId = btn.dataset.tab;
-                const sectionMap = {
-                    'section-1': 'past',
-                    'section-2': 'present',
-                    'section-3': 'ai-future',
-                    'section-4': 'strategic-opportunities',
-                    'section-5': 'finance-lessons'
-                };
-                
-                const targetSection = document.getElementById(sectionMap[tabId]);
-                if (targetSection) {
-                    targetSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                }
-            });
-        });
-
-        // 根据滚动位置更新Tab导航状态
-        function updateTabNav() {
-            const sectionMap = {
-                'past': 'section-1',
-                'present': 'section-2',
-                'ai-future': 'section-3',
-                'strategic-opportunities': 'section-4',
-                'finance-lessons': 'section-5'
-            };
-            
-            let currentSection = '';
-            Object.keys(sectionMap).forEach(sectionId => {
-                const section = document.getElementById(sectionId);
-                if (section) {
-                    const rect = section.getBoundingClientRect();
-                    if (rect.top <= 150) {
-                        currentSection = sectionMap[sectionId];
-                    }
-                }
-            });
-            
-            if (currentSection) {
-                document.querySelectorAll('.tab-btn').forEach(btn => {
-                    btn.classList.remove('active');
-                    btn.setAttribute('aria-selected', 'false');
-                    if (btn.dataset.tab === currentSection) {
-                        btn.classList.add('active');
-                        btn.setAttribute('aria-selected', 'true');
-                    }
-                });
-            }
-        }
-
-        window.addEventListener('scroll', updateTabNav);
     </script>
 </body>
 </html>

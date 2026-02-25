@@ -609,36 +609,6 @@
         </div>
     </section>
 
-    <!-- Tab导航 - 清爽调研报告风格强制组件 -->
-    <div class="container">
-        <nav class="tab-nav" role="navigation" aria-label="章节导航">
-            <button class="tab-btn active" data-tab="section-1" aria-selected="true">
-                <span class="tab-btn-num">1</span>
-                <span class="tab-btn-text">核心价值</span>
-            </button>
-            <button class="tab-btn" data-tab="section-2" aria-selected="false">
-                <span class="tab-btn-num">2</span>
-                <span class="tab-btn-text">决策者关心的问题</span>
-            </button>
-            <button class="tab-btn" data-tab="section-3" aria-selected="false">
-                <span class="tab-btn-num">3</span>
-                <span class="tab-btn-text">应用场景</span>
-            </button>
-            <button class="tab-btn" data-tab="section-4" aria-selected="false">
-                <span class="tab-btn-num">4</span>
-                <span class="tab-btn-text">行动路线</span>
-            </button>
-            <button class="tab-btn" data-tab="section-5" aria-selected="false">
-                <span class="tab-btn-num">5</span>
-                <span class="tab-btn-text">风险与应对</span>
-            </button>
-            <button class="tab-btn" data-tab="section-6" aria-selected="false">
-                <span class="tab-btn-num">6</span>
-                <span class="tab-btn-text">组织转型指南</span>
-            </button>
-        </nav>
-    </div>
-
     <!-- 核心价值数据 -->
     <section class="impact-section" id="impact">
         <div class="container">
@@ -1693,70 +1663,6 @@
 
         window.addEventListener('scroll', updateActiveNav);
         document.addEventListener('DOMContentLoaded', updateActiveNav);
-
-        // Tab导航切换功能
-        document.querySelectorAll('.tab-btn').forEach(btn => {
-            btn.addEventListener('click', () => {
-                document.querySelectorAll('.tab-btn').forEach(b => {
-                    b.classList.remove('active');
-                    b.setAttribute('aria-selected', 'false');
-                });
-                
-                btn.classList.add('active');
-                btn.setAttribute('aria-selected', 'true');
-                
-                const tabId = btn.dataset.tab;
-                const sectionMap = {
-                    'section-1': 'impact',
-                    'section-2': 'faq',
-                    'section-3': 'scenarios',
-                    'section-4': 'action',
-                    'section-5': 'risk',
-                    'section-6': 'org-transform'
-                };
-                
-                const targetSection = document.getElementById(sectionMap[tabId]);
-                if (targetSection) {
-                    targetSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                }
-            });
-        });
-
-        // 根据滚动位置更新Tab导航状态
-        function updateTabNav() {
-            const sectionMap = {
-                'impact': 'section-1',
-                'faq': 'section-2',
-                'scenarios': 'section-3',
-                'action': 'section-4',
-                'risk': 'section-5',
-                'org-transform': 'section-6'
-            };
-            
-            let currentSection = '';
-            Object.keys(sectionMap).forEach(sectionId => {
-                const section = document.getElementById(sectionId);
-                if (section) {
-                    const rect = section.getBoundingClientRect();
-                    if (rect.top <= 150) {
-                        currentSection = sectionMap[sectionId];
-                    }
-                }
-            });
-            
-            if (currentSection) {
-                document.querySelectorAll('.tab-btn').forEach(btn => {
-                    btn.classList.remove('active');
-                    btn.setAttribute('aria-selected', 'false');
-                    if (btn.dataset.tab === currentSection) {
-                        btn.classList.add('active');
-                        btn.setAttribute('aria-selected', 'true');
-                    }
-                });
-            }
-        }
-
-        window.addEventListener('scroll', updateTabNav);
     </script>
 </body>
 </html>
